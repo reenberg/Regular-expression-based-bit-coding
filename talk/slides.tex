@@ -1,8 +1,13 @@
-\documentclass[slidestop,compress,mathserif]{beamer}
+% xcolor=table is because it seems that beamer uses the xcolor package in a
+% strange way and thus don't accept us giving arguments to the package.
+\documentclass[slidestop,compress,mathserif, xcolor=table]{beamer}
+
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel} 
+
+
 
 % Use the NAT theme in uk (also possible in DK)
 \usetheme[nat,uk, footstyle=low]{Frederiksberg}
@@ -36,6 +41,9 @@
 \date[]{\today} 
 
 
+% define nice colors for tables
+\rowcolors[]{1}{green!20}{green!10}
+
 \begin{document}
 
 \frame[plain]{\titlepage}
@@ -51,7 +59,11 @@
 
 \begin{frame}
   \frametitle{Purpose}
-  
+  Compress files.
+
+  \begin{definition}
+    
+  \end{definition}
 \end{frame}
 
 \begin{frame}
@@ -59,104 +71,141 @@
   
 \end{frame}
 
+\begin{frame}
+  \frametitle{Representation}
+  
+\end{frame}
 
-
-Bitcoding
-   Intro
-     Formål (komprimering)
-     Fordele
-     xxx representation
-
-PCC
-     Short intro (ultra)
-     Type check with full proof (LF) vs oracle
-     Resultater (improvements) ved brug af oracle
-
-Bitkodning - Teori (Henglein sec 5)
-     Naive Usage 
-     Henglein Fig 8 med praktisk eksempel på hvilke bits der kommer ud
-     Pop quiz
-
-     Figurer over oracle bits og text som ``maskiner''
-
-Bitkodning - Praksis
-     Frisch & Cardelli
-     Den nøgne kode
-
-Resultater (liv)     
-     Oracle vs gzip, .. , hoffman, engelsk text
-     Eksempel data: DNA, DPDA database over publikationer
 
 \section{PCC - Proof-Carrying Code}
-\begin{frame}
-\frametitle{What is it?}
- WHAT
 
- \begin{enumerate}
- \item<1> Yay
- \item<2> Hey
- \item<3> Wush
- \item<4> Foo
- \item<5> Bar
- \item<6>{ Eksempel:
-   \begin{example}
-     Dette er et fint eksempel
-   \end{example}}
-
- \end{enumerate}
-\end{frame}
+\subsection{Introduction}
 
 \begin{frame}
-  \frametitle{Advantages}
-
-   * Small burden of code consumer. Code producer must supply proof of asserted
-     properties along with the code.
-
-   * PCC is ``self-certifying''. Consumer does not need to care ...
-     - of proof creation/generation.
-     - of program being malicious w.r.t. assured properties.
-
-   * PCC programs are ``tamperproof''. If edited validation will result in
-     1) Proof will no longer be valid -- Rejected
-     2) Proof is still valid but property is not fulfilled -- Rejected
-     3) Proof is still valid and the property still holds -- Accepted
-
-   * No trusted third party is required
-     -  PCC checks the intrinsic properties and not the origin of the code.
-\end{frame}
-
-\begin{frame}
-  \frametitle{Example -- Kernel module: Network Packet Filter}
-  What is the right word: Module? Extension? Plugin?
-\end{frame}
-
-\begin{frame}
-  \frametitle{Old style -- LF proofs}
-
-  Pros. 
-    Fast checking time.
-  Cons.
-    Huge memory usage. Whole proofs needs to be in memory.
+  \frametitle{(Ultra) Short intro}
   
 \end{frame}
 
-\begin{frame} 
-  \frametitle{New style -- Oracle based guidance}
+\begin{frame}
+  \frametitle{Full proofs vs oracle}
+  
+\end{frame}
 
-  Pros.
-     Low memory usage, only a few bits needs to be read from the oracle at a time.
-  Cons.
-     Slower checking time.
+\begin{frame}
+  \frametitle{Oracle rules...}
+
+  Improvements of oracle vs proofs
+  
+\end{frame}
+
+\section{Bit coding}
+
+\subsection{Theory}
+
+\begin{frame}
+  \frametitle{Naive usage}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Naive usage -- Practical example}
+  Henglein Fig 8 med praktisk eksempel på hvilke bits der kommer du
+\end{frame}
+
+\begin{frame}
+  \frametitle{Pop quiz}
+  
+  \begin{tabular}{l|l||c|c|c}
+    Regex & Text & \emph{1} & \emph{x} & \emph{2} \\ \hline
+    \uncover<1->{a* & aaaaa & 1110011 & 0 & 1 \\}
+    \uncover<2->{abdd & abdd & 10     & 1 & 0}
+  \end{tabular}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Diagram... make better name}
+  
+  Figurer over oracle bits og text som ``maskiner''
+  
+\end{frame}
+
+
+\subsection{Implementation}
+
+\begin{frame}
+  \frametitle{Implementation details}
+  
+  Frisch \& Cardelli dynamic backtracking algorithm
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{The naked code}
+  
+\end{frame}
+
+\section{Preliminary results}
+
+\begin{frame}
+  \begin{center}
+    \huge{live DEMO of code}
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Examined data}
+  \begin{itemize}
+  \item XML files
+    
+    \begin{itemize}
+    \item DNA sequence
+      
+    \item DBLP database
+    \end{itemize}
+
+  \item RFC papers (technical english texts).
+    
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Oracle vs gzip}
+  
+  off the shelf unix gzip
+\end{frame}
+
+\begin{frame}
+  \frametitle{Oracle vs Hoffman}
+  Compare text with small and large amount of entropy.
+\end{frame}
+
+
+
+
+
+
+
+
+
+% \begin{frame} 
+%   \frametitle{New style -- Oracle based guidance}
+
+%   Pros.
+%      Low memory usage, only a few bits needs to be read from the oracle at a time.
+%   Cons.
+%      Slower checking time.
      
 
-  Nondeterministic checker, but with a lot of tricks it is only a small part
-  that is nondeterministic and needs the oracles help.
+%   Nondeterministic checker, but with a lot of tricks it is only a small part
+%   that is nondeterministic and needs the oracles help.
 
-  Untrusted oracles is not a problem.
+%   Untrusted oracles is not a problem.
 
   
   
-\end{frame}
+% \end{frame}
 
 \end{document}
 
