@@ -1,0 +1,129 @@
+\documentclass[slidestop,compress,mathserif]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel} 
+
+% Use the NAT theme in uk (also possible in DK)
+\usetheme[nat,uk, footstyle=low]{Frederiksberg}
+
+% Make overlay sweet nice by having different transparancy depending on how
+% "far" ahead the overlay is. AWSOME!!
+\setbeamercovered{highly dynamic}
+% possible to shift back, so they are just invisible untill they should overlay
+%\setbeamercovered{invisible}
+
+
+% Write a short text to have that shown in the footer of slides other than the
+% title slide.
+\title[]{TiPL - Topics in Programming Languages}
+% A possible subslide.
+\subtitle{Oracle-Based Checking of Untrusted Software}
+
+
+\author[Morten Brøns-Pedersen \and Jesper Reenberg \and Nes XXX]
+       {Morten Brøns-Pedersen \and
+        Jesper Reenberg  \\
+        Nes XXX }
+
+
+
+% Only write DIKU in the footer of slides (except the title slide).
+\institute[DIKU]{Department of Computer Science}
+
+% Remove the date stamp from the footer of slides (except title slide) by giving
+% it no short "text"
+\date[]{\today} 
+
+
+\begin{document}
+
+\frame[plain]{\titlepage}
+
+
+\section{PCC - Proof-Carrying Code}
+\begin{frame}
+\frametitle{What is it?}
+ WHAT
+
+ \begin{enumerate}
+ \item<1> Yay
+ \item<2> Hey
+ \item<3> Wush
+ \item<4> Foo
+ \item<5> Bar
+ \item<6>{ Eksempel:
+   \begin{example}
+     Dette er et fint eksempel
+   \end{example}}
+
+ \end{enumerate}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Advantages}
+
+   * Small burden of code consumer. Code producer must supply proof of asserted
+     properties along with the code.
+
+   * PCC is ``self-certifying''. Consumer does not need to care ...
+     - of proof creation/generation.
+     - of program being malicious w.r.t. assured properties.
+
+   * PCC programs are ``tamperproof''. If edited validation will result in
+     1) Proof will no longer be valid -- Rejected
+     2) Proof is still valid but property is not fulfilled -- Rejected
+     3) Proof is still valid and the property still holds -- Accepted
+
+   * No trusted third party is required
+     -  PCC checks the intrinsic properties and not the origin of the code.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example -- Kernel module: Network Packet Filter}
+  What is the right word: Module? Extension? Plugin?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Old style -- LF proofs}
+
+  Pros. 
+    Fast checking time.
+  Cons.
+    Huge memory usage. Whole proofs needs to be in memory.
+  
+\end{frame}
+
+\begin{frame} 
+  \frametitle{New style -- Oracle based guidance}
+
+  Pros.
+     Low memory usage, only a few bits needs to be read from the oracle at a time.
+  Cons.
+     Slower checking time.
+     
+
+  Nondeterministic checker, but with a lot of tricks it is only a small part
+  that is nondeterministic and needs the oracles help.
+
+  Untrusted oracles is not a problem.
+
+  
+  
+\end{frame}
+
+% "Luxury of a nondeterministic checker -- Why is this a luxury?
+% Handling of malicious proofs -- It is actually not a problem.
+
+
+
+\end{document}
+
+
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
