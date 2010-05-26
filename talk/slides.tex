@@ -63,14 +63,55 @@
   With this idea we will show that it is possible to compress texts and get a
   worst case compression of 1 + overhead of representing the regular expression.
 
-  Thus it is important that the regular expression is constructed in a clever
-  way, such that the representation of the regular expression is small
+  Bit coding originates as a special case of Proof-Carrying Code.
 
-  (a|b|..|z)* vs [a-z]* 
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Proof-Carrying Code -- (Ultra) Short intro}
+  
+  \begin{definition}[Weak]
+    Is a technique that can verify properties about an application using formal
+    proofs that accompanies the executable code.
+  \end{definition}
+
+  Originally described by George Necula and Peter Lee in 1996 (FIXME
+  bibliography) to enforce system security policies such as
+
+  \begin{itemize}
+  \item Memory safety
+  \item Buffer overflows
+  \item Etc.
+  \end{itemize}
+
+  Specifically for use in kernel modules.
 
 \end{frame}
 
 \begin{frame}
+  \frametitle{Proof-Carrying Code -- the special case}
+
+  Originally Necula and Lee used formal proofs (fixme in some decution system)
+  which had the disadvantage of being (fixme) 30\% larger than the executable
+  code in the general case.
+
+  In 2001 Necula and Rahul (FIXME bibliography) changed the fundamental idea of
+  how PCC could be verified, introducing an oracle to guide the proof checker
+  instead of the formal proof.
+
+  This resulted in a drop down in ``proof'' size to (FIXME)
+  
+\end{frame}
+
+\begin{frame}
+  
+  
+  Thus it is important that the regular expression is constructed in a clever
+  way, such that the representation of the regular expression is small
+  
+  (a|b|..|z)* vs [a-z]* 
+  
   As discussed in previous talks about bit coding (and later) it is only the
   alternation and thus also the Kleene star ($1 + E \times E^*$) that generate
   any bits in the resulting bit code.  Thus it is important how the regular
@@ -165,30 +206,19 @@
 
 \end{frame}
 
-
-\section{PCC - Proof-Carrying Code}
-
-\subsection{Introduction}
-
 \begin{frame}
-  \frametitle{(Ultra) Short intro}
+  \frametitle{Which property to verify}
   
-  What is PCC and how can it be used in its 
+  So how does PCC relate to bit coding?
 
-\end{frame}
-
-\begin{frame}
-  \frametitle{Full proofs vs oracle}
+  If we choose membership testing as the property that needs to be verified,
+  then we can look at the verification process as de-compression as it produces a
+  wideness (the compressed text) and we can look at the oracle generation as the
+  compression 
+  
+  Such a property could be membership testing
   
 \end{frame}
-
-\begin{frame}
-  \frametitle{Oracle rules...}
-
-  Improvements of oracle vs proofs
-  
-\end{frame}
-
 
 \begin{frame}
   \frametitle{Abstract idea of bit compression using oracles}
