@@ -1,0 +1,124 @@
+<slide>
+Review of [henglein&nielsen].
+
+ - Regular expressions as types. A regular expression is a set of proofs of
+   membership rather than strings.
+ - Computational interpretation of containment. E.g. a total function from
+   proofs in a regular expression to proofs in a containing one (coercions).
+ - Parametric completeness (|- c : E[X_1, ..., X_m] <= F[X_1, ..., X_m]).
+ - Oracle based bit coding of proof values, and transformation of oracles.
+</slide>
+
+<slide>
+Recall membership and inhabitation:
+fig8
+</slide>
+
+<slide>
+Oracle based bit coding.
+
+<say>
+Idea: Don't store the proofs themselves. Use a nondeterministic membership
+theorem prover to find the membership proofs by using an oracle.
+
+The oracle will guide the prover whenever it needs to perform a
+nondeterministic choice.
+
+The prover takes a regular expression and an oracle and constructs a membership
+proof.
+</say>
+
+Example: Try to construct a membership proof from a regular expression. Note
+where nondeterminism occurs.
+</slide>
+
+<slide>
+There is only one place where the next rule in the proof cannot be determined by
+the structure of the regular expression. Namely alternation.
+(review fig8b)
+
+Either inl or inr.
+</slide>
+
+<slide>
+Nondeterministic membership proover.
+
+[illustration of prover - in: bits, regex - out: proof tree]
+</slide>
+
+<slide>
+Example: Construct a proof from at regex and an oracle.
+</slide>
+
+<slide>
+<say>
+We've seen how to generate an oracle and how to use one, by example. Here are
+the rules.
+</say>
+Encoding: fig21.
+</slide>
+
+<slide>
+Decoding: fig22.
+</slide>
+
+<slide>
+Choosing the right regular expression.
+[Jespers rather nice example]
+</slide>
+
+<maybe>
+<slide>
+Practical use:
+[example (motivation for coercions): a piece of code where each branch of a
+conditional returns oracles belonging to different regex'es, all contained in a
+'master' regex]
+</slide>
+</maybe>
+
+<slide>
+Remember coercions?
+<say>
+A coercion is a proof of containment.
+</say>
+
+(fig9).
+</slide>
+
+<slide>
+...with a computational interpretation (fig10).
+
+[definition 3]
+<say>
+Coercions can be interpreted computationally as total functions transforming
+proofs in the one regex to proofs in the other.
+</say>
+</slide>
+
+<slide>
+Coercion synthesis.
+<say>
+Coercions (that is containment proofs) can be synthesised completely
+automatically.
+
+[flash fig19 for wow effect]
+
+<slide>
+Choosing the right regular expression (revisited)
+
+[From Jespers example: E = a + (b + (c + d)), E' = ((a + b) + c) + d (or
+something like that.)]
+For our particular membership proofs we expect the oracles for E' to be smaller
+than for E.
+
+Clearly L[E] = L[E'] and thus L[E] \subset L[E']. By the soundness and
+completeness of the rules for containment we have |- c : E <= E'.
+
+So we can convert proofs in E to proofs in E' by \mathcal{F}[c].
+</slide>
+
+<slide>
+Coercions for oracles.
+ - Naïvely: \hat{c} = encode o c o decode
+ - Dirrect (fig23).
+</slide>
