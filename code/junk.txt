@@ -1,0 +1,37 @@
+code :: Eq a => STree a -> Regex a -> [Bit]
+code U            E              = []
+code (C x)        (L y) | x == y = []
+code (Inl v)      (e :+: _)      = B0 : code v e
+code (Inr w)      (_ :+: f)      = B1 : code w f
+code (v `Pair` w) (e :*: f)      = code v e ++ code w f
+code (Fold v)     (S e)          = code v (E :+: (e :*: S e))
+
+decode' :: Eq a => [Bit] -> Regex a -> (STree a, [Bit])
+decode' bs      E         = (U, bs)
+decode' bs      (L a)     = (C a, bs)
+decode' (B0:bs) (e :+: _) = let (v, bs') = decode' bs e
+                            in (Inl v, bs')
+decode' (B1:bs) (_ :+: f) = let (w, bs') = decode' bs f
+                            in (Inr w, bs')
+decode' bs      (e :*: f) = let (v, bs')  = decode' bs e
+                                (w, bs'') = decode' bs' f
+                            in (v `Pair` w, bs'')
+decode' bs      (S e)     = let (v, bs') = decode' bs (E :+: (e :*: S e))
+                            in (Fold v, bs')
+
+decode :: Eq a => [Bit] -> Regex a -> STree a
+decode bs e =
+  case decode' bs e of
+      (v, []) -> v
+
+match1 :: Eq a => ([a] -> Bool) -> Regex a -> [a] -> Bool
+match1 _ O         _      = False
+match1 f E         cs     = f cs
+match1 f (L d)     (c:cs) = if d == c then f cs else False
+match1 f (r :+: s) cs     = match1 f r cs || match1 f s cs
+match1 f (r :*: s) cs     = match1 (match1 f s) r cs
+match1 f (S r)     cs     = match1 f (E :+: (r :*: S r)) cs
+match1 _ _         _      = False
+
+match :: Eq a => Regex a -> [a] -> Bool
+match = match1 null
