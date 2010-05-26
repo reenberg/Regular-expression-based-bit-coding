@@ -2,6 +2,8 @@ module Regex
 (
     Regex (..),
     STree (..),
+    prod,
+    sum,
     alpha,
     num,
     alphanum,
@@ -50,7 +52,12 @@ instance Show a => Show (STree a) where
     show (Fold v)     = "fold " ++ show v
 
 sum :: [a] -> Regex a
-sum = foldl (:+:) E . fmap Lit
+sum [] = E
+sum [r] = r
+sum rs = sum rs1 :+: sum rs2
+    where
+      (rs1, rs2) = splitAt (length rs `div` 2) rs
+-- sum = foldl (:+:) E . fmap Lit
 
 prod :: [a] -> Regex a
 prod = foldl (:*:) E . fmap Lit
