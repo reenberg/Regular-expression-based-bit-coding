@@ -1,0 +1,73 @@
+%
+%  untitled
+%
+%  Created by wegmann on 2010-05-26.
+%  Copyright (c) 2010 __MyCompanyName__. All rights reserved.
+%
+\documentclass[]{memoir}
+\usepackage[utf8]{inputenc}
+\usepackage{fullpage}
+\usepackage{boxedminipage}
+\usepackage{listings}
+\usepackage{minitoc}
+\usepackage{ifpdf}
+\usepackage{graphicx}
+
+\title{Quiz}
+%\author{Nis Nordby Wegmann}
+%\date{2010-05-26}
+
+\begin{document}
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+%\maketitle
+
+%\begin{abstract}
+%\end{abstract}
+
+\setcounter{figure}{20}
+
+\renewcommand{\thefigure}{\arabic{figure}}
+
+\section*{Quiz}
+
+\begin{figure}
+\[
+\begin{array}{lcl}
+\mathtt{code}(\mathrm{()} : 1) & = & \epsilon \\
+\mathtt{code}(a  : a) & = & \epsilon \\
+\mathtt{code}(\mathrm{inl} \, v : E + F) & = & 0 \; \mathtt{code}(v : E) \\
+\mathtt{code}(\mathrm{inr} \, v : E + F) & = & 1 \; \mathtt{code}(v : F) \\
+\mathtt{code}((v,w) : E \times F) & = & \mathtt{code}(v : E) \; \mathtt{code}(v : F) \\
+\mathtt{code}(\mathrm{fold} \, v : E^*) & = & \mathtt{code}(v : 1 + E \times E^*)
+\end{array}
+\]
+\caption{Type directed encoding from syntax trees to bit sequences}
+\end{figure}
+
+\begin{figure}
+\[
+\begin{array}{lcl}
+\mathtt{decode'}(d, 1) & = & ((), d) \\
+\mathtt{decode'}(d, a) & = & (a, d) \\
+\mathtt{decode'}(0d, E + F) & = & \mathbf{let} \; (v,d') = \mathtt{decode'}(d,E) \; \mathbf{in} \; (\mathrm{inl} \, v, d') \\
+\mathtt{decode'}(1d, E + F) & = & \mathbf{let} \; (w,d') = \mathtt{decode'}(d,F) \; \mathbf{in} \; (\mathrm{inl} \, w, d') \\
+\mathtt{decode'}(d, E^*) & = & \mathbf{let} \; (v,d') = \mathtt{decode'}(d : 1 + E \times E^*) \; \mathbf{in} \; (\mathrm{fold} \, v, d')\\
+\mathtt{decode'}(d, E \times F) & = &
+    \mathbf{let} \left\{ \begin{array}{rcl} (v,d') &=& \mathtt{decode}'(d, E) \\ (w, d'') &=& \mathtt{decode}'(d', F) \end{array} \right\}
+    \mathbf{in} \; ((v,w), d'') \\
+\\
+\mathtt{decode}(d, E) & = & \mathbf{let} (v, d') = \mathtt{decode'}(d, E) \; \mathbf{in} \; v
+\end{array}
+\]
+\caption{Type directed decoding from bit sequences to syntax trees}
+\end{figure}
+
+\bibliographystyle{plain}
+\bibliography{}
+\end{document}
