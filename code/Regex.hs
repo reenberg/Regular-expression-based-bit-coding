@@ -6,10 +6,13 @@ module Regex
     num,
     alphanum,
     dot,
-    string
+    string,
+    sum,
+    prod
 )
 where
 
+import Prelude hiding (sum)
 import Data.Char (chr)
 
 data Regex a
@@ -46,23 +49,23 @@ instance Show a => Show (STree a) where
     show (v `Pair` w) = "(" ++ show v ++ "," ++ show w ++ ")"
     show (Fold v)     = "fold " ++ show v
 
-reg_sum :: [a] -> Regex a
-reg_sum = foldl (:+:) E . fmap Lit
+sum :: [a] -> Regex a
+sum = foldl (:+:) E . fmap Lit
 
-reg_prod:: [a] -> Regex a
-reg_prod = foldl (:*:) E . fmap Lit
+prod :: [a] -> Regex a
+prod = foldl (:*:) E . fmap Lit
 
 alpha :: Regex Char
-alpha = reg_sum $ ['a' .. 'z'] ++ ['A' .. 'Z']
+alpha = sum $ ['a' .. 'z'] ++ ['A' .. 'Z']
 
 num :: Regex Char
-num = reg_sum $ ['0' .. '9']
+num = sum $ ['0' .. '9']
 
 alphanum :: Regex Char
 alphanum = alpha :+: num
 
 dot :: Regex Char
-dot = reg_sum $ fmap chr $ [0 .. 127]
+dot = sum $ fmap chr $ [0 .. 127]
 
 string :: String -> Regex Char
-string = reg_sum
+string = prod
