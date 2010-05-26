@@ -55,15 +55,89 @@
 \begin{frame}
   \frametitle{Introduction}
   
-  maybe sketch bit coding as described in precious talks.
+  Ordinary texts ``waste'' space encoding information that is not used whereas
+  regular expressions that have a smaller alphabet can use this as an advantage,
+  and not encode information that can not be expressed within the given regular
+  expression.
+
+  With this idea we will show that it is possible to compress texts and get a
+  worst case compression of 1 + overhead of representing the regular expression.
+
+  Thus it is important that the regular expression is constructed in a clever
+  way, such that the representation of the regular expression is small
+
+  (a|b|..|z)* vs [a-z]* 
+
+\end{frame}
+
+\begin{frame}
+  As discussed in previous talks about bit coding (and later) it is only the
+  alternation and thus also the Kleene star ($1 + E \times E^*$) that generate
+  any bits in the resulting bit code.  Thus it is important how the regular
+  expression is expressed.
+
+  \begin{block}{Simplified subset of \texttt{code} function}
+\begin{semiverbatim}
+  \center{code(inl v) => 0 \quad code(inr v) => 1}
+\end{semiverbatim}
+  \end{block}
+
+  \begin{example}
+    Text: dc\\
+    Regex: a|(b|(c|d))
+    
+    \only<+>{( inr ( inr ( inr d ) ) , inr ( inr ( inl c ) ) )}
+    \only<+>{\alert{( inr ( inr ( inr d ) ) , inr ( inr ( inl c ) ) )}}
+    \only<+>{( \alert{inr ( inr ( inr d ) )} , inr ( inr ( inl c ) ) )}
+    \only<+>{( 1 \alert{inr ( inr d )} , inr ( inr ( inl c ) ) )} 
+    \only<+>{( 1 1 \alert{inr d} , inr ( inr ( inl c ) ) )} 
+    \only<+>{( 1 1 1 , inr ( inr ( inl c ) ) )} 
+    \only<+>{( 1 1 1 , \alert{inr ( inr ( inl c ) )} )}
+    \only<+>{( 1 1 1 , 1 \alert{inr ( inl c )} )} 
+    \only<+>{( 1 1 1 , 1 1 \alert{inl c} )} 
+    \only<+>{( 1 1 1 , 1 1 0)} 
+    \only<+>{1 1 1 1 1 0}
+  \end{example}
+
+\end{frame}
+
+\begin{frame}
+
+  \begin{block}{Simplified subset of \texttt{code} function}
+\begin{semiverbatim}
+  \center{code(inl v) => 0 \quad code(inr v) => 1}
+\end{semiverbatim}
+  \end{block}
+  
+  But if we shift the regular expression so d is in the beginning and then having 
+
+  Where if we represent the regex as d|(a|(b|c)) we get
+
+  \begin{example}
+    Text: dc\\
+    Regex: b|(c|(a|b))
+
+    \only<+>{( inl d , inr ( inl c ) )}
+    \only<+>{\alert{( inl d , inr ( inl c ) )}}
+    \only<+>{( \alert{inl d} , inr ( inl c ) )}
+    \only<+>{( 0 , inr ( inl c ) )}
+    \only<+>{( 0 , \alert{inr ( inl c )} )}
+    \only<+>{( 0 , 1 \alert{inl c} )}
+    \only<+>{( 0 , 1 0 )}
+    \only<+>{0 1 0}
+  \end{example}
+
+  (inl d, inr (inl c)) => 010.
+
+  Thus statical analysis (minimising alphabet and ocurance checks) of the text
+  to compress can sometime yield huge gains.
+  In general this is not so easy, but structured texts as XML files, with a
+  specifying schema it gets quite easy.
 
 \end{frame}
 
 \begin{frame}
   \frametitle{Purpose}
-
-  We have made a formal definition of what bit coding is when used to compress
-  texts
 
   \begin{definition}
     Compress a text to .... Morten had a great def.
