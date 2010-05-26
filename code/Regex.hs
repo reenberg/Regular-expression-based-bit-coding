@@ -1,9 +1,16 @@
 module Regex
 (
     Regex (..),
-    STree (..)
+    STree (..),
+    alpha,
+    num,
+    alphanum,
+    dot,
+    string
 )
 where
+
+import Data.Char (chr)
 
 data Regex a
     = O                         -- | 0
@@ -38,3 +45,24 @@ instance Show a => Show (STree a) where
     show (Inr w)      = "inr " ++ show w
     show (v `Pair` w) = "(" ++ show v ++ "," ++ show w ++ ")"
     show (Fold v)     = "fold " ++ show v
+
+reg_sum :: [a] -> Regex a
+reg_sum = foldl (:+:) E . fmap Lit
+
+reg_prod:: [a] -> Regex a
+reg_prod = foldl (:*:) E . fmap Lit
+
+alpha :: Regex Char
+alpha = reg_sum $ ['a' .. 'z'] ++ ['A' .. 'Z']
+
+num :: Regex Char
+num = reg_sum $ ['0' .. '9']
+
+alphanum :: Regex Char
+alphanum = alpha :+: num
+
+dot :: Regex Char
+dot = reg_sum $ fmap chr $ [0 .. 127]
+
+string :: String -> Regex Char
+string = reg_sum
