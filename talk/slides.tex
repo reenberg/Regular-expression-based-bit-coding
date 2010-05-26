@@ -105,7 +105,29 @@
 \end{frame}
 
 \begin{frame}
+  \frametitle{Which property to verify}
   
+  So how does PCC relate to bit coding?
+
+  If we choose membership testing as the property that needs to be verified,
+  then we can look at the verification process as de-compression as it produces a
+  wideness (the compressed text) and we can look at the oracle generation as the
+  compression 
+  
+  Such a property could be membership testing
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Abstract idea of bit compression using oracles}
+  
+  Show pictures/diagrams of the ``function'' mashines that we discussed, and
+  thus lay down the ground idea of how a text and regex will result in a
+  bitstream, and also how a regex and bitstream will result in the original text.
+
+\end{frame}
+
+\begin{frame}
   
   Thus it is important that the regular expression is constructed in a clever
   way, such that the representation of the regular expression is small
@@ -170,62 +192,10 @@
 
   (inl d, inr (inl c)) => 010.
 
-  Thus statical analysis (minimising alphabet and ocurance checks) of the text
+  Thus statical analysis (minimising alphabet and occurrence checks) of the text
   to compress can sometime yield huge gains.
   In general this is not so easy, but structured texts as XML files, with a
   specifying schema it gets quite easy.
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{Purpose}
-
-  \begin{definition}
-    Compress a text to .... Morten had a great def.
-  \end{definition}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Disadvantages}
-  
-  As will show the naive way (as described in Henglein fix bibliography) sux as it yields compression above 1
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{Advantages}
-  
-  Luckily we will demonstrate ways of optimising and getting compression below 1
-  
-\end{frame}
-
-\begin{frame}
-  \frametitle{Representation}
-  
-  Whut? which representation?
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{Which property to verify}
-  
-  So how does PCC relate to bit coding?
-
-  If we choose membership testing as the property that needs to be verified,
-  then we can look at the verification process as de-compression as it produces a
-  wideness (the compressed text) and we can look at the oracle generation as the
-  compression 
-  
-  Such a property could be membership testing
-  
-\end{frame}
-
-\begin{frame}
-  \frametitle{Abstract idea of bit compression using oracles}
-  
-  Show pictures/diagrams of the ``function'' mashines that we discussed, and
-  thus lay down the ground idea of how a text and regex will result in a
-  bitstream, and also how a regex and bitstream will result in the original text.
 
 \end{frame}
 
@@ -281,17 +251,6 @@
   
 \end{frame}
 
-
-\begin{frame}
-  \frametitle{Diagram... make better name}
-  
-  Figurer over oracle bits og text som ``maskiner''
-  Bør måske flyttes til introduktionen så man får en mere intuitiv ide om
-  hvordan tingene relaterer til hinanden før man bliver ``overfaldet'' med teori.
-  
-\end{frame}
-
-
 \subsection{Implementation}
 
 \begin{frame}
@@ -339,6 +298,22 @@
 \begin{frame}
   \frametitle{Oracle vs Hoffman}
   Compare text with small and large amount of entropy.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Disadvantages}
+
+  \begin{itemize}
+  \item Naive implementation yields(BIBTEX HENGLEIN) compression above 1
+  \end{itemize}
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Advantages}
+
+  We have an idea of how to ensure compression below 1, which
 \end{frame}
 
 
