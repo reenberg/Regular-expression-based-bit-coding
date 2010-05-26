@@ -54,26 +54,41 @@
 
 \begin{frame}
   \frametitle{Introduction}
+  
+  maybe sketch bit coding as described in precious talks.
 
 \end{frame}
 
 \begin{frame}
   \frametitle{Purpose}
-  Compress files.
+
+  We have made a formal definition of what bit coding is when used to compress
+  texts
 
   \begin{definition}
-    
+    Compress a text to .... Morten had a great def.
   \end{definition}
 \end{frame}
 
 \begin{frame}
+  \frametitle{Disadvantages}
+  
+  As will show the naive way (as described in Henglein fix bibliography) sux as it yields compression above 1
+
+\end{frame}
+
+\begin{frame}
   \frametitle{Advantages}
+  
+  Luckily we will demonstrate ways of optimising and getting compression below 1
   
 \end{frame}
 
 \begin{frame}
   \frametitle{Representation}
   
+  Whut? which representation?
+
 \end{frame}
 
 
@@ -84,6 +99,8 @@
 \begin{frame}
   \frametitle{(Ultra) Short intro}
   
+  What is PCC and how can it be used in its 
+
 \end{frame}
 
 \begin{frame}
@@ -98,6 +115,16 @@
   
 \end{frame}
 
+
+\begin{frame}
+  \frametitle{Abstract idea of bit compression using oracles}
+  
+  Show pictures/diagrams of the ``function'' mashines that we discussed, and
+  thus lay down the ground idea of how a text and regex will result in a
+  bitstream, and also how a regex and bitstream will result in the original text.
+
+\end{frame}
+
 \section{Bit coding}
 
 \subsection{Theory}
@@ -109,18 +136,45 @@
 
 \begin{frame}
   \frametitle{Naive usage -- Practical example}
-  Henglein Fig 8 med praktisk eksempel på hvilke bits der kommer du
+  Henglein Fig 8 med praktisk eksempel på hvilke bits der kommer ud
 \end{frame}
 
-\begin{frame}
+
+\begin{frame}[c]
   \frametitle{Pop quiz}
   
-  \begin{tabular}{l|l||c|c|c}
-    Regex & Text & \emph{1} & \emph{x} & \emph{2} \\ \hline
-    \uncover<1->{a* & aaaaa & 1110011 & 0 & 1 \\}
-    \uncover<2->{abdd & abdd & 10     & 1 & 0}
-  \end{tabular}
+  
+  \begin{center}
+    \huge{2min quiz}
+  \end{center}
 
+\end{frame}
+
+\begin{frame}[c]
+  \frametitle{Pop quiz -- Solutions}
+  
+
+  \begin{center}
+    % temporarily disable the bad ass niceness highly dynamic fading of
+    % overlays.
+    \setbeamercovered{invisible}
+    \begin{tabular}{l|l||c|c|c}
+      \emph{Regex} & \emph{Text} & \emph{1} & \emph{x} & \emph{2} \\ \hline
+      a* & aaaaa & 100000 & 000001 & \alert<2>{111110} \pause\pause \\
+      (a|b)* & abaab & \alert<4>{10111010110} & 10111010111 & 01110101110 \pause\pause \\
+      abdd & abdd & \alert<6>{10}     & 1 & 0 \pause\pause \\
+      abdd & abdd & \alert<8>{10}     & 1 & 0 \vspace{1em} \pause\pause \\
+      \emph{Regex} & \emph{Bits} & \emph{1} & \emph{x} & \emph{2} \\ \hline
+      a* & 1110011 & \alert<10>{aaaa} & aaa & abab \pause\pause \\
+      abdd & 0 & \alert<12>{abdd}     & $\epsilon$ & ddba \pause\pause \\
+      abdd & 1 & abab     & \alert<14>{ddba} & $\epsilon$ \pause\pause \\
+      abdd & 1 & abab     & ddba & \alert<16>{$\epsilon$} \pause\pause \\
+    \end{tabular}
+    
+    % re-enable bad ass niceness hifly dynamic fading of overlays.
+    \setbeamercovered{highly dynamic}
+  \end{center}
+  
 \end{frame}
 
 
@@ -128,6 +182,8 @@
   \frametitle{Diagram... make better name}
   
   Figurer over oracle bits og text som ``maskiner''
+  Bør måske flyttes til introduktionen så man får en mere intuitiv ide om
+  hvordan tingene relaterer til hinanden før man bliver ``overfaldet'' med teori.
   
 \end{frame}
 
