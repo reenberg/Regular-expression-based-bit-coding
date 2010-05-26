@@ -364,7 +364,6 @@
   \item Naive implementation yields(BIBTEX HENGLEIN) compression above 1
   \end{itemize}
 
-
 \end{frame}
 
 \begin{frame}
@@ -373,13 +372,34 @@
   We have an idea of how to ensure compression below 1, which
 \end{frame}
 
+\begin{frame}[fragile]
+  \frametitle{Experimental Results}
 
+  Compression of a subset of the following xml-file from DBLP (the Digital Bibliography and Library Project)
 
+{\tiny
+\begin{verbatim}
+<?xml version="1.0"?>
+<dblptags>
+<tag key="conf/rsctc/WengZ04">Plagiarized Papers in DBLP</tag>
+<tag key="books/ph/KemperM94">Access Support Relations in Textbooks</tag>
+<tag key="conf/icde/LitwinL86">1986</tag>
+<tag key="journals/software/LitwinL87">1987</tag>
+...
+</dblptags>
+\end{verbatim}
+} 
 
+  ... yields the following results:
 
+  \begin{itemize}
+  \item Before compression: 14032 bits
+  \item Compression using regexps (unbalanced): 31120 bits
+  \item Compression using regexps (balanced): 7340 bits
+  \item Compression using gzip: 4352 bits
+  \end{itemize}
 
-
-
+\end{frame}
 
 % \begin{frame} 
 %   \frametitle{New style -- Oracle based guidance}
