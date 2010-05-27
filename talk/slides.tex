@@ -78,27 +78,28 @@
 
 \subsection{Introduction}
 
-\begin{frame}
+\begin{frame}[c]
   \frametitle{Introduction}
+     
+  Since most regex represent smaller languages than the language of all strings
+  ($\Sigma^\ast$), we expect to be able to encode strings belonging to such
+  languages with less information the using say Latin1/utf8. \newline
 
-  Ordinary texts use space encoding information that is not necessarily used whereas
-  regular expressions that have a smaller alphabet can use this as an advantage,
-  and not encode information that can not be expressed within the given regular
-  expression.
-  
-  Bit coding can bee seen as a special case of Proof-Carrying Code.
+  \begin{block}{}
+      Bit coding can bee seen as a special case of Proof-Carrying Code.
+  \end{block}
   
 \end{frame}
 
 \begin{frame}
-  \frametitle{Proof-Carrying Code -- (Ultra) Short intro}
+  \frametitle{Proof-Carrying Code -- (Ultra) Short intro 1/2}
   
   \begin{definition}[Weak]
     Is a technique that can verify properties about an application using formal
     proofs that accompanies the executable code.
   \end{definition}
 
-  Originally described by George Necula and Peter Lee in 1996\cite{nele1996} to
+  Originally described by George Necula and Peter Lee\cite{nele1996} to
   enforce system security policies such as
 
   \begin{itemize}
@@ -112,22 +113,34 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Proof-Carrying Code -- the special case}
+  \frametitle{Proof-Carrying Code -- (Ultra) Short intro 2/2}
 
-  Necula and Lee used formal proofs (fixme in some decution system) which had
-  the disadvantage of being (fixme) 30\% larger than the executable code in the
-  general case.
+%   Necula and Lee used formal proofs (fixme in some decution system) which had
+%   the disadvantage of being (fixme) 30\% larger than the executable code in the
+%   general case.
 
-  In 2001 Necula and Rahul\cite{nera2001} changed the fundamental idea of how
-  PCC could be verified, introducing an oracle to guide the proof checker
-  instead of the formal proof.
+%   Later Necula and Rahul\cite{nera2001} changed the fundamental idea of how
+%   PCC could be verified, introducing an oracle to guide the proof checker
+%   instead of the formal proof.
 
-  This resulted in a drop down in ``proof'' size to estimated (FIXME)
+  \begin{itemize}
+  \item Necula and Lee
+    \begin{itemize}
+    \item Disadvantages in formal proof representation was in general (FIXME)
+      \structure{\underline{30\% larger}} than executable code.
+    \end{itemize}
 
+  \item Necula and Rahul \cite{nera2001}
+    \begin{itemize}
+    \item Verification idea changed to use oracles as guides for proof checking.
+    \end{itemize}
+  \end{itemize}
+
+  This resulted in a drop down in ``proof'' size to estimated (FIXME).
   
   \begin{block}{What is an oracle?}
     When one has to make a choice (e.g. when nondeterminism arises) one can
-    consult an oracle which (who?) will make the ``right'' choice as if by
+    consult an oracle which will make the ``right'' choice as if by
     magic.
   \end{block}
 
@@ -135,20 +148,39 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Which property to verify}
+  \frametitle{Proof-Carrying Code -- Which property to verify}
   
-  So how does PCC relate to bit coding?
+  So how does PCC relate to bit coding?\newline
 
-  If we choose membership testing as the property that needs to be verified,
-  then we can look at the verification process as de-compression as it produces a
-  wideness (the compressed text) and we can look at the oracle generation as the
-  compression 
+  % If we choose membership testing as the property that needs to be verified,
+%   then we can look at the verification process as de-compression as it produces a
+%   witeness (the compressed text) and we can look at the oracle generation as the
+%   compression 
+
+  If
+
+  \begin{block}{}
+    \center{Membership testing is the property to be verified.}
+  \end{block}
+
+  then
   
-  Such a property could be membership testing
+  \begin{itemize}
+    
+  \item Encoding
+    \begin{itemize}
+    \item Oracle generation -- \structure{bits} -- that will guide the membership proof.
+    \end{itemize}
+    
+  \item Decoding
+    \begin{itemize}
+    \item Produces a membership proof -- \structure{the original text} -- that
+      belongs to the regular expression.
+    \end{itemize}
+    
+  \end{itemize}
   
 \end{frame}
-
-% From udkast_morten.txt
 
 \begin{frame}
   \frametitle{Review of Henglein \& Nielsens\cite{heni2010} axiomatization.}
@@ -687,9 +719,7 @@
 \end{frame}
 % END (From udkast_morten.txt)
 
-\section{Bit coding}
-
-\subsection{Theory}
+\subsection{Pop quiz}
 
 \begin{frame}[c]
   \frametitle{Pop quiz}
@@ -745,13 +775,6 @@
 
 \subsection{Implementation}
 
-\begin{frame}
-  \frametitle{Implementation details}
-  
-  Frisch \& Cardelli dynamic backtracking algorithm
-
-\end{frame}
-
 \begin{frame}[c]
   \frametitle{The naked code}
 
@@ -763,62 +786,8 @@
 
 \section{Preliminary results}
 
-\begin{frame}
-  \frametitle{Examined data}
-  \begin{itemize}
-  \item XML files
-    
-    \begin{itemize}
-    \item DNA sequence
-      
-    \item DBLP database
-    \end{itemize}
-
-  \item RFC papers (technical english texts).
-    
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Oracle vs gzip}
-  
-  off the shelf unix gzip
-\end{frame}
-
-\begin{frame}
-  \frametitle{Oracle vs Hoffman}
-  Compare text with small and large amount of entropy.
-\end{frame}
-
-\begin{frame}
-  \frametitle{Disadvantages}
-
-  \begin{itemize}
-  \item Naive implementation\cite{heni2010} yields compression above 1
-  \end{itemize}
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{Advantages}
-
-  We have an idea of how to ensure compression below 1, which
-\end{frame}
-
 \begin{frame}[fragile]
-  \frametitle{Balancing Sums}
- 
-{\tiny
-\begin{verbatim}
-
-\end{verbatim}
-} 
-  
-
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Experimental Results}
+  \frametitle{Preliminary Results}
 
   Compression of a subset of the following xml-file from DBLP (the Digital Bibliography and Library Project)
 
