@@ -85,8 +85,8 @@
     proofs that accompanies the executable code.
   \end{definition}
 
-  Originally described by George Necula and Peter Lee in 1996 (FIXME
-  bibliography) to enforce system security policies such as
+  Originally described by George Necula and Peter Lee in 1996\cite{nele1996} to
+  enforce system security policies such as
 
   \begin{itemize}
   \item Memory safety
@@ -101,15 +101,23 @@
 \begin{frame}
   \frametitle{Proof-Carrying Code -- the special case}
 
-  Originally Necula and Lee used formal proofs (fixme in some decution system)
-  which had the disadvantage of being (fixme) 30\% larger than the executable
-  code in the general case.
+  Necula and Lee used formal proofs (fixme in some decution system) which had
+  the disadvantage of being (fixme) 30\% larger than the executable code in the
+  general case.
 
-  In 2001 Necula and Rahul (FIXME bibliography) changed the fundamental idea of
-  how PCC could be verified, introducing an oracle to guide the proof checker
+  In 2001 Necula and Rahul\cite{nera2001} changed the fundamental idea of how
+  PCC could be verified, introducing an oracle to guide the proof checker
   instead of the formal proof.
 
-  This resulted in a drop down in ``proof'' size to (FIXME)
+  This resulted in a drop down in ``proof'' size to estimated (FIXME)
+
+  
+  \begin{block}{What is an oracle?}
+    When one has to make a choice (e.g. when nondeterminism arises) one can
+    consult an oracle which (who?) will make the ``right'' choice as if by
+    magic.
+  \end{block}
+
   
 \end{frame}
 
@@ -128,14 +136,9 @@
 \end{frame}
 
 % From udkast_morten.txt
-\begin{frame}
-  \frametitle{What is an oracle?}
-  When one has to make a choice (e.g. when nondeterminism arises) one can
-  consult an oracle which (who?) will make the ``right'' choice as if by magic.
-\end{frame}
 
 \begin{frame}
-  \frametitle{Review of Henglein \& Nielsens axiomatization.}
+  \frametitle{Review of Henglein \& Nielsens\cite{heni2010} axiomatization.}
   \begin{itemize}
   \item Regular expressions as types. A regular expression is a set of proofs of
     membership rather than strings.
@@ -319,11 +322,78 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Choosing the right regular expression.}
+    \frametitle{Choosing the right regular expression -- 1/2.}
 
-  \begin{quote}
-    [Jespers rather nice example]
-  \end{quote}
+  Thus it is important that the regular expression is constructed in a clever
+  way, such that the representation of the regular expression is small
+  
+  (a|b|..|z)* vs [a-z]* 
+  
+  As discussed in previous talks about bit coding (and later) it is only the
+  alternation and thus also the Kleene star ($1 + E \times E^{\ast}$) that generate
+  any bits in the resulting bit code.  Thus it is important how the regular
+  expression is expressed.
+
+  \begin{block}{Simplified subset of \texttt{code} function}
+\begin{semiverbatim}
+  \center{code(inl v) => 0 \quad code(inr v) => 1}
+\end{semiverbatim}
+  \end{block}
+
+  \begin{example}
+    Text: dc\\
+    Regex: a|(b|(c|d))
+    
+    \only<+>{( inr ( inr ( inr d ) ) , inr ( inr ( inl c ) ) )}
+    \only<+>{\alert{( inr ( inr ( inr d ) ) , inr ( inr ( inl c ) ) )}}
+    \only<+>{( \alert{inr ( inr ( inr d ) )} , inr ( inr ( inl c ) ) )}
+    \only<+>{( 1 \alert{inr ( inr d )} , inr ( inr ( inl c ) ) )} 
+    \only<+>{( 1 1 \alert{inr d} , inr ( inr ( inl c ) ) )} 
+    \only<+>{( 1 1 1 , inr ( inr ( inl c ) ) )} 
+    \only<+>{( 1 1 1 , \alert{inr ( inr ( inl c ) )} )}
+    \only<+>{( 1 1 1 , 1 \alert{inr ( inl c )} )} 
+    \only<+>{( 1 1 1 , 1 1 \alert{inl c} )} 
+    \only<+>{( 1 1 1 , 1 1 0)} 
+    \only<+>{1 1 1 1 1 0}
+  \end{example}
+
+\end{frame}
+
+\begin{frame}
+
+      \frametitle{Choosing the right regular expression -- 2/2.}
+
+  \begin{block}{Simplified subset of \texttt{code} function}
+\begin{semiverbatim}
+  \center{code(inl v) => 0 \quad code(inr v) => 1}
+\end{semiverbatim}
+  \end{block}
+  
+  But if we shift the regular expression so d is in the beginning and then having 
+
+  Where if we represent the regex as d|(a|(b|c)) we get
+
+  \begin{example}
+    Text: dc\\
+    Regex: b|(c|(a|b))
+
+    \only<+>{( inl d , inr ( inl c ) )}
+    \only<+>{\alert{( inl d , inr ( inl c ) )}}
+    \only<+>{( \alert{inl d} , inr ( inl c ) )}
+    \only<+>{( 0 , inr ( inl c ) )}
+    \only<+>{( 0 , \alert{inr ( inl c )} )}
+    \only<+>{( 0 , 1 \alert{inl c} )}
+    \only<+>{( 0 , 1 0 )}
+    \only<+>{0 1 0}
+  \end{example}
+
+  (inl d, inr (inl c)) => 010.
+
+  Thus statical analysis (minimising alphabet and occurrence checks) of the text
+  to compress can sometime yield huge gains.
+  In general this is not so easy, but structured texts as XML files, with a
+  specifying schema it gets quite easy.
+
 \end{frame}
 
 \begin{frame}
@@ -468,78 +538,6 @@
   
 \end{frame}
 
-\begin{frame}
-  
-  Thus it is important that the regular expression is constructed in a clever
-  way, such that the representation of the regular expression is small
-  
-  (a|b|..|z)* vs [a-z]* 
-  
-  As discussed in previous talks about bit coding (and later) it is only the
-  alternation and thus also the Kleene star ($1 + E \times E^{\ast}$) that generate
-  any bits in the resulting bit code.  Thus it is important how the regular
-  expression is expressed.
-
-  \begin{block}{Simplified subset of \texttt{code} function}
-\begin{semiverbatim}
-  \center{code(inl v) => 0 \quad code(inr v) => 1}
-\end{semiverbatim}
-  \end{block}
-
-  \begin{example}
-    Text: dc\\
-    Regex: a|(b|(c|d))
-    
-    \only<+>{( inr ( inr ( inr d ) ) , inr ( inr ( inl c ) ) )}
-    \only<+>{\alert{( inr ( inr ( inr d ) ) , inr ( inr ( inl c ) ) )}}
-    \only<+>{( \alert{inr ( inr ( inr d ) )} , inr ( inr ( inl c ) ) )}
-    \only<+>{( 1 \alert{inr ( inr d )} , inr ( inr ( inl c ) ) )} 
-    \only<+>{( 1 1 \alert{inr d} , inr ( inr ( inl c ) ) )} 
-    \only<+>{( 1 1 1 , inr ( inr ( inl c ) ) )} 
-    \only<+>{( 1 1 1 , \alert{inr ( inr ( inl c ) )} )}
-    \only<+>{( 1 1 1 , 1 \alert{inr ( inl c )} )} 
-    \only<+>{( 1 1 1 , 1 1 \alert{inl c} )} 
-    \only<+>{( 1 1 1 , 1 1 0)} 
-    \only<+>{1 1 1 1 1 0}
-  \end{example}
-
-\end{frame}
-
-\begin{frame}
-
-  \begin{block}{Simplified subset of \texttt{code} function}
-\begin{semiverbatim}
-  \center{code(inl v) => 0 \quad code(inr v) => 1}
-\end{semiverbatim}
-  \end{block}
-  
-  But if we shift the regular expression so d is in the beginning and then having 
-
-  Where if we represent the regex as d|(a|(b|c)) we get
-
-  \begin{example}
-    Text: dc\\
-    Regex: b|(c|(a|b))
-
-    \only<+>{( inl d , inr ( inl c ) )}
-    \only<+>{\alert{( inl d , inr ( inl c ) )}}
-    \only<+>{( \alert{inl d} , inr ( inl c ) )}
-    \only<+>{( 0 , inr ( inl c ) )}
-    \only<+>{( 0 , \alert{inr ( inl c )} )}
-    \only<+>{( 0 , 1 \alert{inl c} )}
-    \only<+>{( 0 , 1 0 )}
-    \only<+>{0 1 0}
-  \end{example}
-
-  (inl d, inr (inl c)) => 010.
-
-  Thus statical analysis (minimising alphabet and occurrence checks) of the text
-  to compress can sometime yield huge gains.
-  In general this is not so easy, but structured texts as XML files, with a
-  specifying schema it gets quite easy.
-
-\end{frame}
-
 \section{Bit coding}
 
 \subsection{Theory}
@@ -551,7 +549,7 @@
 
 \begin{frame}
   \frametitle{Naive usage -- Practical example}
-  Henglein Fig 8 med praktisk eksempel på hvilke bits der kommer ud
+  Henglein\cite{heni2010} Fig 8 med praktisk eksempel på hvilke bits der kommer ud
 \end{frame}
 
 
@@ -649,7 +647,7 @@
   \frametitle{Disadvantages}
 
   \begin{itemize}
-  \item Naive implementation yields(BIBTEX HENGLEIN) compression above 1
+  \item Naive implementation\cite{heni2010} yields compression above 1
   \end{itemize}
 
 \end{frame}
@@ -701,23 +699,16 @@
 
 \end{frame}
 
-% \begin{frame} 
-%   \frametitle{New style -- Oracle based guidance}
 
-%   Pros.
-%      Low memory usage, only a few bits needs to be read from the oracle at a time.
-%   Cons.
-%      Slower checking time.
-     
-
-%   Nondeterministic checker, but with a lot of tricks it is only a small part
-%   that is nondeterministic and needs the oracles help.
-
-%   Untrusted oracles is not a problem.
-
+\begin{frame}
+  \frametitle{Bibliography}
   
   
-% \end{frame}
+  
+\end{frame}
+
+\bibliographystyle{../bibliography/theseurl}
+\bibliography{../bibliography/bibliography}
 
 \end{document}
 
