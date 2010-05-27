@@ -1,40 +1,25 @@
-%
-%  untitled
-%
-%  Created by wegmann on 2010-05-26.
-%  Copyright (c) 2010 __MyCompanyName__. All rights reserved.
-%
-\documentclass[]{memoir}
+\documentclass[oneside, a4]{memoir}
+
+\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage{fullpage}
-\usepackage{boxedminipage}
-\usepackage{listings}
-\usepackage{minitoc}
-\usepackage{ifpdf}
-\usepackage{graphicx}
+\usepackage[english]{babel}
 
 \title{Quiz}
-%\author{Nis Nordby Wegmann}
-%\date{2010-05-26}
+
 
 \begin{document}
 
-\ifpdf
-\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
-\else
-\DeclareGraphicsExtensions{.eps, .jpg}
-\fi
-
-%\maketitle
-
-%\begin{abstract}
-%\end{abstract}
 
 \setcounter{figure}{20}
 
 \renewcommand{\thefigure}{\arabic{figure}}
 
+\newcommand{\alert}{}
+\newcommand{\pause}{}
+
+
 \section*{Quiz}
+  
 
 \begin{figure}
 \[
@@ -68,6 +53,24 @@
 \caption{Type directed decoding from bit sequences to syntax trees}
 \end{figure}
 
-\bibliographystyle{plain}
-\bibliography{}
+      \begin{tabular}{l|l||c|c|c}
+        \emph{Regex} & \emph{Text} & \emph{1} & \emph{x} & \emph{2} \\ \hline
+        $a^\ast$ & aaaaa & 100000 & 000001 & \alert<2>{111110} \pause\pause \\
+        $(a + b)^\ast$ & abaab & \alert<4>{10111010110} & 10111010111 & 01110101110 \pause\pause \\
+        $a \times b \times d \times d$ & abdd & 0 & 1 & \alert<6>{$\epsilon$} \pause\pause \\
+        $a \times b^\ast \times a$ & abba & $\epsilon$11$\epsilon$ & \alert<8>{$\epsilon$110$\epsilon$}
+         & $\epsilon$10$\epsilon$ 
+        \vspace{1em} \pause\pause \\
+        \emph{Regex} & \emph{Bits} & \emph{1} & \emph{x} & \emph{2} \\ \hline
+        $((o + b) + g)^\ast$ & 100111010 & og & obg & \alert<10>{ogb} \pause\pause \\
+        $(m + s)^\ast \times (t + a)\ast$ & 1110011100 & \alert<12>{smat} &
+        $\epsilon$ & ma \pause\pause \\
+      \end{tabular}
+
+\section*{The hard one...}
+
+    Regular expression: $(a \times ((b \times b) + c)^\ast) \times a$ \\
+    Bits: 1011101111100\\
+    Text:
+
 \end{document}
