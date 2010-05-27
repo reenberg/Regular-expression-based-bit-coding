@@ -616,10 +616,52 @@
   }
   \only<+>{
     ...with a computational interpretation.
-
-    \begin{quote}
-      [Figure 10.]
-    \end{quote}
+    {\tiny
+      \begin{columns}[totalwidth=0.8\textwidth]
+        \begin{column}{.5\textwidth}
+          \begin{eqnarray*}
+      retag(\mathtt{inl} v)                        &=& \mathtt{inr} v\\
+      retag(\mathtt{inr} v)                        &=& \mathtt{inl} v\\
+      retag^{-1}                                   &=& retag\\
+      tagL (v)                                     &=& \mathtt{inl} v\\
+      untag (\mathtt{inl} v)                       &=& v\\
+      untag (\mathtt{inr} v)                       &=& v\\
+      shuffle(\mathtt{inl} v)                      &=& \mathtt{inl} (\mathtt{inl} v)\\
+      shuffle(\mathtt{inr} (\mathtt{inl} v))       &=& \mathtt{inl} (\mathtt{inr} v)\\
+      shuffle(\mathtt{inr} (\mathtt{inr} v))       &=& \mathtt{inr} v\\
+      shuffle^{-1} (\mathtt{inl} (\mathtt{inl} v)) &=& \mathtt{inl} v\\
+      shuffle^{-1} (\mathtt{inl} (\mathtt{inr} v)) &=& \mathtt{inr} (\mathtt{inl} v)\\
+      shuffle^{-1} (\mathtt{inr} v)                &=& \mathtt{inr} (\mathtt{inr} v)\\
+      swap(v, w)                                   &=& (w, v)\\
+      swap^{-1}                                    &=& swap\\
+      proj(v, w)                                   &=& w\\
+      proj^{-1} (w)                                &=& ((), w)\\
+      assoc(v, (w, x))                             &=& ((v, w), x)
+    \end{eqnarray*}
+  \end{column}
+  \begin{column}{.5\textwidth}
+          \begin{eqnarray*}
+      assoc^{-1} ((v, w), x)                       &=& (v, (w, x))\\
+      distL(v, \mathtt{inl} w)                     &=& \mathtt{inl} (v, w)\\
+      distL(v, \mathtt{inr} x)                     &=& \mathtt{inr} (v, x)\\
+      distL^{-1} (\mathtt{inl} (v, w))             &=& (v, \mathtt{inl} w)\\
+      distL^{-1} (\mathtt{inr} (v, x))             &=& (v, \mathtt{inr} x)\\
+      distR(\mathtt{inl} v, w)                     &=& \mathtt{inl} (v, w)\\
+      distR(\mathtt{inr} v, x)                     &=& \mathtt{inr} (v, x)\\
+      distR^{-1} (\mathtt{inl} (v, w))             &=& (\mathtt{inl} v, w)\\
+      distR^{-1} (\mathtt{inr} (v, x))             &=& (\mathtt{inr} v, x)\\
+      fold (v)                                     &=& \mathtt{fold} v\\
+      fold^{-1} (\mathtt{fold} v)                  &=& v\\
+      (c + d)(inl v)                                      &=& \mathtt{inl} (c(v))\\
+      (c + d)(inr w)                                      &=& \mathtt{inr} (d(w))\\
+      (c \times d)(v, w)                                       &=& (c(v), d(w))\\
+      (c; d)(v)                                           &=& d(c(v))\\
+      id(v)                                        &=& v\\
+      (fix f.c)(v)                                 &=& c[fix f.c / f](v)
+    \end{eqnarray*}
+  \end{column}
+  \end{columns}
+  }
   }
   \only<+>{
     \begin{block}{Definition 3 (Computational interpretation).}
