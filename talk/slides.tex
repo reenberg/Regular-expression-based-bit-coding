@@ -23,7 +23,7 @@
 % "far" ahead the overlay is. AWSOME!!
 \setbeamercovered{highly dynamic}
 % possible to shift back, so they are just invisible untill they should overlay
-%\setbeamercovered{invisible}
+% \setbeamercovered{invisible}
 
 
 
@@ -196,22 +196,175 @@
 
 \begin{frame}
   \frametitle{Using an oracle.}
-  So lets try and construct a proof of membership in $\mathcal{L}|[E|]$.
-  \only<+>{
-    \[
-    \inference{\mathcal{T}}{|- c : E}
-    \]
+  So lets try and construct a proof of membership in $\mathcal{L}|[\mathtt{a}
+  \times (\mathtt{b} \times \mathtt{c})^{\ast}|]$.
+
+  \setbeamercovered{invisible}
+  \uncover<2-18>{
+    {\tiny
+      \[
+      \inference{
+        \uncover<3->{
+          \inference{
+          }{
+            \mathtt{a} : \mathtt{a}
+          }
+        } &
+        \uncover<5->{
+          \inference{
+            \uncover<6->{
+              \inference{
+                \uncover<8->{
+                  \inference{
+                    \uncover<9->{
+                      \inference{
+                        \uncover<10->{
+                          \inference{
+                          }{
+                            \mathtt{b} : \mathtt{b}
+                          }
+                        } &
+                        \uncover<12->{
+                          \inference{
+                          }{
+                            \mathtt{c} : \mathtt{c}
+                          }
+                        }
+                      }{
+                        (
+                        \uncover<10->{
+                          \mathtt{b}
+                        },
+                        \uncover<12->{
+                          \mathtt{c}
+                        }
+                        ) : \alert<9-10>{\mathtt{b}} \times \alert<11-12>{\mathtt{c}}
+                      }
+                    } &
+                    \uncover<14->{
+                      \inference{
+                        \uncover<15->{
+                          \inference{
+                            \uncover<17->{
+                              \inference{
+                              }{
+                                () : 1
+                              }
+                            }
+                          }{
+                            \alt<15>{\alert<15>{\mathtt{inl}\ \text{or}\ \mathtt{inr}\text{?}}}
+                            {\mathtt{inl} \uncover<17->{()}\hspace{17pt}} : \alert<16-17>{1} + (\mathtt{b} \times \mathtt{c}) \times
+                            (\mathtt{b} + \mathtt{c})^{\ast}
+                          }
+                        }
+                      }{
+                        \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}} : (\mathtt{b} + \mathtt{c})^{\ast}
+                      }
+                    }
+                  }{
+                    (
+                    \uncover<9->{
+                      (
+                      \uncover<10->{
+                        \mathtt{b}
+                      },
+                      \uncover<12->{
+                        \mathtt{c}
+                      }
+                      )
+                    },
+                    \uncover<14->{
+                      \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}}
+                    }
+                    ) :
+                    \alert<6-12>{(\mathtt{b} + \mathtt{c})} \times
+                    \alert<13-17>{(\mathtt{b} \times \mathtt{c})^{\ast}}
+                  }
+                }
+              }{
+                \alt<6>{\alert<6>{\mathtt{inl}\ \text{or}\ \mathtt{inr}\text{?}}}
+                {
+                  \mathtt{inr} (
+                  \uncover<8->{
+                    (
+                    \uncover<9->{
+                      (
+                      \uncover<10->{
+                        \mathtt{b}
+                      },
+                      \uncover<12->{
+                        \mathtt{c}
+                      }
+                      )
+                    },
+                    \uncover<14->{
+                      \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}}
+                    }
+                    )
+                  }
+                  )
+                }
+                : 1 + \alert<7-17>{(\mathtt{b} \times \mathtt{c}) \times (\mathtt{b} + \mathtt{c})^{\ast}}
+              }
+            }
+          }{
+            \mathtt{fold}(
+            \uncover<7->{
+              \mathtt{inr} (
+              \uncover<8->{
+                (
+                \uncover<9->{
+                  (
+                  \uncover<10->{
+                    \mathtt{b}
+                  },
+                  \uncover<12->{
+                    \mathtt{c}
+                  }
+                  )
+                },
+                \uncover<14->{
+                  \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}}
+                }
+                )
+              }
+              )
+            }
+            ) : (\mathtt{b} \times \mathtt{c})^{\ast}
+          }
+        }
+      }{
+        (\uncover<3->{\mathtt{a}},
+        \uncover<5->{\mathtt{fold}(
+          \uncover<7->{
+            \mathtt{inr} (
+            \uncover<8->{
+              (
+              \uncover<9->{
+                (
+                \uncover<10->{
+                  \mathtt{b}
+                },
+                \uncover<12->{
+                  \mathtt{c}
+                }
+                )
+              },
+              \uncover<14->{
+                \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}}
+              }
+              )
+            }
+            )
+          }
+          )
+        }
+        ) : \alert<2-3>{\mathtt{a}} \times \alert<4-17>{(\mathtt{b} \times \mathtt{c})^{\ast}}
+      }
+      \]
+    }
   }
-  \only<+>{
-    \[
-    \inference{\mathcal{T}_3}{|- c : E}
-    \]
-  }
-  \only<+>{
-    \[
-    \inference{\mathcal{T}_3}{|- c : E + E}
-    \]
-  }
+  \setbeamercovered{highly dynamic}
 \end{frame}
 
 \begin{frame}
@@ -393,7 +546,7 @@
 
     \begin{itemize}
     \item Naïvely: If $|- c : E \leq E'$, then $\mathcal{F}|[\hat{c}|] =
-      \texttt{code} \circ \mathcal{F}|[c|] \circ \texttt{decode}$.
+      code \circ \mathcal{F}|[c|] \circ decode$.
     \item Directly.
     \end{itemize}
   }
