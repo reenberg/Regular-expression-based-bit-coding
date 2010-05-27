@@ -5,10 +5,13 @@ module Regex
     prod,
     sum,
     alpha,
+    loweralpha,
+    upperalpha,
     num,
     alphanum,
     dot,
-    string
+    string,
+    balance
 )
 where
 
@@ -49,19 +52,38 @@ instance Show a => Show (STree a) where
     show (v `Pair` w) = "(" ++ show v ++ "," ++ show w ++ ")"
     show (Fold v)     = "fold " ++ show v
 
+balance :: Regex a -> Regex a
+balance r =
+    case r of
+      O -> O
+      E -> E
+      Lit a -> Lit a
+      r1 :*: r2 -> balance r1 :*: balance r2
+      S r -> S $ balance r
+      _ :+: _ -> tree . map balance $ gather r
+          where
+            gather (r1 :+: r2) = gather r1 ++ gather r2
+            gather r = [r]
+            tree [] = O
+            tree [r] = r
+            tree rs = tree rs1 :+: tree rs2
+                where
+                  (rs1, rs2) = splitAt (length rs `div` 2) rs
+
 sum :: [a] -> Regex a
-sum []  = E
-sum [r] = Lit r
-sum rs  = sum rs1 :+: sum rs2
-  where
-    (rs1, rs2) = splitAt (length rs `div` 2) rs
--- sum = foldl (:+:) E . fmap Lit
+sum = foldl (:+:) E . fmap Lit
 
 prod :: [a] -> Regex a
 prod = foldl (:*:) E . fmap Lit
 
 alpha :: Regex Char
-alpha = sum $ ['a' .. 'z'] ++ ['A' .. 'Z']
+alpha = loweralpha :+: upperalpha
+
+loweralpha :: Regex Char
+loweralpha = sum ['a' .. 'z']
+
+upperalpha :: Regex Char
+upperalpha = sum ['A' .. 'Z']
 
 num :: Regex Char
 num = sum $ ['0' .. '9']
