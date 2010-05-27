@@ -78,27 +78,28 @@
 
 \subsection{Introduction}
 
-\begin{frame}
+\begin{frame}[c]
   \frametitle{Introduction}
+     
+  Since most regex represent smaller languages than the language of all strings
+  ($\Sigma^\ast$), we expect to be able to encode strings belonging to such
+  languages with less information the using say Latin1/utf8. \newline
 
-  Ordinary texts use space encoding information that is not necessarily used whereas
-  regular expressions that have a smaller alphabet can use this as an advantage,
-  and not encode information that can not be expressed within the given regular
-  expression.
-  
-  Bit coding can bee seen as a special case of Proof-Carrying Code.
+  \begin{block}{}
+      Bit coding can bee seen as a special case of Proof-Carrying Code.
+  \end{block}
   
 \end{frame}
 
 \begin{frame}
-  \frametitle{Proof-Carrying Code -- (Ultra) Short intro}
+  \frametitle{Proof-Carrying Code -- (Ultra) Short intro 1/2}
   
   \begin{definition}[Weak]
     Is a technique that can verify properties about an application using formal
     proofs that accompanies the executable code.
   \end{definition}
 
-  Originally described by George Necula and Peter Lee in 1996\cite{nele1996} to
+  Originally described by George Necula and Peter Lee\cite{nele1996} to
   enforce system security policies such as
 
   \begin{itemize}
@@ -112,22 +113,34 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Proof-Carrying Code -- the special case}
+  \frametitle{Proof-Carrying Code -- (Ultra) Short intro 2/2}
 
-  Necula and Lee used formal proofs (fixme in some decution system) which had
-  the disadvantage of being (fixme) 30\% larger than the executable code in the
-  general case.
+%   Necula and Lee used formal proofs (fixme in some decution system) which had
+%   the disadvantage of being (fixme) 30\% larger than the executable code in the
+%   general case.
 
-  In 2001 Necula and Rahul\cite{nera2001} changed the fundamental idea of how
-  PCC could be verified, introducing an oracle to guide the proof checker
-  instead of the formal proof.
+%   Later Necula and Rahul\cite{nera2001} changed the fundamental idea of how
+%   PCC could be verified, introducing an oracle to guide the proof checker
+%   instead of the formal proof.
 
-  This resulted in a drop down in ``proof'' size to estimated (FIXME)
+  \begin{itemize}
+  \item Necula and Lee
+    \begin{itemize}
+    \item Disadvantages in formal proof representation was in general (FIXME)
+      \structure{\underline{30\% larger}} than executable code.
+    \end{itemize}
 
+  \item Necula and Rahul \cite{nera2001}
+    \begin{itemize}
+    \item Verification idea changed to use oracles as guides for proof checking.
+    \end{itemize}
+  \end{itemize}
+
+  This resulted in a drop down in ``proof'' size to estimated (FIXME).
   
   \begin{block}{What is an oracle?}
     When one has to make a choice (e.g. when nondeterminism arises) one can
-    consult an oracle which (who?) will make the ``right'' choice as if by
+    consult an oracle which will make the ``right'' choice as if by
     magic.
   \end{block}
 
@@ -135,20 +148,39 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Which property to verify}
+  \frametitle{Proof-Carrying Code -- Which property to verify}
   
-  So how does PCC relate to bit coding?
+  So how does PCC relate to bit coding?\newline
 
-  If we choose membership testing as the property that needs to be verified,
-  then we can look at the verification process as de-compression as it produces a
-  wideness (the compressed text) and we can look at the oracle generation as the
-  compression 
+  % If we choose membership testing as the property that needs to be verified,
+%   then we can look at the verification process as de-compression as it produces a
+%   witeness (the compressed text) and we can look at the oracle generation as the
+%   compression 
+
+  If
+
+  \begin{block}{}
+    \center{Membership testing is the property to be verified.}
+  \end{block}
+
+  then
   
-  Such a property could be membership testing
+  \begin{itemize}
+    
+  \item Encoding
+    \begin{itemize}
+    \item Oracle generation -- \structure{bits} -- that will guide the membership proof.
+    \end{itemize}
+    
+  \item Decoding
+    \begin{itemize}
+    \item Produces a membership proof -- \structure{the original text} -- that
+      belongs to the regular expression.
+    \end{itemize}
+    
+  \end{itemize}
   
 \end{frame}
-
-% From udkast_morten.txt
 
 \begin{frame}
   \frametitle{Review of Henglein \& Nielsens\cite{heni2010} axiomatization.}
@@ -546,12 +578,12 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Choosing the right regular expression -- 1/2.}
+  \frametitle{Choosing the right regular expression -- 1/2}
 
   Oracles representing (proofs representing) the same string may vary in size
   with the choice of regular expression.\\[1em]
 
-  Remember: \texttt{inl} is 0, \texttt{inr} is 1.
+  Remember: \structure{\texttt{inl} is 0}, \structure{\texttt{inr} is 1}.
 
   \begin{example}
     Text: \texttt{dc}\\
@@ -573,12 +605,12 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Choosing the right regular expression -- 2/2.}
+  \frametitle{Choosing the right regular expression -- 2/2}
 
   Oracles representing (proofs representing) the same string may vary in size
   with the choice of regular expression.\\[1em]
 
-  Remember: \texttt{inl} is 0, \texttt{inr} is 1.
+  Remember: \structure{\texttt{inl} is 0}, \structure{\texttt{inr} is 1}.
 
   \begin{example}
     Text: \texttt{dc}\\
@@ -594,7 +626,7 @@
     \only<+>{0 1 0}
   \end{example}
 
-  \only<8>{Statistically analysis of the data to encode, suggests equivalent regular
+  \only<8>{Statistical analysis of the data to encode, suggests equivalent regular
     expressions that yield higher compression rates.}
 \end{frame}
 
@@ -677,14 +709,20 @@
   }
 \end{frame}
 
-\begin{frame}
-  \frametitle{Coercion synthesis.}
-  Coercions can be synthesised automatically.\\[1em]
+\begin{frame}[c]
+  \frametitle{Coercion synthesis}
 
-  If $E \leq F$ then there exists a coercion $c : E \leq F$.\\[1em]
+  
+  \begin{itemize}
+  \item Coercions can be synthesised automatically.
 
-  If there exists a coercion then the coercion synthesis will find one. Else it
-  produces a witness $s \in \mathcal{L}|[E|] \backslash \mathcal{L}|[F|]$.
+  \item If $E \leq F$ then there exists a coercion $c : E \leq F$.
+
+  \item If there exists a coercion then the coercion synthesis will find
+    one. Else it produces a witness $s \in \mathcal{L}|[E|] \backslash
+    \mathcal{L}|[F|]$.
+  \end{itemize}
+
 
   % \begin{quote}
     % [Figure 19 for 'wow' effect.]
@@ -692,7 +730,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Choosing the right regular expression (revisited).}
+  \frametitle{Choosing the right regular expression (revisited)}
 
   \begin{quote}
     Let
@@ -713,7 +751,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Coercion of oracles.}
+  \frametitle{Coercion of oracles}
 
   Find a $\hat{c}$ that converts oracles for proofs in $E$ to oracles for proofs
   in $E'$ (provided $E \leq E'$).
@@ -729,9 +767,7 @@
 \end{frame}
 % END (From udkast_morten.txt)
 
-\section{Bit coding}
-
-\subsection{Theory}
+\subsection{Pop quiz}
 
 \begin{frame}[c]
   \frametitle{Pop quiz}
@@ -786,13 +822,6 @@
 
 \subsection{Implementation}
 
-\begin{frame}
-  \frametitle{Implementation details}
-  
-  Frisch \& Cardelli dynamic backtracking algorithm
-
-\end{frame}
-
 \begin{frame}[c]
   \frametitle{The naked code}
 
@@ -804,52 +833,11 @@
 
 \section{Preliminary results}
 
-\begin{frame}
-  \frametitle{Examined data}
-  \begin{itemize}
-  \item XML files
-    
-    \begin{itemize}
-    \item DNA sequence
-      
-    \item DBLP database
-    \end{itemize}
-
-  \item RFC papers (technical english texts).
-    
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Oracle vs gzip}
-  
-  off the shelf unix gzip
-\end{frame}
-
-\begin{frame}
-  \frametitle{Oracle vs Hoffman}
-  Compare text with small and large amount of entropy.
-\end{frame}
-
-\begin{frame}
-  \frametitle{Disadvantages}
-
-  \begin{itemize}
-  \item Naive implementation\cite{heni2010} yields compression above 1
-  \end{itemize}
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{Advantages}
-
-  We have an idea of how to ensure compression below 1, which
-\end{frame}
-
 \begin{frame}[fragile]
   \frametitle{Preliminary results}
 
-  Compression of a subset of the following xml-file from DBLP (the Digital Bibliography and Library Project)
+  Compression of a subset of the following xml-file from DBLP (the Digital
+  Bibliography and Library Project)
 
 {\tiny
 \begin{verbatim}
@@ -878,13 +866,17 @@
 \begin{frame}[fragile]
   \frametitle{Future Work}
 
-In our project we would like to investigate these topics:
+  In our project we would like to investigate these topics:
 
   \begin{itemize}
-  \item How to automatically derive a regular expression from a string---Special case: given an xml-scheme derive an efficient regular expression.
-  \item How to automatically rewrite a regular expression with respect to a given string to achieve a good compression ratio.
-  \item Provide a new formalization/representation of regular expressions more suitable for data-compression.
-  \item Find a criteria for strings for determining the theoretical maximum achievable compression ratio using regular expressions.
+  \item How to automatically derive a regular expression from a string---Special
+    case: given an xml-scheme derive an efficient regular expression.
+  \item How to automatically rewrite a regular expression with respect to a
+    given string to achieve a good compression ratio.
+  \item Provide a new formalization/representation of regular expressions more
+    suitable for data-compression.
+  \item Find a criteria for strings for determining the theoretical maximum
+    achievable compression ratio using regular expressions.
   \end{itemize}
 
 \end{frame}
