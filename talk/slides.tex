@@ -317,11 +317,11 @@
                           }{
                             \alt<15>{\alert<15>{\mathtt{inl}\ \text{or}\ \mathtt{inr}\text{?}}}
                             {\mathtt{inl} \uncover<17->{()}\hspace{17pt}} : \alert<16-17>{1} + (\mathtt{b} \times \mathtt{c}) \times
-                            (\mathtt{b} + \mathtt{c})^{\ast}
+                            (\mathtt{b} \times \mathtt{c})^{\ast}
                           }
                         }
                       }{
-                        \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}} : (\mathtt{b} + \mathtt{c})^{\ast}
+                        \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}} : (\mathtt{b} \times \mathtt{c})^{\ast}
                       }
                     }
                   }{
@@ -340,7 +340,7 @@
                       \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}}
                     }
                     ) :
-                    \alert<6-12>{(\mathtt{b} + \mathtt{c})} \times
+                    \alert<6-12>{(\mathtt{b} \times \mathtt{c})} \times
                     \alert<13-17>{(\mathtt{b} \times \mathtt{c})^{\ast}}
                   }
                 }
@@ -367,7 +367,7 @@
                   }
                   )
                 }
-                : 1 + \alert<7-17>{(\mathtt{b} \times \mathtt{c}) \times (\mathtt{b} + \mathtt{c})^{\ast}}
+                : 1 + \alert<7-17>{(\mathtt{b} \times \mathtt{c}) \times (\mathtt{b} \times \mathtt{c})^{\ast}}
               }
             }
           }{
