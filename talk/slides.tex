@@ -83,7 +83,7 @@
      
   Since most regex represent smaller languages than the language of all strings
   ($\Sigma^\ast$), we expect to be able to encode strings belonging to such
-  languages with less information the using say Latin1/utf8. \newline
+  languages with less information than encoding with -- say -- latin1 or utf8. \newline
 
   \begin{block}{}
       Bit coding can bee seen as a special case of Proof-Carrying Code.
@@ -126,21 +126,20 @@
   \begin{itemize}
   \item Necula and Lee
     \begin{itemize}
-    \item Disadvantages in formal proof representation was in general (FIXME)
-      \structure{\underline{30\% larger}} than executable code.
+    \item Disadvantages: formal proof representation was $\sim$1.000$\times$code size.
+    \item Later \structure{$\sim$2.5$\times$code size}.
     \end{itemize}
 
   \item Necula and Rahul \cite{nera2001}
     \begin{itemize}
     \item Verification idea changed to use oracles as guides for proof checking.
+    \item Dropped to \structure{12\% of code size}.
     \end{itemize}
   \end{itemize}
-
-  This resulted in a drop down in ``proof'' size to estimated (FIXME).
   
   \begin{block}{What is an oracle?}
-    When one has to make a choice (e.g. when nondeterminism arises) one can
-    consult an oracle which will make the ``right'' choice as if by
+    When one has to make a choice (e.g. when \structure{nondeterminism} arises) one can
+    consult an oracle which \structure{will make the ``right'' choice} as if by
     magic.
   \end{block}
 
@@ -184,72 +183,87 @@
 
 \begin{frame}
   \frametitle{Review of Henglein \& Nielsens\cite{heni2010} axiomatization.}
+
+  4 main results
+
   \begin{itemize}
-  \item Regular expressions as types. A regular expression is a set of proofs of
+  \item \structure{Regular expressions as types.} A regular expression is a set of proofs of
     membership rather than strings.
-  \item Computational interpretation of containment. E.g a total function from
+  \item \structure{Computational interpretation of containment.} E.g a total function from
     proofs in a regular expressions to proofs in a containing one (coercions).
-  \item Parametric completeness ($|- c : E[X_1, \ldots, X_n] \leq F[X_1,
+  \item \structure{Parametric completeness} ($|- c : E[X_1, \ldots, X_n] \leq F[X_1,
     \ldots, X_n]$).
-  \item Oracle based bit coding of proof values and transformation of oracles.
+  \item \structure{Oracle based bit coding} of proof values and transformation of oracles.
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Recall membership and inhabitation:}
 
-  \begin{columns}[totalwidth=0.8\textwidth]
-    \begin{column}{.5\textwidth}
-      \[
-      \inference{}{\epsilon \in 1}
-      \]
-      \[
-      \inference{}{\texttt{a} \in \texttt{a}}
-      \]
-      \[
-      \inference{s \in E}{s \in E + F}
-      \]
-      \[
-      \inference{s \in F}{s \in E + F}
-      \]
-      \[
-      \inference{s \in E & t \in F}{st \in E \times F}
-      \]
-      \[
-      \inference{s \in 1 + E \times E^{\ast}}{s \in E^{\ast}}
-      \]
-    \end{column}
-    \begin{column}{.5\textwidth}
-      \[
-      \inference{}{() : 1}
-      \]
-      \[
-      \inference{}{\texttt{a} : \texttt{a}}
-      \]
-      \[
-      \inference{v : E}{\mathtt{inl}\ v : E + F}
-      \]
-      \[
-      \inference{v : E}{\mathtt{inr}\ v : E + F}
-      \]
-      \[
-      \inference{v : E & w : F}{(v, w) : E \times F}
-      \]
-      \[
-      \inference{v : 1 + E \times E^{\ast}}{\mathtt{fold}\ v : E^{\ast}}
-      \]
-    \end{column}
-  \end{columns}
+  
+
+  \begin{figure}[!h]
+    
+    \begin{columns}[totalwidth=0.8\textwidth]
+      \subfigure[Membership proofs]{        
+        \begin{column}{.5\textwidth}
+          \[
+          \inference{}{\epsilon \in 1}
+          \]
+          \[
+          \inference{}{\texttt{a} \in \texttt{a}}
+          \]
+          \[
+          \inference{s \in E}{s \in E + F}
+          \]
+          \[
+          \inference{s \in F}{s \in E + F}
+          \]
+          \[
+          \inference{s \in E & t \in F}{st \in E \times F}
+          \]
+          \[
+          \inference{s \in 1 + E \times E^{\ast}}{s \in E^{\ast}}
+          \] \\[1em]  
+        \end{column}
+      }
+      \subfigure[Inhabitation proofs]{
+        \begin{column}{.5\textwidth}
+          \[
+          \inference{}{() : 1}
+          \]
+          \[
+          \inference{}{\texttt{a} : \texttt{a}}
+          \]
+          \[
+          \inference{v : E}{\mathtt{inl}\ v : E + F}
+          \]
+          \[
+          \inference{v : F}{\mathtt{inr}\ v : E + F}
+          \]
+          \[
+          \inference{v : E & w : F}{(v, w) : E \times F}
+          \]
+          \[
+          \inference{v : 1 + E \times E^{\ast}}{\mathtt{fold}\ v : E^{\ast}}
+          \]\\[1em]  
+        \end{column}
+      }
+    \end{columns}
+    
+    \caption{Regular expression membership and inhabitation}
+  \end{figure}
+
 \end{frame}
 
 \begin{frame}
   \frametitle{Using an oracle.}
   So lets try and construct a proof of membership in $\mathcal{L}|[\mathtt{a}
-  \times (\mathtt{b} \times \mathtt{c})^{\ast}|]$.\\[1em]
-
+  \times (\mathtt{b} \times \mathtt{c})^{\ast}|]$ for string \textit{abc}.\\[1em]
+  
   \setbeamercovered{invisible}
   \uncover<2-18>{
-  \indent Proof:
+    \indent Proof:
     {\tiny
       \[
       \inference{
@@ -414,46 +428,32 @@
     }
   Oracle: \uncover<7->{1}\uncover<16->{0}
   }
+  \\[2em]
+  
+  \uncover<18>{\structure{Recall findings by Necula: proof proof size vs Oracle size}}
 
   \setbeamercovered{highly dynamic}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Nondeterminism.}
+  \frametitle{Nondeterminism}
   There is only one place where the next rule in the proof cannot be determined
   by the structure of the regular expression. Namely alternation.
 
-  \begin{columns}[totalwidth=0.8\textwidth]
-    \begin{column}{.5\textwidth}
-      \[
-      \inference{}{() : 1}
-      \]
-      \[
-      \inference{}{\texttt{a} : \texttt{a}}
-      \]
-      \[
-      \inference{v : E}{\mathtt{inl}\ v : E + F}
+  \begin{center}
+    \structure{\[ \inference{v : E}{\mathtt{inl}\ v : E + F}
       \]
       \[
       \inference{v : E}{\mathtt{inr}\ v : E + F}
-      \]
-    \end{column}
-    \begin{column}{.5\textwidth}
-      \[
-      \inference{v : E & w : F}{(v, w) : E \times F}
-      \]
-      \[
-      \inference{v : 1 + E \times E^{\ast}}{\mathtt{fold}\ v : E^{\ast}}
-      \]
-    \end{column}
-  \end{columns}
+      \]}
+  \end{center}
 
-  \vspace{1em}
-  Either choose \texttt{inl} or \texttt{inr}.
+    Either choose \texttt{inl} or \texttt{inr}.
+
 \end{frame}
 
 \begin{frame}
-  \frametitle{Nondeterministic membership prover.}
+  \frametitle{Nondeterministic membership prover -- Abstract view}
 
   \tikzstyle{block} = [draw, fill=blue!20, rectangle, minimum height=3em,
   minimum width=6em]
