@@ -2,12 +2,19 @@
 % strange way and thus don't accept us giving arguments to the package.
 \documentclass[slidestop,compress,mathserif, xcolor=table]{beamer}
 
-
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel} 
+\usepackage[english]{babel}
 
 
+% \usepackage{mdwtab}
+% \usepackage{mathenv}
+% \usepackage{amsfonts}
+% \usepackage{amsmath}
+% \usepackage{amssymb}
+% \usepackage{amsthm}
+\usepackage{semantic}
+\renewcommand{\ttdefault}{txtt} % Bedre typewriter font
 
 % Use the NAT theme in uk (also possible in DK)
 \usetheme[nat,uk, footstyle=low]{Frederiksberg}
@@ -17,6 +24,18 @@
 \setbeamercovered{highly dynamic}
 % possible to shift back, so they are just invisible untill they should overlay
 %\setbeamercovered{invisible}
+
+
+
+\usepackage{tikz}
+\usetikzlibrary{calc,shapes,arrows}
+% below is for use of backgrounds (foregrounds are not used so they are not
+% added to this specification).
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+
+\usepackage{subfigure}
 
 
 % Write a short text to have that shown in the footer of slides other than the
@@ -31,18 +50,12 @@
         Jesper Reenberg  \\
         Nis Wegmann }
 
-
-
 % Only write DIKU in the footer of slides (except the title slide).
 \institute[DIKU]{Department of Computer Science}
 
 % Remove the date stamp from the footer of slides (except title slide) by giving
 % it no short "text"
 \date[]{\today} 
-
-
-% define nice colors for tables
-\rowcolors[]{1}{green!20}{green!10}
 
 \begin{document}
 
@@ -55,18 +68,14 @@
 \begin{frame}
   \frametitle{Introduction}
   
-  Ordinary texts ``waste'' space encoding information that is not used whereas
+  Ordinary texts use space encoding information that is not necessarily used whereas
   regular expressions that have a smaller alphabet can use this as an advantage,
   and not encode information that can not be expressed within the given regular
   expression.
-
-  With this idea we will show that it is possible to compress texts and get a
-  worst case compression of 1 + overhead of representing the regular expression.
-
+  
   Bit coding originates as a special case of Proof-Carrying Code.
-
+  
 \end{frame}
-
 
 \begin{frame}
   \frametitle{Proof-Carrying Code -- (Ultra) Short intro}
@@ -118,13 +127,345 @@
   
 \end{frame}
 
+% From udkast_morten.txt
+\begin{frame}
+  \frametitle{What is an oracle?}
+  When one has to make a choice (e.g. when nondeterminism arises) one can
+  consult an oracle which (who?) will make the ``right'' choice as if by magic.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Review of Henglein \& Nielsens axiomatization.}
+  \begin{itemize}
+  \item Regular expressions as types. A regular expression is a set of proofs of
+    membership rather than strings.
+  \item Computational interpretation of containment. E.g a total function from
+    proofs in a regular expressions to proofs in a containing one (coercions).
+  \item Parametric completeness ($|- c : E[X_1, \ldots, X_n] \leq F[X_1,
+    \ldots, X_n]$).
+  \item Oracle based bit coding of proof values and transformation of oracles.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Recall membership and inhabitation:}
+
+  \begin{columns}[totalwidth=0.8\textwidth]
+    \begin{column}{.5\textwidth}
+      \[
+      \inference{}{\epsilon \in 1}
+      \]
+      \[
+      \inference{}{\texttt{a} \in \texttt{a}}
+      \]
+      \[
+      \inference{s \in E}{s \in E + F}
+      \]
+      \[
+      \inference{s \in F}{s \in E + F}
+      \]
+      \[
+      \inference{s \in E & t \in F}{st \in E \times F}
+      \]
+      \[
+      \inference{s \in 1 + E \times E^{\ast}}{s \in E^{\ast}}
+      \]
+    \end{column}
+    \begin{column}{.5\textwidth}
+      \[
+      \inference{}{() : 1}
+      \]
+      \[
+      \inference{}{\texttt{a} : \texttt{a}}
+      \]
+      \[
+      \inference{v : E}{\mathtt{inl}\ v : E + F}
+      \]
+      \[
+      \inference{v : E}{\mathtt{inr}\ v : E + F}
+      \]
+      \[
+      \inference{v : E & w : F}{(v, w) : E \times F}
+      \]
+      \[
+      \inference{v : 1 + E \times E^{\ast}}{\mathtt{fold}\ v : E^{\ast}}
+      \]
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Using an oracle.}
+  So lets try and construct a proof of membership in $\mathcal{L}|[E|]$.
+  \only<+>{
+    \[
+    \inference{\mathcal{T}}{|- c : E}
+    \]
+  }
+  \only<+>{
+    \[
+    \inference{\mathcal{T}_3}{|- c : E}
+    \]
+  }
+  \only<+>{
+    \[
+    \inference{\mathcal{T}_3}{|- c : E + E}
+    \]
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Nondeterminism.}
+  There is only one place where the next rule in the proof cannot be determined
+  by the structure of the regular expression. Namely alternation.
+
+  \begin{columns}[totalwidth=0.8\textwidth]
+    \begin{column}{.5\textwidth}
+      \[
+      \inference{}{() : 1}
+      \]
+      \[
+      \inference{}{\texttt{a} : \texttt{a}}
+      \]
+      \[
+      \inference{v : E}{\mathtt{inl}\ v : E + F}
+      \]
+      \[
+      \inference{v : E}{\mathtt{inr}\ v : E + F}
+      \]
+    \end{column}
+    \begin{column}{.5\textwidth}
+      \[
+      \inference{v : E & w : F}{(v, w) : E \times F}
+      \]
+      \[
+      \inference{v : 1 + E \times E^{\ast}}{\mathtt{fold}\ v : E^{\ast}}
+      \]
+    \end{column}
+  \end{columns}
+
+  \vspace{1em}
+  Either choose \texttt{inl} or \texttt{inr}.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Nondeterministic membership prover.}
+
+  \begin{quote}
+    [Jespers maskine - med eller uden spøgelse i]
+  \end{quote}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Constructing an oracle.}
+  Lets construct an oracle for the proof of membership of the string
+  \texttt{foobarbaz} in $\mathcal{L}|[E|]$.\\[1em]
+  \only<+>{
+    $.$
+  }
+  \only<+>{
+    $\phantom{.}.$
+  }
+  \only<+>{
+    $\phantom{..}.$
+  }
+  \only<+>{
+    $\phantom{...}.$
+  }
+  \only<+>{
+    $\phantom{....}.$
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Oracle based bit coding.}
+
+  \only<+>{
+    Now we've seen how to use and create oracles. Here are the rules:
+    \begin{block}{Encoding}
+      \begin{eqnarray*}
+        code(() : 1) &=& \epsilon \\
+        code(\mathtt{a} : \mathtt{a}) &=& \epsilon \\
+        code(\mathtt{inl}\ v : E + F) &=& \mathtt{0}code(v : E) \\
+        code(\mathtt{inr}\ v : E + F) &=& \mathtt{1}code(v : F) \\
+        code((v, e) : E \times F)     &=& code(v : E)code(w : F) \\
+        code(\mathtt{fold}\ v : E^{\ast}) &=& code(v : 1 + E \times E^{\ast})
+      \end{eqnarray*}
+    \end{block}
+  }
+  \only<+>{
+    \begin{block}{Decoding}
+      {\scriptsize
+      \begin{eqnarray*}
+        decode'(d : 1) &=& (() : 1) \\
+        decode'(d : \mathtt{a}) &=& (\mathtt{a}, d) \\
+        decode'(\mathtt{0}d : E + F) &=& \mathbf{let}\ (v, d') <- decode'(d : E) \\
+        && \mathbf{in}\ (\mathtt{inl}\ v, d') \\
+        decode'(\mathtt{1}d : E + F) &=& \mathbf{let}\ (v, d') <- decode'(d : F) \\
+        && \mathbf{in}\ (\mathtt{inr}\ v, d') \\
+        decode'(d : E \times F) &=& \mathbf{let}\ (v, d') <- decode'(d : E) \\
+        && \phantom{\mathbf{let}}\ (w, d'') <- decode'(d' : F) \\
+        && \mathbf{in}\ ((v, w), d'') \\
+        decode'(d : E^{\ast}) &=& \mathbf{let}\ (v, d') <- decode'(d : 1 + E
+        \times E^{\ast}) \\
+        && \mathbf{in}\ (\mathtt{fold}\ v, d') \\
+        decode(d : E) &=& \mathbf{let}\ (v, d') <- decode'(d : E) \\
+        && \mathbf{in}\ \mathbf{if}\ d' = \epsilon\ \mathbf{then}\ v\
+        \mathbf{else}\ error
+      \end{eqnarray*}
+    }
+    \end{block}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Choosing the right regular expression.}
+
+  \begin{quote}
+    [Jespers rather nice example]
+  \end{quote}
+\end{frame}
+
+\begin{frame}
+  Maybe: Practical use:
+  [example (motivation for coercions): a piece of code where each branch of a
+  conditional returns oracles belonging to different regex'es, all contained in a
+  'master' regex OR regular expression adapting to network traffic]
+\end{frame}
+
+\begin{frame}
+  \frametitle{Remember coercions?}
+  \only<+>{
+    A coercion is a proof of containment...
+
+    \begin{quote}
+      [Figure 9.]
+    \end{quote}
+  }
+  \only<+>{
+    ...with a computational interpretation.
+
+    \begin{quote}
+      [Figure 10.]
+    \end{quote}
+  }
+  \only<+>{
+    \begin{block}{Definition 3.}
+      [foobarbaz]
+    \end{block}
+    In short: Coercions transform our membership proofs from one regular
+    expression to another.
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Coercion synthesis.}
+  Coercions can be synthesised automatically. Surely everyone remembers this:
+
+  \begin{quote}
+    [Figure 19 for 'wow' effect.]
+  \end{quote}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Choosing the right regular expression (revisited).}
+
+  \begin{quote}
+    [From Jespers rather nice example: $E = a + (b + (c + d))$, $E' = ((a + b) +
+    c) + d$ (or something like that).]
+  \end{quote}
+  For our particular membership proofs (strings) we expect the oracles for $E'$
+  to be smaller than for $E$.\\[1em]
+
+  Clearly $\mathcal{L}|[E|] = \mathcal{L}|[E'|]$ and thus $\mathcal{L}|[E|]
+  \subseteq \mathcal{L}|[E'|]$. By the soundness and completeness of the rules
+  for containment we have $|- c : E \leq E'$.\\[1em]
+
+  So we can convert $v \in E$ to $w \in E'$ by $\mathcal{F}|[c|]$ (and of course
+  $||v|| = ||w||$).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Coercion of oracles.}
+  \only<+>{
+  Find a $\hat{c}$ that converts oracles for proofs in $E$ to oracles for proofs
+  in $E'$ (provided $E \leq E'$).
+
+    \begin{itemize}
+    \item Naïvely: If $|- c : E \leq E'$, then $\mathcal{F}|[\hat{c}|] =
+      \texttt{code} \circ \mathcal{F}|[c|] \circ \texttt{decode}$.
+    \item Directly.
+    \end{itemize}
+  }
+  \only<+>{
+    \begin{quote}
+      [Figure 23.]
+    \end{quote}
+  }
+\end{frame}
+% END (From udkast_morten.txt)
+
 \begin{frame}
   \frametitle{Abstract idea of bit compression using oracles}
-  
-  Show pictures/diagrams of the ``function'' mashines that we discussed, and
-  thus lay down the ground idea of how a text and regex will result in a
-  bitstream, and also how a regex and bitstream will result in the original text.
 
+  \tikzstyle{block} = [draw, fill=blue!20, rectangle, minimum height=3em,
+  minimum width=6em]
+  
+  \tikzstyle{fun} = []
+
+  \tikzstyle{machine} = [fill=blue!20, rectangle, rounded corners,
+  minimum width = 4em, minimum height = 3em]
+  
+  \begin{figure}[ht]
+    \centering
+    
+    \subfigure[Encoding]{
+      \begin{tikzpicture}
+        \node [machine]  (machine) {encode};
+        
+        \node [fun,left of=machine, xshift=-0.7cm]  (text) {Text};
+        \node [fun, above of=machine, yshift=0.2cm] (regex) {Regular expression};
+        
+        \node [fun, right of=machine, xshift=0.7cm] (bits) {Bits};
+        
+        \draw[->] (regex) -- (machine);
+        \draw[->] (text) -- (machine);
+        \draw[->] (machine) -- (bits);
+        
+        % print a nice background
+        \begin{pgfonlayer}{background}
+          \path[fill=green!10,rounded corners]
+          ($(current bounding box.south west) - (.2,.2)$) rectangle
+          ($(current bounding box.north east) + (.2,.2)$);
+        \end{pgfonlayer}    
+      \end{tikzpicture}
+    }
+
+    \subfigure[Decode]{
+      \begin{tikzpicture}
+        \node [machine]  (machine) {decode};
+        
+        \node [fun,left of=machine, xshift=-0.7cm]  (text) {Text};
+        \node [fun, above of=machine, yshift=0.2cm] (regex) {Regular expression};
+        
+        \node [fun, right of=machine, xshift=0.7cm] (bits) {Bits};
+        
+        \draw[->] (regex) -- (machine);
+        \draw[<-] (text) -- (machine);
+        \draw[<-] (machine) -- (bits);
+        
+        % print a nice background
+        \begin{pgfonlayer}{background}
+          \path[fill=green!10,rounded corners]
+          ($(current bounding box.south west) - (.2,.2)$) rectangle
+          ($(current bounding box.north east) + (.2,.2)$);
+        \end{pgfonlayer}    
+        
+      \end{tikzpicture}
+    }
+
+  \end{figure}
+  
 \end{frame}
 
 \begin{frame}
@@ -135,7 +476,7 @@
   (a|b|..|z)* vs [a-z]* 
   
   As discussed in previous talks about bit coding (and later) it is only the
-  alternation and thus also the Kleene star ($1 + E \times E^*$) that generate
+  alternation and thus also the Kleene star ($1 + E \times E^{\ast}$) that generate
   any bits in the resulting bit code.  Thus it is important how the regular
   expression is expressed.
 
@@ -227,6 +568,10 @@
 \begin{frame}[c]
   \frametitle{Pop quiz -- Solutions}
   
+
+% define nice colors for tables
+\rowcolors[]{1}{green!20}{green!10}
+
 
   \begin{center}
     % temporarily disable the bad ass niceness highly dynamic fading of
