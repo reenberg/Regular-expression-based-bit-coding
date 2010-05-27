@@ -24,7 +24,7 @@
 % "far" ahead the overlay is. AWSOME!!
 \setbeamercovered{highly dynamic}
 % possible to shift back, so they are just invisible untill they should overlay
-%\setbeamercovered{invisible}
+% \setbeamercovered{invisible}
 
 % Extend figures into either left or right margin
 % Ex: \begin{narrow}{-1in}{0in} .. \end{narrow} will place 1in into left margin
@@ -212,22 +212,178 @@
 
 \begin{frame}
   \frametitle{Using an oracle.}
-  So lets try and construct a proof of membership in $\mathcal{L}|[E|]$.
-  \only<+>{
-    \[
-    \inference{\mathcal{T}}{|- c : E}
-    \]
+  So lets try and construct a proof of membership in $\mathcal{L}|[\mathtt{a}
+  \times (\mathtt{b} \times \mathtt{c})^{\ast}|]$.\\[1em]
+
+  \setbeamercovered{invisible}
+  \uncover<2-18>{
+  \indent Proof:
+    {\tiny
+      \[
+      \inference{
+        \uncover<3->{
+          \inference{
+          }{
+            \mathtt{a} : \mathtt{a}
+          }
+        } &
+        \uncover<5->{
+          \inference{
+            \uncover<6->{
+              \inference{
+                \uncover<8->{
+                  \inference{
+                    \uncover<9->{
+                      \inference{
+                        \uncover<10->{
+                          \inference{
+                          }{
+                            \mathtt{b} : \mathtt{b}
+                          }
+                        } &
+                        \uncover<12->{
+                          \inference{
+                          }{
+                            \mathtt{c} : \mathtt{c}
+                          }
+                        }
+                      }{
+                        (
+                        \uncover<10->{
+                          \mathtt{b}
+                        },
+                        \uncover<12->{
+                          \mathtt{c}
+                        }
+                        ) : \alert<9-10>{\mathtt{b}} \times \alert<11-12>{\mathtt{c}}
+                      }
+                    } &
+                    \uncover<14->{
+                      \inference{
+                        \uncover<15->{
+                          \inference{
+                            \uncover<17->{
+                              \inference{
+                              }{
+                                () : 1
+                              }
+                            }
+                          }{
+                            \alt<15>{\alert<15>{\mathtt{inl}\ \text{or}\ \mathtt{inr}\text{?}}}
+                            {\mathtt{inl} \uncover<17->{()}\hspace{17pt}} : \alert<16-17>{1} + (\mathtt{b} \times \mathtt{c}) \times
+                            (\mathtt{b} + \mathtt{c})^{\ast}
+                          }
+                        }
+                      }{
+                        \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}} : (\mathtt{b} + \mathtt{c})^{\ast}
+                      }
+                    }
+                  }{
+                    (
+                    \uncover<9->{
+                      (
+                      \uncover<10->{
+                        \mathtt{b}
+                      },
+                      \uncover<12->{
+                        \mathtt{c}
+                      }
+                      )
+                    },
+                    \uncover<14->{
+                      \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}}
+                    }
+                    ) :
+                    \alert<6-12>{(\mathtt{b} + \mathtt{c})} \times
+                    \alert<13-17>{(\mathtt{b} \times \mathtt{c})^{\ast}}
+                  }
+                }
+              }{
+                \alt<6>{\alert<6>{\mathtt{inl}\ \text{or}\ \mathtt{inr}\text{?}}}
+                {
+                  \mathtt{inr} (
+                  \uncover<8->{
+                    (
+                    \uncover<9->{
+                      (
+                      \uncover<10->{
+                        \mathtt{b}
+                      },
+                      \uncover<12->{
+                        \mathtt{c}
+                      }
+                      )
+                    },
+                    \uncover<14->{
+                      \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}}
+                    }
+                    )
+                  }
+                  )
+                }
+                : 1 + \alert<7-17>{(\mathtt{b} \times \mathtt{c}) \times (\mathtt{b} + \mathtt{c})^{\ast}}
+              }
+            }
+          }{
+            \mathtt{fold}(
+            \uncover<7->{
+              \mathtt{inr} (
+              \uncover<8->{
+                (
+                \uncover<9->{
+                  (
+                  \uncover<10->{
+                    \mathtt{b}
+                  },
+                  \uncover<12->{
+                    \mathtt{c}
+                  }
+                  )
+                },
+                \uncover<14->{
+                  \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}}
+                }
+                )
+              }
+              )
+            }
+            ) : (\mathtt{b} \times \mathtt{c})^{\ast}
+          }
+        }
+      }{
+        (\uncover<3->{\mathtt{a}},
+        \uncover<5->{\mathtt{fold}(
+          \uncover<7->{
+            \mathtt{inr} (
+            \uncover<8->{
+              (
+              \uncover<9->{
+                (
+                \uncover<10->{
+                  \mathtt{b}
+                },
+                \uncover<12->{
+                  \mathtt{c}
+                }
+                )
+              },
+              \uncover<14->{
+                \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}}
+              }
+              )
+            }
+            )
+          }
+          )
+        }
+        ) : \alert<2-3>{\mathtt{a}} \times \alert<4-17>{(\mathtt{b} \times \mathtt{c})^{\ast}}
+      }
+      \]
+    }
+  Oracle: \uncover<7->{1}\uncover<16->{0}
   }
-  \only<+>{
-    \[
-    \inference{\mathcal{T}_3}{|- c : E}
-    \]
-  }
-  \only<+>{
-    \[
-    \inference{\mathcal{T}_3}{|- c : E + E}
-    \]
-  }
+
+  \setbeamercovered{highly dynamic}
 \end{frame}
 
 \begin{frame}
@@ -266,230 +422,6 @@
 
 \begin{frame}
   \frametitle{Nondeterministic membership prover.}
-
-  \begin{quote}
-    [Jespers maskine - med eller uden spøgelse i]
-  \end{quote}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Constructing an oracle.}
-  Lets construct an oracle for the proof of membership of the string
-  \texttt{foobarbaz} in $\mathcal{L}|[E|]$.\\[1em]
-  \only<+>{
-    $.$
-  }
-  \only<+>{
-    $\phantom{.}.$
-  }
-  \only<+>{
-    $\phantom{..}.$
-  }
-  \only<+>{
-    $\phantom{...}.$
-  }
-  \only<+>{
-    $\phantom{....}.$
-  }
-\end{frame}
-
-\begin{frame}
-  \frametitle{Oracle based bit coding.}
-
-  \only<+>{
-    Now we've seen how to use and create oracles. Here are the rules:
-    \begin{block}{Encoding}
-      \begin{eqnarray*}
-        code(() : 1) &=& \epsilon \\
-        code(\mathtt{a} : \mathtt{a}) &=& \epsilon \\
-        code(\mathtt{inl}\ v : E + F) &=& \mathtt{0}code(v : E) \\
-        code(\mathtt{inr}\ v : E + F) &=& \mathtt{1}code(v : F) \\
-        code((v, e) : E \times F)     &=& code(v : E)code(w : F) \\
-        code(\mathtt{fold}\ v : E^{\ast}) &=& code(v : 1 + E \times E^{\ast})
-      \end{eqnarray*}
-    \end{block}
-  }
-  \only<+>{
-    \begin{block}{Decoding}
-      {\scriptsize
-      \begin{eqnarray*}
-        decode'(d : 1) &=& (() : 1) \\
-        decode'(d : \mathtt{a}) &=& (\mathtt{a}, d) \\
-        decode'(\mathtt{0}d : E + F) &=& \mathbf{let}\ (v, d') <- decode'(d : E) \\
-        && \mathbf{in}\ (\mathtt{inl}\ v, d') \\
-        decode'(\mathtt{1}d : E + F) &=& \mathbf{let}\ (v, d') <- decode'(d : F) \\
-        && \mathbf{in}\ (\mathtt{inr}\ v, d') \\
-        decode'(d : E \times F) &=& \mathbf{let}\ (v, d') <- decode'(d : E) \\
-        && \phantom{\mathbf{let}}\ (w, d'') <- decode'(d' : F) \\
-        && \mathbf{in}\ ((v, w), d'') \\
-        decode'(d : E^{\ast}) &=& \mathbf{let}\ (v, d') <- decode'(d : 1 + E
-        \times E^{\ast}) \\
-        && \mathbf{in}\ (\mathtt{fold}\ v, d') \\
-        decode(d : E) &=& \mathbf{let}\ (v, d') <- decode'(d : E) \\
-        && \mathbf{in}\ \mathbf{if}\ d' = \epsilon\ \mathbf{then}\ v\
-        \mathbf{else}\ error
-      \end{eqnarray*}
-    }
-    \end{block}
-  }
-\end{frame}
-
-\begin{frame}
-    \frametitle{Choosing the right regular expression -- 1/2.}
-
-  Thus it is important that the regular expression is constructed in a clever
-  way, such that the representation of the regular expression is small
-  
-  (a|b|..|z)* vs [a-z]* 
-  
-  As discussed in previous talks about bit coding (and later) it is only the
-  alternation and thus also the Kleene star ($1 + E \times E^{\ast}$) that generate
-  any bits in the resulting bit code.  Thus it is important how the regular
-  expression is expressed.
-
-  \begin{block}{Simplified subset of \texttt{code} function}
-\begin{semiverbatim}
-  \center{code(inl v) => 0 \quad code(inr v) => 1}
-\end{semiverbatim}
-  \end{block}
-
-  \begin{example}
-    Text: dc\\
-    Regex: a|(b|(c|d))
-    
-    \only<+>{( inr ( inr ( inr d ) ) , inr ( inr ( inl c ) ) )}
-    \only<+>{\alert{( inr ( inr ( inr d ) ) , inr ( inr ( inl c ) ) )}}
-    \only<+>{( \alert{inr ( inr ( inr d ) )} , inr ( inr ( inl c ) ) )}
-    \only<+>{( 1 \alert{inr ( inr d )} , inr ( inr ( inl c ) ) )} 
-    \only<+>{( 1 1 \alert{inr d} , inr ( inr ( inl c ) ) )} 
-    \only<+>{( 1 1 1 , inr ( inr ( inl c ) ) )} 
-    \only<+>{( 1 1 1 , \alert{inr ( inr ( inl c ) )} )}
-    \only<+>{( 1 1 1 , 1 \alert{inr ( inl c )} )} 
-    \only<+>{( 1 1 1 , 1 1 \alert{inl c} )} 
-    \only<+>{( 1 1 1 , 1 1 0)} 
-    \only<+>{1 1 1 1 1 0}
-  \end{example}
-
-\end{frame}
-
-\begin{frame}
-
-      \frametitle{Choosing the right regular expression -- 2/2.}
-
-  \begin{block}{Simplified subset of \texttt{code} function}
-\begin{semiverbatim}
-  \center{code(inl v) => 0 \quad code(inr v) => 1}
-\end{semiverbatim}
-  \end{block}
-  
-  But if we shift the regular expression so d is in the beginning and then having 
-
-  Where if we represent the regex as d|(a|(b|c)) we get
-
-  \begin{example}
-    Text: dc\\
-    Regex: b|(c|(a|b))
-
-    \only<+>{( inl d , inr ( inl c ) )}
-    \only<+>{\alert{( inl d , inr ( inl c ) )}}
-    \only<+>{( \alert{inl d} , inr ( inl c ) )}
-    \only<+>{( 0 , inr ( inl c ) )}
-    \only<+>{( 0 , \alert{inr ( inl c )} )}
-    \only<+>{( 0 , 1 \alert{inl c} )}
-    \only<+>{( 0 , 1 0 )}
-    \only<+>{0 1 0}
-  \end{example}
-
-  (inl d, inr (inl c)) => 010.
-
-  Thus statical analysis (minimising alphabet and occurrence checks) of the text
-  to compress can sometime yield huge gains.
-  In general this is not so easy, but structured texts as XML files, with a
-  specifying schema it gets quite easy.
-
-\end{frame}
-
-\begin{frame}
-  Maybe: Practical use:
-  [example (motivation for coercions): a piece of code where each branch of a
-  conditional returns oracles belonging to different regex'es, all contained in a
-  'master' regex OR regular expression adapting to network traffic]
-\end{frame}
-
-\begin{frame}
-  \frametitle{Remember coercions?}
-  \only<+>{
-    A coercion is a proof of containment...
-
-    \begin{quote}
-      [Figure 9.]
-    \end{quote}
-  }
-  \only<+>{
-    ...with a computational interpretation.
-
-    \begin{quote}
-      [Figure 10.]
-    \end{quote}
-  }
-  \only<+>{
-    \begin{block}{Definition 3.}
-      [foobarbaz]
-    \end{block}
-    In short: Coercions transform our membership proofs from one regular
-    expression to another.
-  }
-\end{frame}
-
-\begin{frame}
-  \frametitle{Coercion synthesis.}
-  Coercions can be synthesised automatically. Surely everyone remembers this:
-
-  \begin{quote}
-    [Figure 19 for 'wow' effect.]
-  \end{quote}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Choosing the right regular expression (revisited).}
-
-  \begin{quote}
-    [From Jespers rather nice example: $E = a + (b + (c + d))$, $E' = ((a + b) +
-    c) + d$ (or something like that).]
-  \end{quote}
-  For our particular membership proofs (strings) we expect the oracles for $E'$
-  to be smaller than for $E$.\\[1em]
-
-  Clearly $\mathcal{L}|[E|] = \mathcal{L}|[E'|]$ and thus $\mathcal{L}|[E|]
-  \subseteq \mathcal{L}|[E'|]$. By the soundness and completeness of the rules
-  for containment we have $|- c : E \leq E'$.\\[1em]
-
-  So we can convert $v \in E$ to $w \in E'$ by $\mathcal{F}|[c|]$ (and of course
-  $||v|| = ||w||$).
-\end{frame}
-
-\begin{frame}
-  \frametitle{Coercion of oracles.}
-  \only<+>{
-  Find a $\hat{c}$ that converts oracles for proofs in $E$ to oracles for proofs
-  in $E'$ (provided $E \leq E'$).
-
-    \begin{itemize}
-    \item Naïvely: If $|- c : E \leq E'$, then $\mathcal{F}|[\hat{c}|] =
-      \texttt{code} \circ \mathcal{F}|[c|] \circ \texttt{decode}$.
-    \item Directly.
-    \end{itemize}
-  }
-  \only<+>{
-    \begin{quote}
-      [Figure 23.]
-    \end{quote}
-  }
-\end{frame}
-% END (From udkast_morten.txt)
-
-\begin{frame}
-  \frametitle{Abstract idea of bit compression using oracles}
 
   \tikzstyle{block} = [draw, fill=blue!20, rectangle, minimum height=3em,
   minimum width=6em]
@@ -551,20 +483,213 @@
   
 \end{frame}
 
+% \begin{frame}
+%   \frametitle{Constructing an oracle.}
+%   Lets construct an oracle for the proof of membership of the string
+%   \texttt{foobarbaz} in $\mathcal{L}|[E|]$.\\[1em]
+%   \only<+>{
+%     $.$
+%   }
+%   \only<+>{
+%     $\phantom{.}.$
+%   }
+%   \only<+>{
+%     $\phantom{..}.$
+%   }
+%   \only<+>{
+%     $\phantom{...}.$
+%   }
+%   \only<+>{
+%     $\phantom{....}.$
+%   }
+% \end{frame}
+
+\begin{frame}
+  \frametitle{Oracle based bit coding.}
+
+  \only<+>{
+    Now we've seen how to use and create oracles. Here are the rules:
+    \begin{block}{Encoding}
+      \begin{eqnarray*}
+        code(() : 1) &=& \epsilon \\
+        code(\mathtt{a} : \mathtt{a}) &=& \epsilon \\
+        code(\mathtt{inl}\ v : E + F) &=& \mathtt{0}code(v : E) \\
+        code(\mathtt{inr}\ v : E + F) &=& \mathtt{1}code(v : F) \\
+        code((v, e) : E \times F)     &=& code(v : E)code(w : F) \\
+        code(\mathtt{fold}\ v : E^{\ast}) &=& code(v : 1 + E \times E^{\ast})
+      \end{eqnarray*}
+    \end{block}
+  }
+  \only<+>{
+    \begin{block}{Decoding}
+      {\scriptsize
+      \begin{eqnarray*}
+        decode'(d : 1) &=& (() : 1) \\
+        decode'(d : \mathtt{a}) &=& (\mathtt{a}, d) \\
+        decode'(\mathtt{0}d : E + F) &=& \mathbf{let}\ (v, d') <- decode'(d : E) \\
+        && \mathbf{in}\ (\mathtt{inl}\ v, d') \\
+        decode'(\mathtt{1}d : E + F) &=& \mathbf{let}\ (v, d') <- decode'(d : F) \\
+        && \mathbf{in}\ (\mathtt{inr}\ v, d') \\
+        decode'(d : E \times F) &=& \mathbf{let}\ (v, d') <- decode'(d : E) \\
+        && \phantom{\mathbf{let}}\ (w, d'') <- decode'(d' : F) \\
+        && \mathbf{in}\ ((v, w), d'') \\
+        decode'(d : E^{\ast}) &=& \mathbf{let}\ (v, d') <- decode'(d : 1 + E
+        \times E^{\ast}) \\
+        && \mathbf{in}\ (\mathtt{fold}\ v, d') \\
+        decode(d : E) &=& \mathbf{let}\ (v, d') <- decode'(d : E) \\
+        && \mathbf{in}\ \mathbf{if}\ d' = \epsilon\ \mathbf{then}\ v\
+        \mathbf{else}\ error
+      \end{eqnarray*}
+    }
+    \end{block}
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Choosing the right regular expression -- 1/2.}
+
+  Oracles representing (proofs representing) the same string may vary in size
+  with the choice of regular expression.\\[1em]
+
+  Remember: \texttt{inl} is 0, \texttt{inr} is 1.
+
+  \begin{example}
+    Text: \texttt{dc}\\
+    Regex: \texttt{a} + (\texttt{b} + (\texttt{c} + \texttt{d}))
+
+    \only<+>{( \texttt{inr} ( \texttt{inr} ( \texttt{inr} \texttt{d} ) ) , \texttt{inr} ( \texttt{inr} ( \texttt{inl} \texttt{c} ) ) )}
+    \only<+>{\alert{( \texttt{inr} ( \texttt{inr} ( \texttt{inr} \texttt{d} ) ) , \texttt{inr} ( \texttt{inr} ( \texttt{inl} \texttt{c} ) ) )}}
+    \only<+>{( \alert{\texttt{inr} ( \texttt{inr} ( \texttt{inr} \texttt{d} ) )} , \texttt{inr} ( \texttt{inr} ( \texttt{inl} \texttt{c} ) ) )}
+    \only<+>{( 1 \alert{\texttt{inr} ( \texttt{inr} \texttt{d} )} , \texttt{inr} ( \texttt{inr} ( \texttt{inl} \texttt{c} ) ) )} 
+    \only<+>{( 1 1 \alert{\texttt{inr} \texttt{d}} , \texttt{inr} ( \texttt{inr} ( \texttt{inl} \texttt{c} ) ) )} 
+    \only<+>{( 1 1 1 , \texttt{inr} ( \texttt{inr} ( \texttt{inl} \texttt{c} ) ) )} 
+    \only<+>{( 1 1 1 , \alert{\texttt{inr} ( \texttt{inr} ( \texttt{inl} \texttt{c} ) )} )}
+    \only<+>{( 1 1 1 , 1 \alert{\texttt{inr} ( \texttt{inl} \texttt{c} )} )} 
+    \only<+>{( 1 1 1 , 1 1 \alert{\texttt{inl} \texttt{c}} )} 
+    \only<+>{( 1 1 1 , 1 1 0)} 
+    \only<+>{1 1 1 1 1 0}
+  \end{example}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Choosing the right regular expression -- 2/2.}
+
+  Oracles representing (proofs representing) the same string may vary in size
+  with the choice of regular expression.\\[1em]
+
+  Remember: \texttt{inl} is 0, \texttt{inr} is 1.
+
+  \begin{example}
+    Text: \texttt{dc}\\
+    Regex: \texttt{d} + (\texttt{c} + (\texttt{a} + \texttt{b}))
+
+    \only<+>{( \texttt{inl} \texttt{d} , \texttt{inr} ( \texttt{inl} \texttt{c} ) )}
+    \only<+>{\alert{( \texttt{inl} \texttt{d} , \texttt{inr} ( \texttt{inl} \texttt{c} ) )}}
+    \only<+>{( \alert{\texttt{inl} \texttt{d}} , \texttt{inr} ( \texttt{inl} \texttt{c} ) )}
+    \only<+>{( 0 , \texttt{inr} ( \texttt{inl} \texttt{c} ) )}
+    \only<+>{( 0 , \alert{\texttt{inr} ( \texttt{inl} \texttt{c} )} )}
+    \only<+>{( 0 , 1 \alert{\texttt{inl} \texttt{c}} )}
+    \only<+>{( 0 , 1 0 )}
+    \only<+>{0 1 0}
+  \end{example}
+
+  \only<8>{Statistically analysis of the data to encode, suggests equivalent regular
+    expressions that yield higher compression rates.}
+\end{frame}
+
+% \begin{frame}
+%   Maybe: Practical use:
+%   [example (motivation for coercions): a piece of code where each branch of a
+%   conditional returns oracles belonging to different regex'es, all contained in a
+%   'master' regex OR regular expression adapting to network traffic]
+% \end{frame}
+
+\begin{frame}
+  \frametitle{Remember coercions?}
+  \only<+>{
+    A coercion is a proof of containment...
+
+    \begin{quote}
+      [Figure 9.]
+    \end{quote}
+  }
+  \only<+>{
+    ...with a computational interpretation.
+
+    \begin{quote}
+      [Figure 10.]
+    \end{quote}
+  }
+  \only<+>{
+    \begin{block}{Definition 3 (Computational interpretation).}
+      {\it
+        The computational interpretation of (closed) coercion $c : E \leq F$ is the
+        partial function $\mathcal{F}|[c|] : E -> F$ defined by $\mathcal{F}|[c|](v) = w$ if $c(v) = w$ can
+        be derived by the equational theory in Figure 10. We say $c$ is total if
+        $\mathcal{F}|[c|]$ is total.
+      }
+    \end{block}
+    In short: Coercions transform our membership proofs from one regular
+    expression to another.
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Coercion synthesis.}
+  Coercions can be synthesised automatically.\\[1em]
+
+  If $E \leq F$ then there exists a coercion $c : E \leq F$.\\[1em]
+
+  If there exists a coercion then the coercion synthesis will find one. Else it
+  produces a witness $s \in \mathcal{L}|[E|] \backslash \mathcal{L}|[F|]$.
+
+  % \begin{quote}
+    % [Figure 19 for 'wow' effect.]
+  % \end{quote}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Choosing the right regular expression (revisited).}
+
+  \begin{quote}
+    Let
+    \begin{eqnarray*}
+      E &=& \mathtt{a} + (\mathtt{b} + (\mathtt{c} + \mathtt{d})),\\
+      F &=& \mathtt{d} + (\mathtt{c} + (\mathtt{a} + \mathtt{b})).
+    \end{eqnarray*}
+  \end{quote}
+  For our particular membership proofs (strings) we expect the oracles for $F$
+  to be smaller than for $E$.\\[1em]
+
+  Clearly $\mathcal{L}|[E|] = \mathcal{L}|[F|]$ and thus $\mathcal{L}|[E|]
+  \subseteq \mathcal{L}|[F|]$. By the soundness and completeness of the rules
+  for containment we have $|- c : E \leq F$.\\[1em]
+
+  So we can convert $v \in E$ to $w \in F$ by $\mathcal{F}|[c|]$ (and of course
+  $||v|| = ||w||$).
+\end{frame}
+
+\begin{frame}
+  \frametitle{Coercion of oracles.}
+
+  Find a $\hat{c}$ that converts oracles for proofs in $E$ to oracles for proofs
+  in $E'$ (provided $E \leq E'$).
+
+    \begin{itemize}
+    \item Naïvely: If $|- c : E \leq E'$, then $\mathcal{F}|[\hat{c}|] =
+      code \circ \mathcal{F}|[c|] \circ decode$.
+    \item Directly:
+      \begin{quote}
+        [Figure 23.]
+      \end{quote}
+    \end{itemize}
+\end{frame}
+% END (From udkast_morten.txt)
+
 \section{Bit coding}
 
 \subsection{Theory}
-
-\begin{frame}
-  \frametitle{Naive usage}
-  
-\end{frame}
-
-\begin{frame}
-  \frametitle{Naive usage -- Practical example}
-  Henglein\cite{heni2010} Fig 8 med praktisk eksempel på hvilke bits der kommer ud
-\end{frame}
-
 
 \begin{frame}[c]
   \frametitle{Pop quiz}
