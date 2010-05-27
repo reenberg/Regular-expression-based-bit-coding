@@ -578,12 +578,12 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Choosing the right regular expression -- 1/2.}
+  \frametitle{Choosing the right regular expression -- 1/2}
 
   Oracles representing (proofs representing) the same string may vary in size
   with the choice of regular expression.\\[1em]
 
-  Remember: \texttt{inl} is 0, \texttt{inr} is 1.
+  Remember: \structure{\texttt{inl} is 0}, \structure{\texttt{inr} is 1}.
 
   \begin{example}
     Text: \texttt{dc}\\
@@ -605,12 +605,12 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Choosing the right regular expression -- 2/2.}
+  \frametitle{Choosing the right regular expression -- 2/2}
 
   Oracles representing (proofs representing) the same string may vary in size
   with the choice of regular expression.\\[1em]
 
-  Remember: \texttt{inl} is 0, \texttt{inr} is 1.
+  Remember: \structure{\texttt{inl} is 0}, \structure{\texttt{inr} is 1}.
 
   \begin{example}
     Text: \texttt{dc}\\
@@ -626,7 +626,7 @@
     \only<+>{0 1 0}
   \end{example}
 
-  \only<8>{Statistically analysis of the data to encode, suggests equivalent regular
+  \only<8>{Statistical analysis of the data to encode, suggests equivalent regular
     expressions that yield higher compression rates.}
 \end{frame}
 
@@ -709,14 +709,20 @@
   }
 \end{frame}
 
-\begin{frame}
-  \frametitle{Coercion synthesis.}
-  Coercions can be synthesised automatically.\\[1em]
+\begin{frame}[c]
+  \frametitle{Coercion synthesis}
 
-  If $E \leq F$ then there exists a coercion $c : E \leq F$.\\[1em]
+  
+  \begin{itemize}
+  \item Coercions can be synthesised automatically.
 
-  If there exists a coercion then the coercion synthesis will find one. Else it
-  produces a witness $s \in \mathcal{L}|[E|] \backslash \mathcal{L}|[F|]$.
+  \item If $E \leq F$ then there exists a coercion $c : E \leq F$.
+
+  \item If there exists a coercion then the coercion synthesis will find
+    one. Else it produces a witness $s \in \mathcal{L}|[E|] \backslash
+    \mathcal{L}|[F|]$.
+  \end{itemize}
+
 
   % \begin{quote}
     % [Figure 19 for 'wow' effect.]
@@ -724,7 +730,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Choosing the right regular expression (revisited).}
+  \frametitle{Choosing the right regular expression (revisited)}
 
   \begin{quote}
     Let
@@ -745,7 +751,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Coercion of oracles.}
+  \frametitle{Coercion of oracles}
 
   Find a $\hat{c}$ that converts oracles for proofs in $E$ to oracles for proofs
   in $E'$ (provided $E \leq E'$).
