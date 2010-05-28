@@ -83,7 +83,7 @@
      
   Since most regex represent smaller languages than the language of all strings
   ($\Sigma^\ast$), we expect to be able to encode strings belonging to such
-  languages with less information the using say Latin1/utf8. \newline
+  languages with less information than using say Latin1/utf8. \newline
 
   \begin{block}{}
       Bit coding can bee seen as a special case of Proof-Carrying Code.
@@ -126,7 +126,7 @@
   \begin{itemize}
   \item Necula and Lee
     \begin{itemize}
-    \item Disadvantages in formal proof representation was in general (FIXME)
+    \item Disadvantages in formal proof representation was in general
       \structure{\underline{30\% larger}} than executable code.
     \end{itemize}
 
@@ -136,7 +136,7 @@
     \end{itemize}
   \end{itemize}
 
-  This resulted in a drop down in ``proof'' size to estimated (FIXME).
+  This resulted in a drop down in ``proof'' size to about 12\% of the codes size.
   
   \begin{block}{What is an oracle?}
     When one has to make a choice (e.g. when nondeterminism arises) one can
@@ -160,7 +160,7 @@
   If
 
   \begin{block}{}
-    \center{Membership testing is the property to be verified.}
+    \center{Membership is the property to be verified.}
   \end{block}
 
   then
@@ -183,7 +183,8 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Review of Henglein \& Nielsens\cite{heni2010} axiomatization.}
+  \frametitle{Review of Henglein \& Nielsens\cite{heni2010} axiomatization}
+  Main contributions:
   \begin{itemize}
   \item Regular expressions as types. A regular expression is a set of proofs of
     membership rather than strings.
@@ -243,8 +244,8 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Using an oracle.}
-  So lets try and construct a proof of membership in $\mathcal{L}|[\mathtt{a}
+  \frametitle{Using an oracle}
+  So lets try and construct a proof of membership of $\mathcal{L}|[\mathtt{a}
   \times (\mathtt{b} \times \mathtt{c})^{\ast}|]$.\\[1em]
 
   \setbeamercovered{invisible}
@@ -307,7 +308,7 @@
                           }
                         }
                       }{
-                        \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}} : (\mathtt{b} \times \mathtt{c})^{\ast}
+                        \mathtt{fold}( \uncover<16->{\mathtt{inl} \uncover<17->{()}}) : (\mathtt{b} \times \mathtt{c})^{\ast}
                       }
                     }
                   }{
@@ -323,7 +324,7 @@
                       )
                     },
                     \uncover<14->{
-                      \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}}
+                      \mathtt{fold}( \uncover<16->{\mathtt{inl} \uncover<17->{()}})
                     }
                     ) :
                     \alert<6-12>{(\mathtt{b} \times \mathtt{c})} \times
@@ -347,7 +348,7 @@
                       )
                     },
                     \uncover<14->{
-                      \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}}
+                      \mathtt{fold}( \uncover<16->{\mathtt{inl} \uncover<17->{()}})
                     }
                     )
                   }
@@ -373,7 +374,7 @@
                   )
                 },
                 \uncover<14->{
-                  \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}}
+                  \mathtt{fold}( \uncover<16->{\mathtt{inl} \uncover<17->{()}})
                 }
                 )
               }
@@ -400,7 +401,7 @@
                 )
               },
               \uncover<14->{
-                \mathtt{fold}\ \uncover<16->{\mathtt{inl} \uncover<17->{()}}
+                \mathtt{fold}( \uncover<16->{\mathtt{inl} \uncover<17->{()}})
               }
               )
             }
@@ -419,7 +420,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Nondeterminism.}
+  \frametitle{Nondeterminism}
   There is only one place where the next rule in the proof cannot be determined
   by the structure of the regular expression. Namely alternation.
 
@@ -453,7 +454,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Nondeterministic membership prover.}
+  \frametitle{Nondeterministic membership prover}
 
   \tikzstyle{block} = [draw, fill=blue!20, rectangle, minimum height=3em,
   minimum width=6em]
@@ -537,7 +538,7 @@
 % \end{frame}
 
 \begin{frame}
-  \frametitle{Oracle based bit coding.}
+  \frametitle{Oracle based bit coding}
 
   \only<+>{
     Now we've seen how to use and create oracles. Here are the rules:
@@ -587,7 +588,7 @@
 
   \begin{example}
     Text: \texttt{dc}\\
-    Regex: \texttt{a} + (\texttt{b} + (\texttt{c} + \texttt{d}))
+    Regex: (\texttt{a} + (\texttt{b} + (\texttt{c} + \texttt{d}))) $\times$ (\texttt{a} + (\texttt{b} + (\texttt{c} + \texttt{d})))
 
     \only<+>{( \texttt{inr} ( \texttt{inr} ( \texttt{inr} \texttt{d} ) ) , \texttt{inr} ( \texttt{inr} ( \texttt{inl} \texttt{c} ) ) )}
     \only<+>{\alert{( \texttt{inr} ( \texttt{inr} ( \texttt{inr} \texttt{d} ) ) , \texttt{inr} ( \texttt{inr} ( \texttt{inl} \texttt{c} ) ) )}}
@@ -614,7 +615,7 @@
 
   \begin{example}
     Text: \texttt{dc}\\
-    Regex: \texttt{d} + (\texttt{c} + (\texttt{a} + \texttt{b}))
+    Regex: (\texttt{d} + (\texttt{c} + (\texttt{a} + \texttt{b}))) $\times$ (\texttt{d} + (\texttt{c} + (\texttt{a} + \texttt{b})))
 
     \only<+>{( \texttt{inl} \texttt{d} , \texttt{inr} ( \texttt{inl} \texttt{c} ) )}
     \only<+>{\alert{( \texttt{inl} \texttt{d} , \texttt{inr} ( \texttt{inl} \texttt{c} ) )}}
@@ -684,12 +685,12 @@
       distR^{-1} (\mathtt{inr} (v, x))             &=& (\mathtt{inr} v, x)\\
       fold (v)                                     &=& \mathtt{fold} v\\
       fold^{-1} (\mathtt{fold} v)                  &=& v\\
-      (c + d)(inl v)                                      &=& \mathtt{inl} (c(v))\\
-      (c + d)(inr w)                                      &=& \mathtt{inr} (d(w))\\
+      (c + d)(\mathtt{inl} v)                                      &=& \mathtt{inl} (c(v))\\
+      (c + d)(\mathtt{inr} w)                                      &=& \mathtt{inr} (d(w))\\
       (c \times d)(v, w)                                       &=& (c(v), d(w))\\
       (c; d)(v)                                           &=& d(c(v))\\
       id(v)                                        &=& v\\
-      (fix f.c)(v)                                 &=& c[fix f.c / f](v)
+      (fix\ f.c)(v)                                 &=& c[fix\ f.c / f](v)
     \end{eqnarray*}
   \end{column}
   \end{columns}
@@ -735,8 +736,8 @@
   \begin{quote}
     Let
     \begin{eqnarray*}
-      E &=& \mathtt{a} + (\mathtt{b} + (\mathtt{c} + \mathtt{d})),\\
-      F &=& \mathtt{d} + (\mathtt{c} + (\mathtt{a} + \mathtt{b})).
+      E &=& (\mathtt{a} + (\mathtt{b} + (\mathtt{c} + \mathtt{d}))) \times (\mathtt{a} + (\mathtt{b} + (\mathtt{c} + \mathtt{d}))),\\
+      F &=& (\mathtt{d} + (\mathtt{c} + (\mathtt{a} + \mathtt{b}))) \times (\mathtt{d} + (\mathtt{c} + (\mathtt{a} + \mathtt{b}))).
     \end{eqnarray*}
   \end{quote}
   For our particular membership proofs (strings) we expect the oracles for $F$
