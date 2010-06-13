@@ -12,8 +12,8 @@ import System.Environment
 import System.IO.Unsafe -- For performing unsafePerformIO debug prints.
 --import System.Console.GetOpt
 
-import TypeDef
-import ProcessDTD
+import DTDParser.TypeDef
+import DTDParser.ProcessDTD
 
 
 main = do

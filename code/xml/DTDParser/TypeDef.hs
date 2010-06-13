@@ -1,4 +1,4 @@
-module TypeDef
+module DTDParser.TypeDef
 where
 
 import Text.XML.HaXml.Parse
