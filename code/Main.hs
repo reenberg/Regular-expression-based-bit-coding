@@ -1,44 +1,47 @@
---
---
---
+module Main where
 
-module Main
-(
-)
-where
+import Prelude hiding (sum)
+import Regex (Regex (..), STree (..), Var, flatten, alphanum, prod, sum, string, cclass, dot)
+import Parse (parse)
+import Code (code, decode)
+import Optimize (optimize, balance)
+import Char (chr)
 
-import Regex (Regex (..), STree (..))
-import Coding (code, decode)
-import Parse (match, parsedynamic, flatten)
+title :: Regex Char
+title = Star (alphanum :+: cclass " ,./():-&#;'?`@!+*=_[]|")
 
-string :: String
-string = "abcbcba"
+key :: Regex Char
+key = Star (Star (cclass ['a' .. 'z']) :*: Lit '/') :*: Star (cclass $ "-" ++ ['a' .. 'z'] ++ ['A' .. 'Z'] ++ ['0' .. '9'])
 
-regex1 :: Regex Char
-regex1 = S ((Lit 'a' :+: Lit 'b') :+: Lit 'c')
+tag :: Regex Char
+tag = string "<tag key=\"" :*: key :*: string "\">" :*: title :*: string "</tag>\n"
 
-regex2 :: Regex Char
-regex2 = Lit 'a' :*: S (Lit 'b' :+: Lit 'c') :*: Lit 'a'
+tags :: Regex Char
+--tags = string "<?xml version=\"1.0\"?>\n<dblptags>\n" :*: Star tag :*: string "</dblptags>"
+tags = Star dot
 
-parse :: Ord a => Regex a -> [a] -> STree a
-parse e cs = case parsedynamic e cs of Just v -> v
-
-main :: IO ()
 main =
-    do putStrLn "regex 1:"
-       putStrLn ""
-       print $ match regex1 string
-       print $ regex1
-       print $ parse regex1 string
-       print $ (code regex1 . parse regex1) string
-       print $ (length . code regex1 . parse regex1) string
-       print $ (flatten . decode regex1 . code regex1 . parse regex1) string
-       putStrLn ""
-       putStrLn "regex 2:"
-       putStrLn ""
-       print $ match regex2 string
-       print $ regex2
-       print $ parse regex2 string
-       print $ (code regex2 . parse regex2) string
-       print $ (length . code regex2 . parse regex2) string
-       print $ (flatten . decode regex2 . code regex2 . parse regex2) string
+  do cs <- readFile "tags.xml"
+     print (optimize tags)
+     let v = case parse (optimize tags) cs of Just w -> w
+     print v
+     let bs = code (optimize tags) v
+     print $ length bs
+
+--
+--
+--
+
+r1 = Star (Lit 'a' :+: Lit 'b' :+: Lit 'c')
+r2 = Star (Lit 'd' :*: r1)
+r3 = Star (r1 :*: r2)
+
+parse' r cs = case parse r cs of Just v -> v
+
+main_ =
+  do print $ optimize r3
+     let stree = parse' (optimize r3) "adadabcc"
+     print $ stree
+     print $ flatten stree
+     print $ code (optimize r3) stree
+     --print $ (flatten . decode regex . code regex) stree
