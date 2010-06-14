@@ -9,7 +9,7 @@ where
 
 import Regex (Regex (..), STree (..))
 import Coding (code, decode)
-import Parse (match, parsedynamic, flatten)
+import Parse (match, parse, flatten)
 
 string :: String
 string = "abcbcba"
@@ -20,8 +20,8 @@ regex1 = S ((Lit 'a' :+: Lit 'b') :+: Lit 'c')
 regex2 :: Regex Char
 regex2 = Lit 'a' :*: S (Lit 'b' :+: Lit 'c') :*: Lit 'a'
 
-parse :: Ord a => Regex a -> [a] -> STree a
-parse e cs = case parsedynamic e cs of Just v -> v
+--parse :: Ord a => Regex a -> [a] -> STree a
+--parse e cs = case parsedynamic e cs of Just v -> v
 
 main :: IO ()
 main =
