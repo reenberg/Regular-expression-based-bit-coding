@@ -24,14 +24,14 @@ tags = string "<?xml version=\"1.0\"?>\n<dblptags>\n" :*: Star tag :*: string "<
 
 tags' = optimize tags
 
-main_ =
+main =
   do cs <- readFile "../data/tags_small.xml"
-     -- print tags'
+     print tags'
      let v = parse' tags' cs
          tags'' = specialize tags' v
-         -- v' = parse' tags'' cs
-     print tags'
-     let bs = code tags' v
+         v' = parse' tags'' cs
+     print tags''
+     let bs = code tags'' v'
      print bs
      print $ length bs
 
@@ -39,24 +39,24 @@ main_ =
 --
 --
 
-r1 = normalize $ Star (Lit 'a' :+: Lit 'b' :+: Lit 'c')
-r2 = Star (Lit 'd' :*: r1)
+r1 = Star (Lit 'a' :+: Lit 'b' :+: Lit 'c')
+r2 = normalize $ Star (Lit 'd' :*: r1)
 r3 = Star (r1 :*: r2)
 
 
-txt = "bb"
+txt = "dbdb"
 
-v = parse' r1 txt
+v = parse' r2 txt
 
-r4 = specialize r1 v
+r4 = specialize r2 v
 
-main =
-  do print $ r1
+main_ =
+  do print $ r2
      print $ v
      print $ r4
      let stree = parse' r4 txt
      -- print $ stree
      print $ flatten stree
-     print $ code r1 v
+     print $ code r2 v
      print $ code r4 stree
      -- print $ (flatten . decode regex . code regex) stree

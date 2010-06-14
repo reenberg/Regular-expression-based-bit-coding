@@ -51,6 +51,7 @@ data Regex' a
     | Var' Var
     | Mu' Var (Regex' a)
     | Star' (Regex' a)
+      deriving (Show)
 
 showit x = (unsafePerformIO $ print x) `seq` x
 
@@ -59,9 +60,9 @@ m ! k = case Map.lookup k m of
           Nothing -> error $ show k
 
 specialize :: (Ord a, Show a) => Regex a -> STree a -> Regex a
-specialize r v = arrange r' (count r' v)
+specialize r v = arrange r' (showit $ count r' v)
     where
-      r' = convert r
+      r' = showit $ convert r
 
       convert :: (Ord a, Show a) => Regex a -> Regex' a
       convert r = evalState (loop r) 0
@@ -92,7 +93,9 @@ specialize r v = arrange r' (count r' v)
           where
             loop e r v =
                 case (r, v) of
-                  (r1 :**: r2, v1 `Pair` v2) -> Map.union (loop e r1 v1) (loop e r2 v2)
+                  (r1 :**: r2, v1 `Pair` v2) -> merge (loop e r1 v1) (loop e r2 v2)
+                      where
+                        merge m1 m2 = Map.unionWith (Map.unionWith (+)) m1 m2
                   (Var' t, _) -> loop e (e ! t) v
                   (Mu' t r', Fold v') -> loop (Map.insert t r e) r' v'
                   (Star' r', In vs) -> Map.unions $ fmap (loop e r') vs
@@ -103,8 +106,8 @@ specialize r v = arrange r' (count r' v)
                         (p, v') = follow v
                         follow v =
                             case v of
-                              Inl v' -> first ((:) L) $ follow v'
-                              Inr v' -> first ((:) L) $ follow v'
+                              Inl v' -> first (L :) $ follow v'
+                              Inr v' -> first (R :) $ follow v'
                               _ -> ([], v)
                         adjustWithDefault d k f m =
                             case Map.lookup k m of
