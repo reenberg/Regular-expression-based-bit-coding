@@ -13,7 +13,8 @@ module Regex
   alphanum,
   dot,
   string,
-  cclass
+  cclass,
+  pcdata
 )
 where
 
@@ -45,6 +46,20 @@ data STree a
   deriving (Eq, Ord)
 
 instance Show a => Show (Regex a) where
+  show O         = error "Can't show 'O' (Empty set)"
+  show E         = ""
+  show (Lit c)   = show c
+  show (e :+: f) = show e ++ "|" ++ show f
+  show (e :*: f) = show e ++ show f
+  show (Var t)   = show t
+  show (Mu t r)  = "(\\ " ++ show t ++ " . " ++ show r ++ ")"
+  show (Star r)  = 
+      case r of 
+        (_ :*: _) -> "(" ++ show r ++ ")*"
+        (_ :+: _) -> "(" ++ show r ++ ")*"
+        E -> ""
+        _ -> show r ++ "*"
+{-
   show O         = "o"
   show E         = "e"
   show (Lit c)   = show c
@@ -53,6 +68,7 @@ instance Show a => Show (Regex a) where
   show (Var t)   = show t
   show (Mu t r)  = "(\\ " ++ show t ++ " . " ++ show r ++ ")"
   show (Star r)  = show r ++ "*"
+-}
 
 instance Show a => Show (STree a) where
   show Unit         = "()"
@@ -103,3 +119,6 @@ string = prod . fmap Lit
 
 cclass :: [a] -> Regex a
 cclass = sum . fmap Lit
+
+pcdata :: Regex Char
+pcdata = cclass $ fmap chr $ [32 .. 126] -- most printable chars.

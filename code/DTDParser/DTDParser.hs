@@ -15,7 +15,7 @@ import DTDParser.TypeDef
 import DTDParser.ProcessDTD
 import DTDParser.GenerateRegex
 
-import Regex
+import qualified Regex as Rx
 
 
 main = do
@@ -32,7 +32,10 @@ main = do
            -- Produce a new map that has all (element, Maybe attList)
        let elmAttMap = Map.mapWithKey (\k a -> (a, Map.lookup k attMap)) elemMap           
            regex = generateRegex elmAttMap rootElem
-       print $ "Regex: " ++ regex
+       putStr $ show regex
+           
+ 
+       --putStrLn $ "Regex: \n" ++ show regex
        --print elmAttMap
 
        --sequence_ z        
