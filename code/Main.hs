@@ -1,7 +1,45 @@
+module Main where
+
+import Prelude hiding (sum)
+import Regex (Regex (..), STree (..), Var, flatten, alphanum, prod, sum, string, cclass, dot)
+import Parse (parse)
+import Code (code, decode)
+import Optimize (specialize, optimize, normalize, balance)
+import Char (chr)
+
+parse' r cs = case parse r cs of Just v -> v
+
+title :: Regex Char
+title = Star (alphanum :+: cclass " ,./():-&#;'?`@!+*=_[]|")
+
+key :: Regex Char
+key = Star (Star (cclass ['a' .. 'z']) :*: Lit '/') :*: Star (cclass $ "-" ++ ['a' .. 'z'] ++ ['A' .. 'Z'] ++ ['0' .. '9'])
+
+tag :: Regex Char
+tag = string "<tag key=\"" :*: key :*: string "\">" :*: title :*: string "</tag>\n"
+
+tags :: Regex Char
+tags = string "<?xml version=\"1.0\"?>\n<dblptags>\n" :*: Star tag :*: string "</dblptags>\n"
+-- tags = Star dot
+
+tags' = optimize tags
+
+main_ =
+  do cs <- readFile "../data/tags_small.xml"
+     -- print tags'
+     let v = parse' tags' cs
+         tags'' = specialize tags' v
+         -- v' = parse' tags'' cs
+     print tags'
+     let bs = code tags' v
+     print bs
+     print $ length bs
+
 --
 --
 --
 
+<<<<<<< HEAD
 module Main
 (
 )
@@ -10,35 +48,31 @@ where
 import Regex (Regex (..), STree (..))
 import Coding (code, decode)
 import Parse (match, parse, flatten)
+=======
+r1 = normalize $ Star (Lit 'a' :+: Lit 'b' :+: Lit 'c')
+r2 = Star (Lit 'd' :*: r1)
+r3 = Star (r1 :*: r2)
+>>>>>>> f6158fffde05d27fcd4f7d6387a7e2b043ca0bfe
 
-string :: String
-string = "abcbcba"
 
-regex1 :: Regex Char
-regex1 = S ((Lit 'a' :+: Lit 'b') :+: Lit 'c')
+txt = "bb"
 
-regex2 :: Regex Char
-regex2 = Lit 'a' :*: S (Lit 'b' :+: Lit 'c') :*: Lit 'a'
+v = parse' r1 txt
 
+<<<<<<< HEAD
 --parse :: Ord a => Regex a -> [a] -> STree a
 --parse e cs = case parsedynamic e cs of Just v -> v
+=======
+r4 = specialize r1 v
+>>>>>>> f6158fffde05d27fcd4f7d6387a7e2b043ca0bfe
 
-main :: IO ()
 main =
-    do putStrLn "regex 1:"
-       putStrLn ""
-       print $ match regex1 string
-       print $ regex1
-       print $ parse regex1 string
-       print $ (code regex1 . parse regex1) string
-       print $ (length . code regex1 . parse regex1) string
-       print $ (flatten . decode regex1 . code regex1 . parse regex1) string
-       putStrLn ""
-       putStrLn "regex 2:"
-       putStrLn ""
-       print $ match regex2 string
-       print $ regex2
-       print $ parse regex2 string
-       print $ (code regex2 . parse regex2) string
-       print $ (length . code regex2 . parse regex2) string
-       print $ (flatten . decode regex2 . code regex2 . parse regex2) string
+  do print $ r1
+     print $ v
+     print $ r4
+     let stree = parse' r4 txt
+     -- print $ stree
+     print $ flatten stree
+     print $ code r1 v
+     print $ code r4 stree
+     -- print $ (flatten . decode regex . code regex) stree
