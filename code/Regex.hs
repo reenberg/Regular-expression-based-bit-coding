@@ -1,3 +1,5 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+
 module Regex
 (
   Regex (..),
@@ -22,7 +24,7 @@ import Prelude hiding (sum)
 import Data.Char (chr)
 
 -- variables
-type Var = Int
+newtype Var = Var_ Integer deriving (Eq, Ord, Show, Enum, Num)
 
 data Regex a
   = O                         -- | 0
