@@ -43,7 +43,6 @@ r1 = Star (Lit 'a' :+: Lit 'b' :+: Lit 'c')
 r2 = normalize $ Star (Lit 'd' :*: r1)
 r3 = Star (r1 :*: r2)
 
-
 txt = "dbdb"
 
 v = parse' r2 txt
