@@ -24,13 +24,13 @@ tags = string "<?xml version=\"1.0\"?>\n<dblptags>\n" :*: Star tag :*: string "<
 
 tags' = optimize tags
 
-main =
+main_ =
   do cs <- readFile "../data/tags_small.xml"
      -- print tags'
      let v = parse' tags' cs
          tags'' = specialize tags' v
-         v' = parse' tags'' cs
-     print tags''
+         -- v' = parse' tags'' cs
+     print tags'
      let bs = code tags' v
      print bs
      print $ length bs
@@ -50,7 +50,7 @@ v = parse' r1 txt
 
 r4 = specialize r1 v
 
-main_ =
+main =
   do print $ r1
      print $ v
      print $ r4
