@@ -6,17 +6,26 @@ import Text.XML.HaXml.Types
 
 import qualified Data.Map as Map 
 
-type ElmAttEntMap = (Map.Map String MarkupDecl, Map.Map String MarkupDecl, Map.Map String MarkupDecl)
+type ElmAttEntTupMap = (Map.Map String ElementDecl, Map.Map String AttListDecl, Map.Map String EntityDecl)
+type ElmMaybeeAttMap = Map.Map String (ElementDecl, Maybe AttListDecl)
+
 
 
 -- Just for temporary fun and debug
 
 instance Show MarkupDecl where
-    show (Element (ElementDecl name cntSpec)) = "Element " ++ name ++ " " ++ show cntSpec
-    show (AttList (AttListDecl name attDefs)) = "AttList: " ++ name ++ " " ++ show attDefs
+    show (Element elmDecl) = "Element " ++ show elmDecl
+    show (AttList attLstDecl) = "AttList: " ++ show attLstDecl
 --    show (Entity entDecl) = "Entity: "(ElementDecl name cntSpec) ++ show entDecl
 --    show (Notation notDecl) = "Notation: " ++ show notDecl
 --    show (MarkupMisc misc) = "MarkupMisc: " ++ show misc
+
+
+instance Show ElementDecl where
+    show (ElementDecl name cntSpec) = name ++ " " ++ show cntSpec
+
+instance Show AttListDecl where
+    show (AttListDecl name attDefs) = name ++ " " ++ show attDefs
 
 
 instance Show ContentSpec where
