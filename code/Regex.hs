@@ -45,12 +45,20 @@ data STree a
   | Fold (STree a)            -- | fold
   deriving (Eq, Ord)
 
+
 instance Show a => Show (Regex a) where
   show O         = error "Can't show 'O' (Empty set)"
   show E         = ""
   show (Lit c)   = show c
-  show (e :+: f) = show e ++ "|" ++ show f
-  show (e :*: f) = show e ++ show f
+  show (e :+: f) = 
+      case f of 
+        (_ :*: _) -> show e ++ "|(" ++ show f ++ ")"
+        _ -> show e ++ "|" ++ show f
+  show (e :*: f) = 
+      case f of
+        (_ :+: _) ->       show e ++ "(" ++ show f ++ ")"
+        _ ->       show e ++ show f
+
   show (Var t)   = show t
   show (Mu t r)  = "(\\ " ++ show t ++ " . " ++ show r ++ ")"
   show (Star r)  = 
@@ -59,7 +67,10 @@ instance Show a => Show (Regex a) where
         (_ :+: _) -> "(" ++ show r ++ ")*"
         E -> ""
         _ -> show r ++ "*"
+
+
 {-
+instance Show a => Show (Regex a) where
   show O         = "o"
   show E         = "e"
   show (Lit c)   = show c

@@ -32,7 +32,7 @@ main = do
            -- Produce a new map that has all (element, Maybe attList)
        let elmAttMap = Map.mapWithKey (\k a -> (a, Map.lookup k attMap)) elemMap           
            regex = generateRegex elmAttMap rootElem
-       putStr $ show regex
+       putStrLn $ show regex
            
  
        --putStrLn $ "Regex: \n" ++ show regex
