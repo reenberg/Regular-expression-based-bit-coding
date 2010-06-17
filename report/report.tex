@@ -1,9 +1,8 @@
-\documentclass[a4paper, oneside, final]{memoir}
+\documentclass[a4paper, oneside]{memoir}
 % Fixes "No room for a new \xxx" error by extending the default 256 fixed size
 % LaTeX arrays
 \usepackage{etex}
-\reserveinserts{28}
-
+%\reserveinserts{28}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -26,8 +25,6 @@
 \usepackage{pdflscape} % Gør landscape-environmentet tilgængeligt
 \usepackage[draft]{fixme}     % Indsæt "fixme" noter i drafts.
 \usepackage{hyperref}  % Indsæter links (interne og eksterne) i PDF
-
-\usepackage[rounded]{syntax} % Part of the mdwtools package
 
 \usepackage{mdwtab}
 \usepackage{mathenv}
@@ -266,7 +263,7 @@ Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
 
 
 \begin{abstract}
-Foo bar
+Foo bar cat
 \end{abstract}
 
 \clearpage 
@@ -277,7 +274,28 @@ Foo bar
 
 \section{Introduction}
 
+%\cite{heni2010}
 
+\begin{figure}
+\[
+\begin{array}{ccc}
+  \inference{}{() : 1}
+&
+  \inference{}{\texttt{a} : \texttt{a}}
+&
+  \inference{v : E}{\mathtt{inl}\ v : E + F}
+\\
+\\
+  \inference{v : F}{\mathtt{inr}\ v : E + F}
+&
+  \inference{v : E & w : F}{(v, w) : E \times F}
+&
+  \inference{v : 1 + E \times E^{\ast}}{\mathtt{fold}\ v : E^{\ast}}
+\end{array}
+\]
+\caption{Inhabitation proofs for regular expressions.}
+\label{fig:inhabitation_proofs}
+\end{figure}
 
 \section{Automated Derivation of Regular Expressions from XML Schemas}
 
@@ -285,7 +303,47 @@ Foo bar
 
 \subsection{Normalising $\mu$-expressions}
 
-\section{Sum balancing using Huffman coding}
+\section{Specializing Regexs to Strings using Huffman Trees}
+
+The fact that the alternation operator in $Reg$ is associative and commutative with respect to language equivalence can be exploited for encoding strings more efficiently. Consider the string \texttt{"aaa"}; compressing it using the expression $E_1 = ((a + b) + c)^{*}$ yields the bit sequence $111111110$. On the other hand, compressing it using the expression $E_2 = (a + (b + c))^{*}$ yields the bit sequence $111110$. As $\mathcal{L}(E_1) = \mathcal{L}(E_2)$ both expressions can be used for compressing the excact same set of strings; for the specific string \texttt{"aaa"} we prefer $E_2$. For an arbitrary string, $s$, and an arbitrary regular expression, $E$, where $s \in \mathcal{L}(E)$, we find that the optimal method for reordering the sums in $E$, with respect to the compression ratio, is to reorder them into Huffman trees based on $s$. 
+
+To do that, we introduce the syntactic form $Reg'_\Sigma$ over the finite alphabet $\Sigma = {a_1, \dots, a_n}$:
+
+\[
+    E ::= 0 \, | \, 1 \, | \, a \, | \, \Sigma(E_1, E_2, E_3, \dots, E_n) \, | \, E_1 \times E_2 \, | \, E^{*}
+\]
+
+The operator $\Sigma(E_1, E_2, E_3, \dots, E_n)$ denotes a sum of alternations, and the rest of the symbols denotes the same as in $Reg$. As $Reg'$ will only be used as a temporary syntactic form for reordering the sums, the order of association of the alternations inside a $\Sigma$ is insignificant.
+Next we introduce what we choose to call the \emph{flattened form} of an expression $E$; to bring $E$ into the \emph{flattened form}, $E'$, we flatten out all nested sums in $E$ and rewrite them in $Reg'$ using the sum operator $\Sigma$; i.e. $(a + (b \times c + d) + e \times f)^{*} \times (c + d)$ will be rewritten into $\Sigma(a, b \times c, d, e \times f)^{*} \times \Sigma{(c, d)}$.
+
+After having flattened out an expression $E$ into $E'$, we pick a parse tree $p_s$ given the input string $s$, such that $p_s : E$ and $||p_s|| = s$; by running trough the parse tree, we can for each sum $\Sigma(E_1, \dots, E_n)$ in $E'$ count how many times $E_k \in 1 \dots n$ is selected in the parse tree.
+
+Finally, we can for each sum $\Sigma$ in $E'$ use these countings to reorder the $\Sigma$ back into the syntactic form of $Reg$, by ordering the alternations as Huffman trees.
+
+\begin{example}
+Consider the string $s = \mathtt{"abbc"}$ and the regular expression $E = (a + ((b + c) + d))^{*}$. Parsing $s$ using $E$ yields the following parse tree:
+\[
+\begin{array}{rcl}
+p_s & = & \mathtt{fold}(\mathtt{inr}(\mathtt{inl} \; a, \\
+    &   & \mathtt{fold}(\mathtt{inr}(\mathtt{inr}(\mathtt{inl}(\mathtt{inl} \; b), \\
+    &   & \mathtt{fold}(\mathtt{inr}(\mathtt{inr}(\mathtt{inl}(\mathtt{inl} \; b), \\
+    &   & \mathtt{fold}(\mathtt{inr}(\mathtt{inr}(\mathtt{inl}(\mathtt{inr} \; c), \\
+    &   & \mathtt{fold}(\mathtt{inl}(()))))))))))))))
+\end{array}
+\]
+\noindent Encoding $s$ using $e$ gives the bit sequence $101100110011010$ (15 bits). Now when translating $E$ into $Reg'$ we get the expression $E' = \Sigma{(a, b, c, d)}^{*}$. Counting the number of times each path in the sum $\Sigma{(a, b, c, d)}$ is taken in $p_s$ we get:
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+$a$ & $b$ & $c$ & $d$ \\
+\hline
+1   & 2   & 1   & 0
+\end{tabular}
+\end{center}
+
+\noindent Finally by reordering the sum into an Huffman tree using the above frequencies we get the $Reg$-expression $F = (b + (a + (c + d)))^{*}$. Encoding $s$ using $F$ gives the bit sequence $110101011100$ (12 bits); thus we have spared 3 bits.
+
+\end{example}
 
 \section{Implementation}
 
@@ -299,8 +357,9 @@ Foo bar
 %\bibliographystyle{amsplain}
 %\bibliography{mybib}
 
-\bibliographystyle{../bibliography/theseurl}
-\bibliography{../bibliography/bibliography}
+%\bibliographystyle{../bibliography/theseurl}
+%\bibliographystyle{amsplain}
+%\bibliography{../bibliography/bibliography}
 
 \end{document}
 
