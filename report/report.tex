@@ -298,7 +298,185 @@ Foo bar cat
 \label{fig:inhabitation_proofs}
 \end{figure}
 
-\section{Automated Derivation of Regular Expressions from XML Schemas}
+\section{Converting XML Schema to Regular expression}
+
+Regular expressions can be generated from XML schemas. The simples algorithm is
+to generate a regular expression for the root element and then inlining the
+regular expressions of the child elements
+
+For example if a schema defines the elements \verb@A@, \verb@B@ and \verb@C@
+where \verb@A@ is the root element having \verb@B@ and \verb@C@ as children in
+order and \verb@C@ can appear zero or more times. Then a regular expression for
+the root element would be \verb@<A></A>@ and when inlining the regular
+expression for the children we get
+\verb@<A><B></B>(<C></C>)*</A>@\footnote{where characters are literals and two
+  characters next to each other are the concatenation of the two.}.
+  
+  However there are some minor problems with this simple algorithm:
+
+  \begin{itemize}
+  \item A schema can define multiple top level elements (also called global
+    elements) it is impossible to know which one is intended to be the root
+    element. So the actual XML file must be analysed to get the name of the root
+    tag in the particular instance.
+
+  \item Schema definitions does not mention the physical structure of the XML
+    file so the regular expression needs to handle any number of whitespace
+    where allowed in the XML file\footnote{For example are the following valid
+      XML \texttt{<Root{\textvisiblespace}att="Foo"\textvisiblespace%
+        \textvisiblespace\textbackslash{n}\textvisiblespace>\textvisiblespace%
+        </Root\textvisiblespace\textvisiblespace>}}.
+
+    This could however be solved if the original structure of the XML file was
+    not guaranteed to be preserved. This way it could be stripped of any
+    excessive whitespace, only leaving one space between element names and
+    attributes and any whitespace in the element content
+
+  \item 
+
+  \end{itemize}
+  
+
+\subsection{Optimisation of regular expression representation}
+...
+
+\subsection{Local and Global schema definitions}
+\label{sec:local-global-schema-definitions}
+Different Schemas have different ways of defining elements, child elements and
+attribute lists of elements. In general the element and child element
+definitions can be divided into two principles\footnote{Atleast this is true for
+  XSD, Relax NG schemas and properly others, but DTD only have global definitions}
+
+\begin{description}
+\item[Local definitions] is when the definition of an elements child elements is
+  inlined as a child of the element definition. 
+
+  \begin{example}[XSD schema using local definitions] \ % end the line
+\begin{verbatim}
+    <xsd:element name="Book"> 
+      <xsd:complexType> 
+        <xsd:sequence> 
+          <xsd:element name="Title" type="xsd:string"/> 
+           <xsd:element name="Author" type="xsd:string"/> 
+        </xsd:sequence> 
+      </xsd:complexType> 
+    </element>
+\end{verbatim}
+  \end{example}
+
+\item[Global definitions] is when the definition of an elements child elements
+  is defined at toplevel, and then referenced by the element. This way multiple
+  elements can share the same child element definition, but the child element is
+  only defined once.
+
+  \begin{example}[XSD schema using global definitions] \ % end the line
+\begin{verbatim}
+    <xsd:element name="Title" type="xsd:string"/>
+
+    <xsd:element name="Author" type="xsd:string"/>
+
+    <xsd:element name="Book">
+      <xsd:complexType> 
+        <xsd:sequence> 
+          <xsd:element ref="Title"/> 
+          <xsd:element ref="Author"/>
+        </xsd:sequence> 
+      </xsd:complexType> 
+    </xsd:element>
+\end{verbatim}
+  \end{example}
+
+\end{description}
+
+And of cause any mixture of the two ways of defining elements.
+
+\section{Optimising representation by global definitions}
+
+The size of the resulting regular expression can potentially be a problem, for
+large schema definitions. The problem arises especially when the data is small
+as the total size is the size of the regular expression and the encoded data
+combined.
+
+Using global definitions we can just generate a regular expression once for a
+child element that potentially gets references multiple times and then inline
+them when referenced if the actual regular expression is needed, thus saving
+space. The same apply to attributes.
+\label{sec:global-definitions-save-space}
+
+Schemas define different types of data that elements and attributes may
+contain. An example is the \texttt{\#PCDATA} defined in DTD schemas that
+represents parsed character data which basically is all ASCII
+characters\footnote{except \&, < and > which should be encoded as entities:
+  \&amp;, \&lt; and \&gt; respectively. If not \& is considered an entity
+  reference and should be expanded and < and > is considered a tag and should be
+  parsed.}\footnote{obviously depending on the file encoding. For simplicity we
+  assume ASCII.}. Thus it is important not to expand the \texttt{\#PCDATA}
+``type'' until the resulting regular expression is needed as it would expand to
+a alternation of all 255 ASCII characters inside each element or attribute that
+is defined as being \texttt{\#PCDATA}. Depending on what schema used simple
+types should be represented by some distinct symbol that can be expanded to its
+actual meaning when the resulting regular expression is needed, to save space.
+
+\subsection{ Non regular schemas}
+
+Most XML Schema definitions allow element references (possibly to itself) which
+makes it possible to create non regular language by having infinite
+
+Obviously it is not possible to create regular expressions from such schema
+instances.
+
+\section{Implementation of DTD schema parser}
+
+We have implemented a DTD schema parser, even though it limits the possibilities
+of optimisation by restricting specific types on elements contained data (e.g.,
+only integers or only dates).
+
+Our decision to do this anyway was that the DBLP\footnote{The DBLP Computer
+  Science Bibliography \url{http://www.informatik.uni-trier.de/~ley/db/}}
+database comes with a DTD
+schema\footnote{\url{http://www.informatik.uni-trier.de/~ley/db/about/dblp.dtd}}
+ready to use. This is handy as the DBLP database can be fetched in at least 4
+versions: a up to date, 2009, 2008, 2006 and 2004 version, each getting bigger
+up until the current up to date version.
+
+We utilise the HaXmL Haskell package to parse the DTD file and then we transform
+this into an extended regular expression data type. Currently we only support as
+much as the DTD syntax that was needed to parse the DBLP's DTD schema which at
+least includes most of elements (element content and mixed content) and
+attribute definitions.
+
+The extended regular expression adds query (\texttt{?}: zero or more), plus
+(\texttt{+}: one or more) and some character classes, especially one for
+representing the \texttt{\#PCDATA} type. This extended regular expression data
+type is intended as being the high level representation used when saving the
+regular expression with the encoded data so it is as small as possible.
+
+\section{Further work}
+
+Below is a list of possible further work.
+
+\begin{description}
+\item[Refactoring] As it is not all schema instances that utilises global
+  definitions (see \label{sec:local-global-schema-definitions}), it would make
+  sense to extract such child elements and attributes into being global
+  declarations instead as long as the result is not bigger than the
+  original\footnote{We need to remember that some sort of reference needs to be inserted
+    which also takes some space.}.
+
+
+\item A better compression ratio can properly be gained by preprocessing the XML
+  file and when any data (not markup) is found, strip at away and put it into a
+  buffer, leaving the index where the data was in the file. This way we would
+  end up with a XML file that contains lots of markup which we encode using bit
+  encoding, and then encode all the collected data with some arbitrary
+  statistically compression method (e.g., the Lempel–Ziv–Welch (LZW) algorithm)
+
+  As statistically compression algorithms works better when the same type of
+  data is grouped together, then it would properly be a good idea to group the
+  values of all elements and attributes that have the same name. For example all
+  data from elements named email would then be grouped together.
+
+\end{description}
 
 \section{$\mu$-Recursion}
 
@@ -362,48 +540,6 @@ equivalent one using $\mu$-recursion: Replace every $E^{\ast}$ with $\mu X.1 +
 \alpha \times X$ where $\alpha$ is the conversion of $E$.
 
 \subsection{Normalising $\mu$-expressions}
-
-\section{Specializing Regexs to Strings using Huffman Trees}
-
-The fact that the alternation operator in $Reg$ is associative and commutative with respect to language equivalence can be exploited for encoding strings more efficiently. Consider the string \texttt{"aaa"}; compressing it using the expression $E_1 = ((a + b) + c)^{*}$ yields the bit sequence $111111110$. On the other hand, compressing it using the expression $E_2 = (a + (b + c))^{*}$ yields the bit sequence $111110$. As $\mathcal{L}(E_1) = \mathcal{L}(E_2)$ both expressions can be used for compressing the excact same set of strings; for the specific string \texttt{"aaa"} we prefer $E_2$. For an arbitrary string, $s$, and an arbitrary regular expression, $E$, where $s \in \mathcal{L}(E)$, we find that the optimal method for reordering the sums in $E$, with respect to the compression ratio, is to reorder them into Huffman trees based on $s$. 
-
-To do that, we introduce the syntactic form $Reg'_\Sigma$ over the finite alphabet $\Sigma = {a_1, \dots, a_n}$:
-
-\[
-    E ::= 0 \, | \, 1 \, | \, a \, | \, \Sigma(E_1, E_2, E_3, \dots, E_n) \, | \, E_1 \times E_2 \, | \, E^{*}
-\]
-
-The operator $\Sigma(E_1, E_2, E_3, \dots, E_n)$ denotes a sum of alternations, and the rest of the symbols denotes the same as in $Reg$. As $Reg'$ will only be used as a temporary syntactic form for reordering the sums, the order of association of the alternations inside a $\Sigma$ is insignificant.
-Next we introduce what we choose to call the \emph{flattened form} of an expression $E$; to bring $E$ into the \emph{flattened form}, $E'$, we flatten out all nested sums in $E$ and rewrite them in $Reg'$ using the sum operator $\Sigma$; i.e. $(a + (b \times c + d) + e \times f)^{*} \times (c + d)$ will be rewritten into $\Sigma(a, b \times c, d, e \times f)^{*} \times \Sigma{(c, d)}$.
-
-After having flattened out an expression $E$ into $E'$, we pick a parse tree $p_s$ given the input string $s$, such that $p_s : E$ and $||p_s|| = s$; by running trough the parse tree, we can for each sum $\Sigma(E_1, \dots, E_n)$ in $E'$ count how many times $E_k \in 1 \dots n$ is selected in the parse tree.
-
-Finally, we can for each sum $\Sigma$ in $E'$ use these countings to reorder the $\Sigma$ back into the syntactic form of $Reg$, by ordering the alternations as Huffman trees.
-
-\begin{example}
-Consider the string $s = \mathtt{"abbc"}$ and the regular expression $E = (a + ((b + c) + d))^{*}$. Parsing $s$ using $E$ yields the following parse tree:
-\[
-\begin{array}{rcl}
-p_s & = & \mathtt{fold}(\mathtt{inr}(\mathtt{inl} \; a, \\
-    &   & \mathtt{fold}(\mathtt{inr}(\mathtt{inr}(\mathtt{inl}(\mathtt{inl} \; b), \\
-    &   & \mathtt{fold}(\mathtt{inr}(\mathtt{inr}(\mathtt{inl}(\mathtt{inl} \; b), \\
-    &   & \mathtt{fold}(\mathtt{inr}(\mathtt{inr}(\mathtt{inl}(\mathtt{inr} \; c), \\
-    &   & \mathtt{fold}(\mathtt{inl}(()))))))))))))))
-\end{array}
-\]
-\noindent Encoding $s$ using $e$ gives the bit sequence $101100110011010$ (15 bits). Now when translating $E$ into $Reg'$ we get the expression $E' = \Sigma{(a, b, c, d)}^{*}$. Counting the number of times each path in the sum $\Sigma{(a, b, c, d)}$ is taken in $p_s$ we get:
-
-\begin{center}
-\begin{tabular}{c|c|c|c}
-$a$ & $b$ & $c$ & $d$ \\
-\hline
-1   & 2   & 1   & 0
-\end{tabular}
-\end{center}
-
-\noindent Finally by reordering the sum into an Huffman tree using the above frequencies we get the $Reg$-expression $F = (b + (a + (c + d)))^{*}$. Encoding $s$ using $F$ gives the bit sequence $110101011100$ (12 bits); thus we have spared 3 bits.
-
-\end{example}
 
 One gains nothing just by converting a regular expression to an equivalent
 $\mu$-recursive one by the rule given above. Consider an example: bit code the
@@ -510,9 +646,47 @@ system of inference rules.
 %   \end{proof}
 % \end{lemma}
 
-\section{Sum balancing using Huffman coding}\label{sec:sum-balancing-using}
+\section{Specializing Regexs to Strings using Huffman Trees}
 
-\section{Implementation}
+The fact that the alternation operator in $Reg$ is associative and commutative with respect to language equivalence can be exploited for encoding strings more efficiently. Consider the string \texttt{"aaa"}; compressing it using the expression $E_1 = ((a + b) + c)^{*}$ yields the bit sequence $111111110$. On the other hand, compressing it using the expression $E_2 = (a + (b + c))^{*}$ yields the bit sequence $111110$. As $\mathcal{L}(E_1) = \mathcal{L}(E_2)$ both expressions can be used for compressing the excact same set of strings; for the specific string \texttt{"aaa"} we prefer $E_2$. For an arbitrary string, $s$, and an arbitrary regular expression, $E$, where $s \in \mathcal{L}(E)$, we find that the optimal method for reordering the sums in $E$, with respect to the compression ratio, is to reorder them into Huffman trees based on $s$. 
+
+To do that, we introduce the syntactic form $Reg'_\Sigma$ over the finite alphabet $\Sigma = {a_1, \dots, a_n}$:
+
+\[
+    E ::= 0 \, | \, 1 \, | \, a \, | \, \Sigma(E_1, E_2, E_3, \dots, E_n) \, | \, E_1 \times E_2 \, | \, E^{*}
+\]
+
+The operator $\Sigma(E_1, E_2, E_3, \dots, E_n)$ denotes a sum of alternations, and the rest of the symbols denotes the same as in $Reg$. As $Reg'$ will only be used as a temporary syntactic form for reordering the sums, the order of association of the alternations inside a $\Sigma$ is insignificant.
+Next we introduce what we choose to call the \emph{flattened form} of an expression $E$; to bring $E$ into the \emph{flattened form}, $E'$, we flatten out all nested sums in $E$ and rewrite them in $Reg'$ using the sum operator $\Sigma$; i.e. $(a + (b \times c + d) + e \times f)^{*} \times (c + d)$ will be rewritten into $\Sigma(a, b \times c, d, e \times f)^{*} \times \Sigma{(c, d)}$.
+
+After having flattened out an expression $E$ into $E'$, we pick a parse tree $p_s$ given the input string $s$, such that $p_s : E$ and $||p_s|| = s$; by running trough the parse tree, we can for each sum $\Sigma(E_1, \dots, E_n)$ in $E'$ count how many times $E_k \in 1 \dots n$ is selected in the parse tree.
+
+Finally, we can for each sum $\Sigma$ in $E'$ use these countings to reorder the $\Sigma$ back into the syntactic form of $Reg$, by ordering the alternations as Huffman trees.
+
+\begin{example}
+Consider the string $s = \mathtt{"abbc"}$ and the regular expression $E = (a + ((b + c) + d))^{*}$. Parsing $s$ using $E$ yields the following parse tree:
+\[
+\begin{array}{rcl}
+p_s & = & \mathtt{fold}(\mathtt{inr}(\mathtt{inl} \; a, \\
+    &   & \mathtt{fold}(\mathtt{inr}(\mathtt{inr}(\mathtt{inl}(\mathtt{inl} \; b), \\
+    &   & \mathtt{fold}(\mathtt{inr}(\mathtt{inr}(\mathtt{inl}(\mathtt{inl} \; b), \\
+    &   & \mathtt{fold}(\mathtt{inr}(\mathtt{inr}(\mathtt{inl}(\mathtt{inr} \; c), \\
+    &   & \mathtt{fold}(\mathtt{inl}(()))))))))))))))
+\end{array}
+\]
+\noindent Encoding $s$ using $e$ gives the bit sequence $101100110011010$ (15 bits). Now when translating $E$ into $Reg'$ we get the expression $E' = \Sigma{(a, b, c, d)}^{*}$. Counting the number of times each path in the sum $\Sigma{(a, b, c, d)}$ is taken in $p_s$ we get:
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+$a$ & $b$ & $c$ & $d$ \\
+\hline
+1   & 2   & 1   & 0
+\end{tabular}
+\end{center}
+
+\noindent Finally by reordering the sum into an Huffman tree using the above frequencies we get the $Reg$-expression $F = (b + (a + (c + d)))^{*}$. Encoding $s$ using $F$ gives the bit sequence $110101011100$ (12 bits); thus we have spared 3 bits.
+
+\end{example}
 
 \section{Experimental Results}
 
@@ -520,207 +694,12 @@ system of inference rules.
 
 \subsection{Future Work}
 
-
-\section{Converting XML Schema to Regular expression}
-
-Regular expressions can be generated from XML schemas. The simples algorithm is
-to generate a regular expression for the root element and then inlining the
-regular expressions of the child elements
-
-For example if a schema defines the elements \verb@A@, \verb@B@ and \verb@C@
-where \verb@A@ is the root element having \verb@B@ and \verb@C@ as children in
-order and \verb@C@ can appear zero or more times. Then a regular expression for
-the root element would be \verb@<A></A>@ and when inlining the regular
-expression for the children we get
-\verb@<A><B></B>(<C></C>)*</A>@\footnote{where characters are literals and two
-  characters next to each other are the concatenation of the two.}.
-  
-  However there are some minor problems with this simple algorithm:
-
-  \begin{itemize}
-  \item A schema can define multiple top level elements (also called global
-    elements) it is impossible to know which one is intended to be the root
-    element. So the actual XML file must be analysed to get the name of the root
-    tag in the particular instance.
-
-  \item Schema definitions does not mention the physical structure of the XML
-    file so the regular expression needs to handle any number of whitespace
-    where allowed in the XML file\footnote{For example are the following valid
-      XML \texttt{<Root{\textvisiblespace}att="Foo"\textvisiblespace%
-        \textvisiblespace\textbackslash{n}\textvisiblespace>\textvisiblespace%
-        </Root\textvisiblespace\textvisiblespace>}}.
-
-    This could however be solved if the original structure of the XML file was
-    not guaranteed to be preserved. This way it could be stripped of any
-    excessive whitespace, only leaving one space between element names and
-    attributes and any whitespace in the element content
-
-  \item 
-
-  \end{itemize}
-  
-
-\subsection{Optimisation of regular expression representation}
-...
-
-\subsection{Local and Global schema definitions}
-\label{sec:local-global-schema-definitions}
-Different Schemas have different ways of defining elements, child elements and
-attribute lists of elements. In general the element and child element
-definitions can be divided into two principles\footnote{Atleast this is true for
-  XSD, Relax NG schemas and properly others, but DTD only have global definitions}
-
-\begin{description}
-\item[Local definitions] is when the definition of an elements child elements is
-  inlined as a child of the element definition. 
-
-  \begin{example}[XSD schema using local definitions] \ % end the line
-\begin{verbatim}
-    <xsd:element name="Book"> 
-      <xsd:complexType> 
-        <xsd:sequence> 
-          <xsd:element name="Title" type="xsd:string"/> 
-           <xsd:element name="Author" type="xsd:string"/> 
-        </xsd:sequence> 
-      </xsd:complexType> 
-    </element>
-\end{verbatim}
-  \end{example}
-
-\item[Global definitions] is when the definition of an elements child elements
-  is defined at toplevel, and then referenced by the element. This way multiple
-  elements can share the same child element definition, but the child element is
-  only defined once.
-
-  \begin{example}[XSD schema using global definitions] \ % end the line
-\begin{verbatim}
-    <xsd:element name="Title" type="xsd:string"/>
-
-    <xsd:element name="Author" type="xsd:string"/>
-
-    <xsd:element name="Book">
-      <xsd:complexType> 
-        <xsd:sequence> 
-          <xsd:element ref="Title"/> 
-          <xsd:element ref="Author"/>
-        </xsd:sequence> 
-      </xsd:complexType> 
-    </xsd:element>
-\end{verbatim}
-  \end{example}
-
-\end{description}
-
-And of cause any mixture of the two ways of defining elements.
-
-
-
-\section{Optimising representation by global definitions}
-
-The size of the resulting regular expression can potentially be a problem, for
-large schema definitions. The problem arises especially when the data is small
-as the total size is the size of the regular expression and the encoded data
-combined.
-
-Using global definitions we can just generate a regular expression once for a
-child element that potentially gets references multiple times and then inline
-them when referenced if the actual regular expression is needed, thus saving
-space. The same apply to attributes.
-\label{sec:global-definitions-save-space}
-
-
-Schemas define different types of data that elements and attributes may
-contain. An example is the \texttt{\#PCDATA} defined in DTD schemas that
-represents parsed character data which basically is all ASCII
-characters\footnote{except \&, < and > which should be encoded as entities:
-  \&amp;, \&lt; and \&gt; respectively. If not \& is considered an entity
-  reference and should be expanded and < and > is considered a tag and should be
-  parsed.}\footnote{obviously depending on the file encoding. For simplicity we
-  assume ASCII.}. Thus it is important not to expand the \texttt{\#PCDATA}
-``type'' until the resulting regular expression is needed as it would expand to
-a alternation of all 255 ASCII characters inside each element or attribute that
-is defined as being \texttt{\#PCDATA}. Depending on what schema used simple
-types should be represented by some distinct symbol that can be expanded to its
-actual meaning when the resulting regular expression is needed, to save space.
-
-\subsection{ Non regular schemas}
-
-Most XML Schema definitions allow element references (possibly to itself) which
-makes it possible to create non regular language by having infinite
-
-Obviously it is not possible to create regular expressions from such schema
-instances.
-
-\section{Implementation of DTD schema parser}
-
-We have implemented a DTD schema parser, even though it limits the possibilities
-of optimisation by restricting specific types on elements contained data (e.g.,
-only integers or only dates).
-
-Our decision to do this anyway was that the DBLP\footnote{The DBLP Computer
-  Science Bibliography \url{http://www.informatik.uni-trier.de/~ley/db/}}
-database comes with a DTD
-schema\footnote{\url{http://www.informatik.uni-trier.de/~ley/db/about/dblp.dtd}}
-ready to use. This is handy as the DBLP database can be fetched in at least 4
-versions: a up to date, 2009, 2008, 2006 and 2004 version, each getting bigger
-up until the current up to date version.
-
-We utilise the HaXmL Haskell package to parse the DTD file and then we transform
-this into an extended regular expression data type. Currently we only support as
-much as the DTD syntax that was needed to parse the DBLP's DTD schema which at
-least includes most of elements (element content and mixed content) and
-attribute definitions.
-
-The extended regular expression adds query (\texttt{?}: zero or more), plus
-(\texttt{+}: one or more) and some character classes, especially one for
-representing the \texttt{\#PCDATA} type. This extended regular expression data
-type is intended as being the high level representation used when saving the
-regular expression with the encoded data so it is as small as possible.
-
-
-\section{Further work}
-
-
-Below is a list of possible further work.
-
-\begin{description}
-\item[Refactoring] As it is not all schema instances that utilises global
-  definitions (see \label{sec:local-global-schema-definitions}), it would make
-  sense to extract such child elements and attributes into being global
-  declarations instead as long as the result is not bigger than the
-  original\footnote{We need to remember that some sort of reference needs to be inserted
-    which also takes some space.}.
-
-
-\item A better compression ratio can properly be gained by preprocessing the XML
-  file and when any data (not markup) is found, strip at away and put it into a
-  buffer, leaving the index where the data was in the file. This way we would
-  end up with a XML file that contains lots of markup which we encode using bit
-  encoding, and then encode all the collected data with some arbitrary
-  statistically compression method (e.g., the Lempel–Ziv–Welch (LZW) algorithm)
-
-  As statistically compression algorithms works better when the same type of
-  data is grouped together, then it would properly be a good idea to group the
-  values of all elements and attributes that have the same name. For example all
-  data from elements named email would then be grouped together.
-  
-
-\end{description}
-
-
-%\addcontentsline{toc}{section}{References}
-%\bibliographystyle{amsplain}
-%\bibliography{mybib}
-
-%\bibliographystyle{../bibliography/theseurl}
-%\bibliographystyle{amsplain}
-%\bibliography{../bibliography/bibliography}
+\bibliographystyle{../bibliography/theseurl}
+\bibliography{../bibliography/bibliography}
 
 \end{document}
 
-
-
 %%% Local Variables: 
-%%% mode: latex
+%%% mode: C++
 %%% TeX-master: t
 %%% End: 
