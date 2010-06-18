@@ -16,7 +16,9 @@ module Regex
   dot,
   string,
   cclass,
-  pcdata
+  pcdata,
+  whitespace,
+  cdata
 )
 where
 
@@ -106,7 +108,7 @@ sum []     = E
 sum (c:cs) = foldl (:+:) c cs
 
 prod :: [Regex a] -> Regex a
-prod []     = O
+prod []     = E
 prod (c:cs) = foldl (:*:) c cs
 
 alpha :: Regex Char
@@ -135,3 +137,14 @@ cclass = sum . fmap Lit
 
 pcdata :: Regex Char
 pcdata = cclass $ fmap chr $ [32 .. 126] -- most printable chars.
+-- pcdata = dot
+
+cdata :: Regex Char
+cdata = pcdata
+-- cdata = dot
+
+ptr :: Regex Char
+ptr = Star num
+
+whitespace :: Regex Char
+whitespace = cclass [' ', '\n', '\r', '\t']

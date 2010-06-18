@@ -16,6 +16,7 @@ import DTDParser.ProcessDTD
 import DTDParser.GenerateRegex
 
 import qualified Regex as Rx
+import qualified RegexExt as RxExt
 
 
 main = do
@@ -40,7 +41,23 @@ main = do
 
        --sequence_ z        
        --sequence_ $ map (print . show) z
-       
+
+parse :: String -> IO (Rx.Regex Char)
+parse dtdFileName =
+    do dtdStr <- readFile dtdFileName
+       -- The "foobar" value is mandatory, the name of the original file for
+       -- error reporting. But we are just using dtdParse which crashes if
+       -- errors are encountered.
+       let (elemMap, attMap, entMap) = processDTD $ fromJust $ dtdParse "foobar" dtdStr
+       rootElem <- getRootElementName elemMap
+       putStrLn $ "You have chosen '" ++ rootElem ++ "' as root element"
+           -- Produce a new map that has all (element, Maybe attList)
+       let elmAttMap = Map.mapWithKey (\k a -> (a, Map.lookup k attMap)) elemMap           
+           regex = generateRootRegex elmAttMap rootElem
+       print regex
+       return $ RxExt.toRegex regex
+
+
 getRootElementName elemMap = 
     do
       putStrLn "Type the name of the root element:"

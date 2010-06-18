@@ -9,8 +9,8 @@ module Optimize
 )
 where
 
-import Control.Arrow (first, second)
 import System.IO.Unsafe
+import Control.Arrow (first, second)
 import Data.Either (lefts, rights)
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -21,6 +21,8 @@ import Data.Maybe (fromJust)
 import Regex (Regex (..), STree (..), Var)
 import Control.Monad.State (State, get, put, evalState)
 import Control.Monad (liftM, liftM2)
+
+showit x = (unsafePerformIO $ print x) `seq` x
 
 data Choice = L | R deriving (Ord, Eq, Show)
 type Path = [Choice]
@@ -38,7 +40,6 @@ data Regex' a
   | Star' (Regex' a)
     deriving (Show)
 
-showit x = (unsafePerformIO $ print x) `seq` x
 
 inc :: Num a => State a a
 inc = do { n <- get ; put (n+1) ; return n }

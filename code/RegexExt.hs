@@ -24,6 +24,8 @@ data CClass
     | AlphaNum
     | Dot
     | PCDATA
+    | WhiteSpace
+    | CDATA
       deriving (Eq, Ord)
 
 instance Show RegexExt where
@@ -67,6 +69,8 @@ instance Show CClass where
     show AlphaNum = "[a-zA-Z0-9]"
     show Dot = "."
     show PCDATA = "[#PCDATA]"
+    show WhiteSpace = "[ws]"
+    show CDATA = "[CDATA]"
 
 toRegex :: RegexExt -> Rx.Regex Char
 toRegex regexExt =
@@ -79,8 +83,8 @@ toRegex regexExt =
       (a :*: b) -> ((toRegex a) Rx.:*: (toRegex b))
       Star a -> Rx.Star (toRegex a)
       Plus a -> (toRegex a) Rx.:*: (Rx.Star (toRegex a))
-      Query a -> Rx.E Rx.:+: (toRegex a) 
-      CClass c -> case c of 
+      Query a -> Rx.E Rx.:+: (toRegex a)
+      CClass c -> case c of
                     Alpha -> Rx.alpha
                     LowerAlpha -> Rx.loweralpha
                     UpperAlpha -> Rx.upperalpha
@@ -88,11 +92,19 @@ toRegex regexExt =
                     AlphaNum -> Rx.alphanum
                     Dot -> Rx.dot
                     PCDATA -> Rx.pcdata
-                    
+                    WhiteSpace -> Rx.whitespace
+                    CDATA -> Rx.cdata
+
 sum :: [RegexExt] -> RegexExt
 sum []     = E
-sum (c:cs) = foldl (:+:) c cs 
+sum (c:cs) = foldl (:+:) c cs
 
 prod :: [RegexExt] -> RegexExt
 prod []     = O
 prod (c:cs) = foldl (:*:) c cs
+
+whitespace = CClass WhiteSpace
+whitespaces = Star $ CClass WhiteSpace
+
+alphanum = CClass AlphaNum
+digit = CClass Num

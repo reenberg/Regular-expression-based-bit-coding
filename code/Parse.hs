@@ -5,27 +5,31 @@ module Parse
 )
 where
 
+import System.IO.Unsafe
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Control.Monad (MonadPlus, liftM, liftM2, mzero, mplus, msum)
 import Regex (Regex (..), STree (..), Var)
 
+showit x = (unsafePerformIO $ print x) `seq` x
+
 type Env a = Map Var (Regex a, [a])
 
 type Parse a = [(STree a, [a])]
 
-parse1 :: (Eq a) => Regex a -> [a] -> Env a -> Parse a
+parse1 :: (Eq a, Show a) => Regex a -> [a] -> Env a -> Parse a
 parse1 O xs _ = []
 parse1 E xs _ = [(Unit, xs)]
 parse1 (Lit y) [] _ = []
 parse1 (Lit y) (x:xs) _ | x == y    = [(Char x, xs)]
-                       | otherwise = []
+                        | otherwise = -- showit (y, x) `seq`
+                                      []
 parse1 (r1 :*: r2) xs env =
   [ (Pair p1 p2, zs) | (p1, ys) <- parse1 r1 xs env, (p2, zs) <- parse1 r2 ys env ]
-parse1 (r1 :+: r2) xs env = 
+parse1 (r1 :+: r2) xs env =
   [ (Inl p1, ys) | (p1, ys) <- parse1 r1 xs env ] ++
   [ (Inr p2, zs) | (p2, zs) <- parse1 r2 xs env ]
-parse1 (Star r) xs env = 
+parse1 (Star r) xs env =
   [ (In (p:ps), zs) |
       (p, ys) <- parse1 r xs env,
       length ys < length xs,
@@ -41,8 +45,8 @@ parse1 (Mu t r) xs env = [ (Fold p, xs) | (p, xs) <- parse1 r xs env' ]
   where
     env' = Map.insert t (Mu t r, xs) env
 
-parse :: Eq a => Regex a -> [a] -> Maybe (STree a)
-parse r cs = case filter (null . snd) (parse1 r cs Map.empty) of
+parse :: (Eq a, Show a) => Regex a -> [a] -> Maybe (STree a)
+parse r cs = case filter (null . snd . showit) (parse1 r cs Map.empty) of
   (v, _) : _ -> Just v
   _          -> Nothing
 
