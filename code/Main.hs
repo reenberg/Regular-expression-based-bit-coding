@@ -1,7 +1,8 @@
 module Main where
 
 import Prelude hiding (sum)
-import Regex (Regex (..), STree (..), Var, flatten, alphanum, prod, sum, string, cclass, dot)
+import RegKleene (Reg (..), PVal (..), flatten, alphanum, prod, sum, string, cclass, dot)
+import qualified RegMu as M
 import Parse (parse)
 import Code (code, decode)
 import Optimize (specialize, optimize, normalize, balance)
@@ -9,16 +10,16 @@ import Char (chr)
 
 parse' r cs = case parse r cs of Just v -> v
 
-title :: Regex Char
+title :: Reg Char
 title = Star (alphanum :+: cclass " ,./():-&#;'?`@!+*=_[]|")
 
-key :: Regex Char
+key :: Reg Char
 key = Star (Star (cclass ['a' .. 'z']) :*: Lit '/') :*: Star (cclass $ "-" ++ ['a' .. 'z'] ++ ['A' .. 'Z'] ++ ['0' .. '9'])
 
-tag :: Regex Char
+tag :: Reg Char
 tag = string "<tag key=\"" :*: key :*: string "\">" :*: title :*: string "</tag>\n"
 
-tags :: Regex Char
+tags :: Reg Char
 tags = string "<?xml version=\"1.0\"?>\n<dblptags>\n" :*: Star tag :*: string "</dblptags>\n"
 -- tags = Star dot
 
@@ -40,22 +41,21 @@ main =
 --
 
 r1 = Star (Lit 'a' :+: Lit 'b' :+: Lit 'c')
-r2 = normalize $ Star (Lit 'd' :*: r1)
+r2 = Star (Lit 'd' :*: r1)
 r3 = Star (r1 :*: r2)
 
 txt = "dbdb"
 
-v = parse' r2 txt
+v = parse' (normalize r3) txt
 
-r4 = specialize r2 v
+r4 = specialize (normalize r3) v
 
 main_ =
-  do print $ r2
-     print $ v
+  do print $ v
      print $ r4
      let stree = parse' r4 txt
      -- print $ stree
-     print $ flatten stree
-     print $ code r2 v
+     print $ M.flatten stree
+     print $ code r4 v
      print $ code r4 stree
      -- print $ (flatten . decode regex . code regex) stree
