@@ -275,7 +275,7 @@ Foo bar cat
 
 \section{Introduction}
 
-%\cite{heni2010}
+\section{Formalization}
 
 \begin{figure}
 \[
@@ -297,6 +297,47 @@ Foo bar cat
 \caption{Inhabitation proofs for regular expressions.}
 \label{fig:inhabitation_proofs}
 \end{figure}
+
+We define the language of regular expressions $Reg_\Sigma$ over the finite alphabet $\Sigma = {a_1, \dots, a_n}$ as follows:
+
+\[
+    E = 0 \; | \; 1 \; | \; E_1 + E_2 \; | \; E_1 \times E_2 \; | \; E^{*}
+\]
+
+\noindent with $\times$ having higher precedence than $+$.
+
+Based on the formalization of Henglein and Nielsen \cite{heni2010} we focus on string parsing under regular expressions. Figure \ref{fig:inhabitation_proofs} shows their inference system, in which inhabitation proofs for regular expressions can be derived. We write $\vdash v : E$ if $v : E$ is derivable in it. Proof trees $v$, such that $\vdash v : E$ for some $E$, will be refered to as \emph{proof values}.
+
+The \emph{flattening} $||v||$ of a proof value $v$ we define as follows:
+
+\[
+\begin{array}{rclrcl}
+||()|| & = & \epsilon &
+||a||  & = & a \\
+|| \mathtt{inl} \; v|| & = & ||v|| &
+|| \mathtt{inr} \; v|| & = & ||v|| \\
+|| (v,w)|| & = & ||v||||w|| &
+|| \mathtt{fold} \; v|| & = & ||v||
+\end{array}
+\]
+
+The \emph{language} $\mathcal{L}(E)$ of the regular expression $E$ we define by
+
+\[
+\mathcal{L}(E) = \{ s \; | \; \vdash v : E, ||v|| = s \}.
+\]
+
+Equivalence of regular expression $E_1$ and $E_2$ is denoted by $E_1 = E_2$ and holds if $\mathcal{L}(E_1) = \mathcal{L}(E_2)$;
+Containment of regular expression $E_1$ in $E_2$ is denoted by $E_1 \le E_2$ and holds if $\mathcal{L}(E_1) \subseteq \mathcal{L}(E_2)$.
+It follows from basic set theory that $E_1 = E_2$ if and only if $E_1 \le E_2$ and $E_2 \le E_1$.
+
+If for any two distinct proof values $v$ and $w$, such that $\vdash v : E$ and $\vdash w : E$, we have that $||v|| = ||w||$, we say that $E$ is ambiguous. In a plain manner we say that $E$ is ambiguous if any string can be parsed under $E$ in more than one way.
+
+A proof value consisting of nested alternations is refered to as a \emph{sum}. All subtrees in a sum which is not itself a sum is refered to as a \emph{branch}.
+
+\begin{example}
+Let $E = (a + (b + c \times d)) + (a + b)^{*}$; we say that $E$ is a sum with the branches $a$, $b$, $c \times d$, and $(a + b)^{*}$.
+\end{example}
 
 \section{Converting XML Schema to Regular expression}
 
@@ -648,7 +689,7 @@ system of inference rules.
 
 \section{Specializing Regexs to Strings using Huffman Trees}
 
-The fact that the alternation operator in $Reg$ is associative and commutative with respect to language equivalence can be exploited for encoding strings more efficiently. Consider the string \texttt{"aaa"}; compressing it using the expression $E_1 = ((a + b) + c)^{*}$ yields the bit sequence $111111110$. On the other hand, compressing it using the expression $E_2 = (a + (b + c))^{*}$ yields the bit sequence $111110$. As $\mathcal{L}(E_1) = \mathcal{L}(E_2)$ both expressions can be used for compressing the excact same set of strings; for the specific string \texttt{"aaa"} we prefer $E_2$. For an arbitrary string, $s$, and an arbitrary regular expression, $E$, where $s \in \mathcal{L}(E)$, we find that the optimal method for reordering the sums in $E$, with respect to the compression ratio, is to reorder them into Huffman trees based on $s$. 
+The fact that the alternation operator in $Reg$ is associative and commutative with respect to language equivalence can be exploited for encoding strings more efficiently. Consider the string \texttt{"aaa"}; compressing it using the expression $E_1 = ((a + b) + c)^{*}$ yields the bit sequence $111111110$. On the other hand, compressing it using the expression $E_2 = (a + (b + c))^{*}$ yields the bit sequence $111110$. As $\mathcal{L}(E_1) = \mathcal{L}(E_2)$ both expressions can be used for compressing the excact same set of strings; for the specific string \texttt{"aaa"} we prefer $E_2$. For an arbitrary string, $s$, and an arbitrary regular expression, $E$, where $s \in \mathcal{L}(E)$, we find that the optimal method for reordering the sums in $E$, with respect to the compression ratio, is to reorder them into Huffman trees based on $s$.
 
 To do that, we introduce the syntactic form $Reg'_\Sigma$ over the finite alphabet $\Sigma = {a_1, \dots, a_n}$:
 
