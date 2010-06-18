@@ -60,6 +60,8 @@ normalize1 r =
   case r of
     r1 :*: (r2 :+: r3) -> liftM2 (:+:) (normalize1 $ r1 :*: r2) (normalize1 $ r1 :*: r3)
     (r1 :+: r2) :*: r3 -> liftM2 (:+:) (normalize1 $ r1 :*: r3) (normalize1 $ r2 :*: r3)
+    -- r1 :+: Mu t r2 -> normalize1 $ Mu t (r1 :+: r2)
+    -- Mu t r1 :+: r2 -> normalize1 $ Mu t (r1 :+: r2)
     r1 :+: r2 -> liftM2 (:+:) (normalize1 r1) (normalize1 r2)
     r1 :*: r2 -> liftM2 (:*:) (normalize1 r1) (normalize1 r2)
     Mu t r -> liftM (Mu t) (normalize1 r)

@@ -105,6 +105,7 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 \newtheorem{judgment}{Judgment}
 \newtheorem{definition}{Definition}
 \newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
 \newtheorem{theorem}{Theorem}
 \newtheorem{corollary}{Corollary}
 \newtheorem{example}{Example}
@@ -125,6 +126,24 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 \fancyrefaddcaptions{english}{
   \newcommand*{\Freflemname}{Lemma}
   \newcommand*{\freflemname}{\MakeLowercase{\Freflemname}}
+}
+\frefformat{vario}{\fancyreflemlabelprefix}{%
+  \freflemname\fancyrefdefaultspacing#1#3%
+}
+\Frefformat{vario}{\fancyreflemlabelprefix}{%
+  \Freflemname\fancyrefdefaultspacing#1#3%
+}
+\frefformat{plain}{\fancyreflemlabelprefix}{%
+  \freflemname\fancyrefdefaultspacing#1%
+}
+\Frefformat{plain}{\fancyreflemlabelprefix}{%
+  \Freflemname\fancyrefdefaultspacing#1%
+}
+
+\newcommand*{\fancyrefproplabelprefix}{prop}
+\fancyrefaddcaptions{english}{
+  \newcommand*{\Frefpropname}{Proposition}
+  \newcommand*{\frefpropname}{\MakeLowercase{\Frefpropname}}
 }
 \frefformat{vario}{\fancyreflemlabelprefix}{%
   \freflemname\fancyrefdefaultspacing#1#3%
@@ -421,6 +440,55 @@ system of inference rules.
     \[
     rec : \mu X. \alpha = \alpha \lbrack \mu X. \alpha / X \rbrack
     \]
+
+    Now the result follows immediately by structural induction on the
+    expression.
+  \end{proof}
+\end{lemma}
+
+\begin{lemma}
+  Conversion to normal form preserves bit coding size.
+
+  Since regular expressions are, in general, ambiguous the property we are after
+  here is not so obvious; Again we need to handle possible non-closed
+  expressions. Given an expression $\alpha$ let $\bar{\alpha} = \alpha \lbrack
+  \alpha_i / X_i \rbrack$, $\bar{\alpha}' = \alpha' \lbrack \alpha'_i / X_i
+  \rbrack$ where the $X_i$'s are the free variables of $\alpha$, the
+  $\alpha_i$'s are arbitrary closed expressions, $\alpha ->n \alpha'$ and
+  $\alpha_i ->n \alpha'_i$.
+
+  Now if $v$ is a proof of membership in $\bar{\alpha}$ with the bit coding
+  $\mathfrak{b}$ then there exists a membership proof $v'$ in $\bar{\alpha}'$
+  with the bit coding $\mathfrak{b'}$ such that $| \mathfrak{b'} | \leq |
+  \mathfrak{b} |$.
+
+  \begin{proof}
+    With the problem properly formulated the proof itself is almost trivial as
+    is often the case.
+
+    Again we use structural induction on $\alpha$. The interesting cases are the
+    two first rules and the rule for $\mu$-expressions. The cases $\gamma \times
+    (\alpha + \beta)$ and $(\alpha + \beta) \times \gamma$ are analogous so we
+    give here only the first one.\\[1em]
+
+    Case $\inference{\gamma \times \alpha + \gamma \times \beta ->n
+      \delta}{\gamma \times (\alpha + \beta) ->n \delta}$: By the induction
+    hypothesis we have that if the bit coding of $w : (\gamma \times \alpha +
+    \gamma + \beta)\lbrack \alpha_i / X_i \rbrack$ is $\mathfrak{c}$ then $|
+    \mathfrak{b'} | \leq | \mathfrak{c} |$. Now we make a case distinction on
+    the first bit $\mathfrak{c_0}$ of $\mathfrak{c}$. In either case the first
+    part of the remaining bits $\mathfrak{c_1}$ codes a membership proof of
+    $\gamma\lbrack \alpha_i / X_i \rbrack$. If $\mathfrak{c_0}$ is $0$ then the
+    rest of the bits $\mathfrak{c_2}$ code at membership proof of $\alpha\lbrack
+    \alpha_i / X_i \rbrack$, and if it is $1$ then $\mathfrak{c_2}$ codes a
+    membership proof of $\beta\lbrack \alpha_i / X_i \rbrack$. In either case we
+    can reorder the bit code to construct one that codes a membership proof of
+    $(\gamma \times (\alpha + \beta))\lbrack \alpha_i / X_i \rbrack$, namely
+    $\mathfrak{c'} = \mathfrak{c_1}\mathfrak{c_0}\mathfrak{c_2}$.\\[1em]
+
+    Case $\inference{\alpha ->n \alpha'}{\mu X. \alpha ->n \mu X. \alpha'}$: The
+    proof follows by noticing that the free variables of $\mu X. \alpha$ is a
+    subset of the free variables of $\alpha$.
   \end{proof}
 \end{lemma}
 

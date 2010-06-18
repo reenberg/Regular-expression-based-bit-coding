@@ -13,7 +13,7 @@ title :: Regex Char
 title = Star (alphanum :+: cclass " ,./():-&#;'?`@!+*=_[]|")
 
 key :: Regex Char
-key = Star (Star (cclass ['a' .. 'z']) :*: Lit '/') :*: Star (cclass $ "-" ++ ['a' .. 'z'] ++ ['A' .. 'Z'] ++ ['0' .. '9'])
+key = Star (Star alphanum :*: Lit '/') :*: Star (alphanum :+: Lit '-')
 
 tag :: Regex Char
 tag = string "<tag key=\"" :*: key :*: string "\">" :*: title :*: string "</tag>\n"
