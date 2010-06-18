@@ -11,16 +11,16 @@
 % bedre orddeling Gør at der som minimum skal blive to tegn på linien ved
 % orddeling og minimum flyttes to tegn ned på næste linie. Desværre er værdien
 % anvendt af babel »12«, hvilket kan give orddelingen »h-vor«.
-\renewcommand{\britishhyphenmins}{22} 
+\renewcommand{\britishhyphenmins}{22}
 
 % Fix of fancyref to work with memoir. Makes references look
 % nice. Redefines memoir \fref and \Fref to \refer and \Refer.
-% \usepackage{refer}             %
+% \usepackage{refer} %
 % As we dont really have any use for \fref and \Fref we just undefine what
 % memoir defined them as, so fancyref can define what it wants.
 \let\fref\undefined
 \let\Fref\undefined
-\usepackage{fancyref} % Better reference. 
+\usepackage{fancyref} % Better reference.
 
 \usepackage{pdflscape} % Gør landscape-environmentet tilgængeligt
 \usepackage[draft]{fixme}     % Indsæt "fixme" noter i drafts.
@@ -39,7 +39,6 @@
 \usepackage{stmaryrd}
 \usepackage[final]{listings} % Make sure we show the listing even though we are
                              % making a final report.
-
 
 \usepackage{ulem} % \sout - strike-through
 % ulem changes \emph to be underline instead of being italic.
@@ -211,7 +210,6 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 \providecommand{\FV}{\mathrm{FV}}
 \providecommand{\Dom}{\mathrm{Dom}}
 
-
 \mathlig{||}{\parallel}
 \mathlig{<'}{\prec}
 \mathlig{>'}{\succ}
@@ -289,7 +287,7 @@ Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
 
 
 \begin{abstract}
-Foo bar cat
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 \end{abstract}
 
 \clearpage 
@@ -299,6 +297,28 @@ Foo bar cat
 \mainmatter
 
 \section{Introduction}
+
+Compression of XML files \cite{FIX ME} has a wide range of applications. On the internet and in database systems XML is an extensively used format for encoding documents and storing data in a machine-readable form. Typically XML files includes a large amount of meta-data
+
+\subsection{Previous work}
+
+Henglein and Lasse, Oracle, XMill ...
+
+%\subsection{Contributions}
+
+\subsection{Expectations of the Reader}
+
+Basic knowledge of regular expressions \cite{FIX ME} is assumed. Some experience with inference system and programming language semantics \cite{FIX ME} will be useful.
+
+\subsection{Organization}
+
+The rest of the paper is organized as follows: In Section FIX ME we ... In Section FIX ME we ... blah blah
+
+This paper marks the conclussion of the DIKU course \emph{Topics in Programming Languages}.
+
+\subsection{Acknowledgement}
+
+The authors extend their graditude to FIX ME, FIX ME, and FIX ME for insightful comments. Also we would like to thank Lasse Nielsen for providing us the source code for his dynamic parser.
 
 \newpage
 
@@ -662,6 +682,41 @@ Below is a list of possible further work.
 \subsection{Motivation}
 
 \subsection{Bit coding}
+
+\begin{figure}
+\[
+\begin{array}{lcl}
+\mathtt{code}(\mathrm{()} : 1) & = & \epsilon \\
+\mathtt{code}(a : a) & = & \epsilon \\
+\mathtt{code}(\mathrm{inl} \, v : \alpha_1 + \alpha_2) & = & 0 \; \mathtt{code}(v : \alpha_1) \\
+\mathtt{code}(\mathrm{inr} \, v : \alpha_1 + \alpha_2) & = & 1 \; \mathtt{code}(v : \alpha_2) \\
+\mathtt{code}((v,w) : \alpha_1 \times \alpha_2) & = & \mathtt{code}(v : \alpha_1) \; \mathtt{code}(v : \alpha_2) \\
+%\mathtt{code}(\mathrm{fold} \, v : E^{*}) & = & \mathtt{code}(v : 1 + E \times E^{*}) \\
+%\mathtt{code}(v : X) & = & \mathtt{code}(v : )
+\mathtt{code}(\mathrm{fold} \, v : \mu X . \alpha) & = & \mathtt{code}(v : \alpha[\mu X . \alpha / X])
+\end{array}
+\]
+\caption{Type directed encoding from proof values to bit sequences.}
+\end{figure}
+
+\begin{figure}
+\[
+\begin{array}{lcl}
+\mathtt{decode'}(d, 1) & = & ((), d) \\
+\mathtt{decode'}(d, a) & = & (a, d) \\
+\mathtt{decode'}(0d, E + F) & = & \mathbf{let} \; (v,d') = \mathtt{decode'}(d,E) \; \mathbf{in} \; (\mathrm{inl} \, v, d') \\
+\mathtt{decode'}(1d, E + F) & = & \mathbf{let} \; (w,d') = \mathtt{decode'}(d,F) \; \mathbf{in} \; (\mathrm{inl} \, w, d') \\
+\mathtt{decode'}(d, E \times F) & = &
+    \mathbf{let} \left\{ \begin{array}{rcl} (v,d') &=& \mathtt{decode}'(d, E) \\ (w, d'') &=& \mathtt{decode}'(d', F) \end{array} \right\}
+    \mathbf{in} \; ((v,w), d'') \\
+%\mathtt{decode'}(d, E^{*}) & = & \mathbf{let} \; (v,d') = \mathtt{decode'}(d : 1 + E \times E^{*}) \; \mathbf{in} \; (\mathrm{fold} \, v, d')\\
+\mathtt{decode'}(d, \mu X . \alpha) = \mathbf{let} \; (v,d') & = & \mathtt{decode'}(d, \alpha[\mu X . \alpha / X]) \; \mathbf{in} \; (\mathrm{fold} \, v, d') \\
+\\
+\mathtt{decode}(d, E) & = & \mathbf{let} \; (v, d') = \mathtt{decode'}(d, E) \; \mathbf{in} \; v
+\end{array}
+\]
+\caption{Type directed decoding from bit sequences to proof values.}
+\end{figure}
 
 \subsection{Normalising}
 
