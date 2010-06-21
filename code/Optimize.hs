@@ -9,8 +9,8 @@ module Optimize
 )
 where
 
-import Control.Arrow (first, second)
 import System.IO.Unsafe
+import Control.Arrow (first, second)
 import Data.Either (lefts, rights)
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -47,6 +47,7 @@ normalize1 r =
   case r of
     K.O -> return M.O
     K.E -> return M.E
+    K.Lit a -> return $ M.Lit a
     r1 K.:*: (r2 K.:+: r3) -> liftM2 (M.:+:) (normalize1 $ r1 K.:*: r2) (normalize1 $ r1 K.:*: r3)
     (r1 K.:+: r2) K.:*: r3 -> liftM2 (M.:+:) (normalize1 $ r1 K.:*: r3) (normalize1 $ r2 K.:*: r3)
     r1 K.:+: r2 -> liftM2 (M.:+:) (normalize1 r1) (normalize1 r2)

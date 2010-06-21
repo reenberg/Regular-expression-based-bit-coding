@@ -7,14 +7,16 @@ import Parse (parse)
 import Code (code, decode)
 import Optimize (specialize, optimize, normalize, balance)
 import Char (chr)
+import qualified DTDParser.DTDParser as DTDParser (parse)
+import qualified Data.Maybe as Maybe
 
-parse' r cs = case parse r cs of Just v -> v
+parse' r s = Maybe.fromJust $ parse r s
 
 title :: Reg Char
 title = Star (alphanum :+: cclass " ,./():-&#;'?`@!+*=_[]|")
 
 key :: Reg Char
-key = Star (Star (cclass ['a' .. 'z']) :*: Lit '/') :*: Star (cclass $ "-" ++ ['a' .. 'z'] ++ ['A' .. 'Z'] ++ ['0' .. '9'])
+key = Star (Star alphanum :*: Lit '/') :*: Star (alphanum :+: Lit '-')
 
 tag :: Reg Char
 tag = string "<tag key=\"" :*: key :*: string "\">" :*: title :*: string "</tag>\n"
@@ -26,15 +28,17 @@ tags = string "<?xml version=\"1.0\"?>\n<dblptags>\n" :*: Star tag :*: string "<
 tags' = optimize tags
 
 main =
-  do cs <- readFile "../data/tags_small.xml"
-     print tags'
-     let v = parse' tags' cs
-         tags'' = specialize tags' v
-         v' = parse' tags'' cs
-     print tags''
-     let bs = code tags'' v'
-     print bs
-     print $ length bs
+    do regex <- DTDParser.parse "DTDParser/xml/dblp.dtd" -- "../data/dblp.dtd"
+       let regex' = optimize regex
+--        print regex
+       cs <- readFile "DTDParser/xml/dblptmp.xml" -- "../data/dblp_small.xml"
+       let v = parse' regex' cs
+           regex'' = specialize regex' v
+           v' = parse' regex'' cs
+       -- print regex'
+       let bs = code regex'' v'
+       print bs
+       print $ length bs
 
 --
 --

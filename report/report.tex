@@ -107,6 +107,7 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 \newtheorem{judgment}{Judgment}
 \newtheorem{definition}{Definition}
 \newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
 \newtheorem{theorem}{Theorem}
 \newtheorem{corollary}{Corollary}
 \newtheorem{example}{Example}
@@ -127,6 +128,24 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 \fancyrefaddcaptions{english}{
   \newcommand*{\Freflemname}{Lemma}
   \newcommand*{\freflemname}{\MakeLowercase{\Freflemname}}
+}
+\frefformat{vario}{\fancyreflemlabelprefix}{%
+  \freflemname\fancyrefdefaultspacing#1#3%
+}
+\Frefformat{vario}{\fancyreflemlabelprefix}{%
+  \Freflemname\fancyrefdefaultspacing#1#3%
+}
+\frefformat{plain}{\fancyreflemlabelprefix}{%
+  \freflemname\fancyrefdefaultspacing#1%
+}
+\Frefformat{plain}{\fancyreflemlabelprefix}{%
+  \Freflemname\fancyrefdefaultspacing#1%
+}
+
+\newcommand*{\fancyrefproplabelprefix}{prop}
+\fancyrefaddcaptions{english}{
+  \newcommand*{\Frefpropname}{Proposition}
+  \newcommand*{\frefpropname}{\MakeLowercase{\Frefpropname}}
 }
 \frefformat{vario}{\fancyreflemlabelprefix}{%
   \freflemname\fancyrefdefaultspacing#1#3%
@@ -368,7 +387,8 @@ If for any two distinct proof values $v$ and $w$, such that $\vdash v : E$ and $
 A proof value consisting of nested alternations is refered to as a \emph{sum}. All subtrees in a sum which is not itself a sum is refered to as a \emph{branch}.
 
 \begin{example}
-Let $E = (a + (b + c \times d)) + (a + b)^{*}$; we say that $E$ is a sum with the branches $a$, $b$, $c \times d$, and $(a + b)^{*}$.
+Let $E = (a + (b + c \times d)) + (a + b)^{*}$; we say that $E$ is a sum with
+the branches $(a + (b + c \times d))$, and $(a + b)^{\ast}$.
 \end{example}
 
 \section{Converting XML Schema to Regular expression}
@@ -552,50 +572,6 @@ Below is a list of possible further work.
 \end{description}
 
 \section{$\mu$-Recursion}
-
-\subsection{Definition}
-
-\subsection{Motivation}
-
-\subsection{Bit coding}
-
-\begin{figure}
-\[
-\begin{array}{lcl}
-\mathtt{code}(\mathrm{()} : 1) & = & \epsilon \\
-\mathtt{code}(a : a) & = & \epsilon \\
-\mathtt{code}(\mathrm{inl} \, v : \alpha_1 + \alpha_2) & = & 0 \; \mathtt{code}(v : \alpha_1) \\
-\mathtt{code}(\mathrm{inr} \, v : \alpha_1 + \alpha_2) & = & 1 \; \mathtt{code}(v : \alpha_2) \\
-\mathtt{code}((v,w) : \alpha_1 \times \alpha_2) & = & \mathtt{code}(v : \alpha_1) \; \mathtt{code}(v : \alpha_2) \\
-%\mathtt{code}(\mathrm{fold} \, v : E^{*}) & = & \mathtt{code}(v : 1 + E \times E^{*}) \\
-%\mathtt{code}(v : X) & = & \mathtt{code}(v : )
-\mathtt{code}(\mathrm{fold} \, v : \mu X . \alpha) & = & \mathtt{code}(v : \alpha[\mu X . \alpha / X])
-\end{array}
-\]
-\caption{Type directed encoding from proof values to bit sequences.}
-\end{figure}
-
-\begin{figure}
-\[
-\begin{array}{lcl}
-\mathtt{decode'}(d, 1) & = & ((), d) \\
-\mathtt{decode'}(d, a) & = & (a, d) \\
-\mathtt{decode'}(0d, E + F) & = & \mathbf{let} \; (v,d') = \mathtt{decode'}(d,E) \; \mathbf{in} \; (\mathrm{inl} \, v, d') \\
-\mathtt{decode'}(1d, E + F) & = & \mathbf{let} \; (w,d') = \mathtt{decode'}(d,F) \; \mathbf{in} \; (\mathrm{inl} \, w, d') \\
-\mathtt{decode'}(d, E \times F) & = &
-    \mathbf{let} \left\{ \begin{array}{rcl} (v,d') &=& \mathtt{decode}'(d, E) \\ (w, d'') &=& \mathtt{decode}'(d', F) \end{array} \right\}
-    \mathbf{in} \; ((v,w), d'') \\
-%\mathtt{decode'}(d, E^{*}) & = & \mathbf{let} \; (v,d') = \mathtt{decode'}(d : 1 + E \times E^{*}) \; \mathbf{in} \; (\mathrm{fold} \, v, d')\\
-\mathtt{decode'}(d, \mu X . \alpha) = \mathbf{let} \; (v,d') & = & \mathtt{decode'}(d, \alpha[\mu X . \alpha / X]) \; \mathbf{in} \; (\mathrm{fold} \, v, d') \\
-\\
-\mathtt{decode}(d, E) & = & \mathbf{let} \; (v, d') = \mathtt{decode'}(d, E) \; \mathbf{in} \; v
-\end{array}
-\]
-\caption{Type directed decoding from bit sequences to proof values.}
-\end{figure}
-
-\subsection{Normalising}
-
 We introduce tail-recursive $\mu$-types as described in \cite{heni10}.\\[1em]
 
 Regular expressions offers a very restricted form of recursion namely the Kleene
@@ -611,12 +587,14 @@ bit.
 If we could trade a longer code for $1$ for shorter codes for $E$ we expect to
 gain higher compression rates.
 
-Therefore we generalise recursion to tail-recursive $\mu$-types. Let the
-language of expressions $UnReg_{\Sigma}^{\mu}$ over a finite alphabet $\Sigma =
-\{a_1, \ldots, a_n\}$ be
+Therefore we generalise recursion to tail-recursive $\mu$-types.
+
+\subsection{Definition}
+Let the language of expressions $UnReg_{\Sigma}^{\mu}$ over a finite alphabet
+$\Sigma = \{a_1, \ldots, a_n\}$ be
 \[
-\alpha ::= 0 | 1 | a | \alpha_1 + \alpha_2 | \alpha_1 \times \alpha_2 | \mu
-X. \alpha | X
+\alpha ::= 0 \; | \; 1 \; | \; a \; | \; \alpha_1 + \alpha_2 \; | \; \alpha_1
+\times \alpha_2 \; | \; \mu X. \alpha \; | \; X
 \]
 
 The free variables of $\alpha$ is the set of variables $X$ in $\alpha$ that is
@@ -647,8 +625,49 @@ And the proof of $1.$ tells us how to convert a regular expression into an
 equivalent one using $\mu$-recursion: Replace every $E^{\ast}$ with $\mu X.1 +
 \alpha \times X$ where $\alpha$ is the conversion of $E$.
 
-\subsection{Normalising $\mu$-expressions}
+\subsection{Bit coding}
 
+We extend the rules for producing bit codes to closed tail-recursive
+$\mu$-expressions. They are given in \fref[plain]{fig:code} and \fref{fig:decode}.
+
+\begin{figure}
+\[
+\begin{array}{lcl}
+\mathtt{code}(\mathrm{()} : 1) & = & \epsilon \\
+\mathtt{code}(a : a) & = & \epsilon \\
+\mathtt{code}(\mathrm{inl} \, v : \alpha_1 + \alpha_2) & = & 0 \; \mathtt{code}(v : \alpha_1) \\
+\mathtt{code}(\mathrm{inr} \, v : \alpha_1 + \alpha_2) & = & 1 \; \mathtt{code}(v : \alpha_2) \\
+\mathtt{code}((v,w) : \alpha_1 \times \alpha_2) & = & \mathtt{code}(v : \alpha_1) \; \mathtt{code}(v : \alpha_2) \\
+%\mathtt{code}(\mathrm{fold} \, v : E^{*}) & = & \mathtt{code}(v : 1 + E \times E^{*}) \\
+%\mathtt{code}(v : X) & = & \mathtt{code}(v : )
+\mathtt{code}(\mathrm{fold} \, v : \mu X . \alpha) & = & \mathtt{code}(v : \alpha[\mu X . \alpha / X])
+\end{array}
+\]
+\caption{Type directed encoding from proof values to bit sequences.}
+\label{fig:code}
+\end{figure}
+
+\begin{figure}
+\[
+\begin{array}{lcl}
+\mathtt{decode'}(d, 1) & = & ((), d) \\
+\mathtt{decode'}(d, a) & = & (a, d) \\
+\mathtt{decode'}(0d, E + F) & = & \mathbf{let} \; (v,d') = \mathtt{decode'}(d,E) \; \mathbf{in} \; (\mathrm{inl} \, v, d') \\
+\mathtt{decode'}(1d, E + F) & = & \mathbf{let} \; (w,d') = \mathtt{decode'}(d,F) \; \mathbf{in} \; (\mathrm{inl} \, w, d') \\
+\mathtt{decode'}(d, E \times F) & = &
+    \mathbf{let} \left\{ \begin{array}{rcl} (v,d') &=& \mathtt{decode}'(d, E) \\ (w, d'') &=& \mathtt{decode}'(d', F) \end{array} \right\}
+    \mathbf{in} \; ((v,w), d'') \\
+%\mathtt{decode'}(d, E^{*}) & = & \mathbf{let} \; (v,d') = \mathtt{decode'}(d : 1 + E \times E^{*}) \; \mathbf{in} \; (\mathrm{fold} \, v, d')\\
+\mathtt{decode'}(d, \mu X . \alpha) = \mathbf{let} \; (v,d') & = & \mathtt{decode'}(d, \alpha[\mu X . \alpha / X]) \; \mathbf{in} \; (\mathrm{fold} \, v, d') \\
+\\
+\mathtt{decode}(d, E) & = & \mathbf{let} \; (v, d') = \mathtt{decode'}(d, E) \; \mathbf{in} \; v
+\end{array}
+\]
+\caption{Type directed decoding from bit sequences to proof values.}
+\label{fig:decode}
+\end{figure}
+
+\subsection{Normalising}
 One gains nothing just by converting a regular expression to an equivalent
 $\mu$-recursive one by the rule given above. Consider an example: bit code the
 string $aab$ under the regular expression $(a + (b + c))^{\ast}$. The bit codes
@@ -666,9 +685,9 @@ The reason why the bit code under the latter regular expression is shorter is
 that the $1$ is buried inside the sum. That way we don't use a full bit per
 character to code that the string is not finished yet.
 
-It is easy to automatically balance a sum (see \fref{sec:sum-balancing-using})
-but that doesn't immediately help as the ``$\times X$'' prevents us from
-including the $1$ in the balancing.
+It is easy to automatically balance a sum (see \fref{sec:huffman}) but that
+doesn't immediately help as the ``$\times X$'' prevents us from including the
+$1$ in the balancing.
 
 Luckily we can exploit the distributivity of $\times$ with respect to $+$. We
 rewrite $\mu$-recursive expressions to their normal form using the following
@@ -725,38 +744,67 @@ system of inference rules.
     \[
     rec : \mu X. \alpha = \alpha \lbrack \mu X. \alpha / X \rbrack
     \]
+    Noticing that the free variables of $\mu X. \alpha$ is a subset of the free
+    variables of $\alpha$ the result follows immediately by structural induction
+    on the expression.
   \end{proof}
 \end{lemma}
 
-% \begin{lemma}
-%   Conversion to normal form preserves bit coding size. That is if the finite
-%   string $s$ is encoded as $\mathfrak{b}$ under $\alpha$, $\alpha ->n \alpha'$
-%   and $s$ is encoded as $\mathfrak{b'}$ under $\alpha'$ then $| \mathfrak{b}| =
-%   | \mathfrak{b'}|$.
-%   \begin{proof}
-%     Since the inference rules are defined for possibly non-closed expressions we
-%     need to prove a stronger property. Namely for all $\alpha_i$ that if $s$ is
-%     encoded as $\mathfrak{b}$ under $\alpha \lbrack \alpha_i / X_i \rbrack$,
-%     $\alpha ->n \alpha'$ and $s$ is encoded as $\mathfrak{b'}$ under $\alpha'
-%     \lbrack \alpha'_i / X_i \rbrack$ then $| \mathfrak{b} | = | \mathfrak{b'}
-%     |$. The $X_i$'s are the free variables of $\alpha$ and $\alpha_i ->n
-%     \alpha'_i$. It is easy to see that the free variables of $\alpha$ and
-%     $\alpha'$ are the same.
+\begin{lemma}
+  Conversion to normal form preserves bit coding size.
 
-%     The result follows by structural induction on the normalisation rules. The
-%     only rules that might need explanation are the first two. They are analogous
-%     so we just prove the result for the first one.
+  Since regular expressions are, in general, ambiguous the property we are after
+  here is not so obvious; Again we need to handle possible non-closed
+  expressions. Given an expression $\alpha$ let $\bar{\alpha} = \alpha \lbrack
+  \alpha_i / X_i \rbrack$, $\bar{\alpha}' = \alpha' \lbrack \alpha'_i / X_i
+  \rbrack$ where the $X_i$'s are the free variables of $\alpha$, the
+  $\alpha_i$'s are arbitrary closed expressions, $\alpha ->n \alpha'$ and
+  $\alpha_i ->n \alpha'_i$.
 
-%     By induction we have that encoding $s$ under $\gamma \times \alpha + \gamma
-%     \times \beta$ yields a code, $\mathfrak{b}$ of the same length that encoding
-%     under $\delta$ does. We need to show that encoding under $\gamma \times
-%     (\alpha + \beta$ gives a code of the same length. The first bit of $\mathfrak{b}
-%   \end{proof}
-% \end{lemma}
+  Now if $v$ is a proof of membership in $\bar{\alpha}$ with the bit coding
+  $\mathfrak{b}$ then there exists a membership proof $v'$ in $\bar{\alpha}'$
+  with the bit coding $\mathfrak{b'}$ such that $| \mathfrak{b'} | \leq |
+  \mathfrak{b} |$.
 
-\section{Specializing Regexs to Strings using Huffman Trees}
+  \begin{proof}
+    With the problem properly formulated the proof itself is almost trivial as
+    is often the case.
 
-The fact that the alternation operator in $Reg$ is associative and commutative with respect to language equivalence can be exploited for encoding strings more efficiently. Consider the string \texttt{"aaa"}; compressing it using the expression $E_1 = ((a + b) + c)^{*}$ yields the bit sequence $111111110$. On the other hand, compressing it using the expression $E_2 = (a + (b + c))^{*}$ yields the bit sequence $111110$. As $\mathcal{L}(E_1) = \mathcal{L}(E_2)$ both expressions can be used for compressing the excact same set of strings; for the specific string \texttt{"aaa"} we prefer $E_2$. For an arbitrary string, $s$, and an arbitrary regular expression, $E$, where $s \in \mathcal{L}(E)$, we find that the optimal method for reordering the sums in $E$, with respect to the compression ratio, is to reorder them into Huffman trees based on $s$.
+    Again we use structural induction on $\alpha$. The interesting cases are the
+    two first rules and the rule for $\mu$-expressions. The cases $\gamma \times
+    (\alpha + \beta)$ and $(\alpha + \beta) \times \gamma$ are analogous so we
+    give here only the first one.\\[1em]
+
+    Case $\inference{\gamma \times \alpha + \gamma \times \beta ->n
+      \delta}{\gamma \times (\alpha + \beta) ->n \delta}$: By the induction
+    hypothesis we have that if the bit coding of $w : (\gamma \times \alpha +
+    \gamma + \beta)\lbrack \alpha_i / X_i \rbrack$ is $\mathfrak{c}$ then $|
+    \mathfrak{b'} | \leq | \mathfrak{c} |$. Now we make a case distinction on
+    the first bit $\mathfrak{c_0}$ of $\mathfrak{c}$. In either case the first
+    part of the remaining bits $\mathfrak{c_1}$ codes a membership proof of
+    $\gamma\lbrack \alpha_i / X_i \rbrack$. If $\mathfrak{c_0}$ is $0$ then the
+    rest of the bits $\mathfrak{c_2}$ code at membership proof of $\alpha\lbrack
+    \alpha_i / X_i \rbrack$, and if it is $1$ then $\mathfrak{c_2}$ codes a
+    membership proof of $\beta\lbrack \alpha_i / X_i \rbrack$. In either case we
+    can reorder the bit code to construct one that codes a membership proof of
+    $(\gamma \times (\alpha + \beta))\lbrack \alpha_i / X_i \rbrack$, namely
+    $\mathfrak{c'} = \mathfrak{c_1}\mathfrak{c_0}\mathfrak{c_2}$.\\[1em]
+
+    Case $\inference{\alpha ->n \alpha'}{\mu X. \alpha ->n \mu X. \alpha'}$: The
+    proof follows by noticing that the free variables of $\mu X. \alpha$ is a
+    subset of the free variables of $\alpha$.
+  \end{proof}
+
+  Alternation is the sole reason for ambiguity, so a parser can be made
+  unambiguous by always choosing left over right or vice versa.
+
+  It is not too hard to see that the bit coding size is preserved exactly
+  (eg. $| \mathfrak{b'} | = | \mathfrak{b} |$) when using such a parser.
+\end{lemma}
+
+\section{Specializing Regexs to Strings using Huffman Trees}\label{sec:huffman}
+
+The fact that the alternation operator in $Reg_{\Sigma}$ is associative and commutative with respect to language equivalence can be exploited for encoding strings more efficiently. Consider the string \texttt{"aaa"}; compressing it using the expression $E_1 = ((a + b) + c)^{*}$ yields the bit sequence $111111110$. On the other hand, compressing it using the expression $E_2 = (a + (b + c))^{*}$ yields the bit sequence $111110$. As $\mathcal{L}(E_1) = \mathcal{L}(E_2)$ both expressions can be used for compressing the exact same set of strings; for the specific string \texttt{"aaa"} we prefer $E_2$. For an arbitrary string, $s$, and an arbitrary regular expression, $E$, where $s \in \mathcal{L}(E)$, we find that the optimal method for reordering the sums in $E$, with respect to the compression ratio, is to reorder them as Huffman trees based on $s$.
 
 To do that, we introduce the syntactic form $Reg'_\Sigma$ over the finite alphabet $\Sigma = {a_1, \dots, a_n}$:
 
