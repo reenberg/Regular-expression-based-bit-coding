@@ -1,7 +1,6 @@
 module Parse
 (
     parse
-    --parseList
 )
 where
 
@@ -25,12 +24,6 @@ parse1 (r1 :*: r2) xs env =
 parse1 (r1 :+: r2) xs env = 
   [ (Inl p1, ys) | (p1, ys) <- parse1 r1 xs env ] ++
   [ (Inr p2, zs) | (p2, zs) <- parse1 r2 xs env ]
---parse1 (Star r) xs env = 
---  [ (In (p:ps), zs) |
---      (p, ys) <- parse1 r xs env,
---      length ys < length xs,
---      (In ps, zs) <- parse1 (Star r) ys env ]
---  ++ [ (In [], xs) ]
 parse1 (Var t) xs env =
   case Map.lookup t env of
     Just (r, ys) -> if length ys > length xs then
@@ -72,28 +65,3 @@ parse1 _           _   _   = mzero
 parse :: Eq a => Regex a -> [a] -> Maybe (STree a)
 parse r cs = parse1 r cs Map.empty
 -}
-
-{-
-parse1 :: (MonadPlus m, Eq a) => Regex a -> [a] -> m (STree a)
-parse1 O         _   = mzero
-parse1 E         []  = return Unit
-parse1 (Lit x)   [y] | x == y = return (Char x)
-parse1 (e :+: f) cs  = liftM Inl (parse1 e cs) `mplus` liftM Inr (parse1 f cs)
-parse1 (e :*: f) cs  = msum (parsePair `fmap` splits)
-                       where
-                         splits = [ splitAt n cs | n <- [0..length cs] ]
-                         parsePair (cs1,cs2) = liftM2 Pair (parse1 e cs1) (parse1 f cs2)
-parse1 (Star e)  []  = return ((Fold . Inl) Unit)
-parse1 (Star e)  cs  = liftM (Fold . Inr) (msum (parsePair `fmap` splits))
-                       where
-                         splits = [ splitAt n cs | n <- [1..length cs] ]
-                         parsePair (cs1,cs2) = liftM2 Pair (parse1 e cs1) (parse1 (Star e) cs2)
-parse1 _         _   = mzero
-
-parse :: Eq a => Regex a -> [a] -> Maybe (STree a)
-parse = parse1
--}
-
-
---parseList :: Eq a => Regex a -> [a] -> [STree a]
---parseList r cs = parse1 r cs Map.empty
