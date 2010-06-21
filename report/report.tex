@@ -316,9 +316,13 @@ Henglein and Lasse, Oracle, XMill ...
 
 \subsection{Organization}
 
-The rest of the paper is organized as follows: In Section FIX ME we ... In Section FIX ME we ... blah blah
-
-This paper marks the conclussion of the DIKU course \emph{Topics in Programming Languages}.
+The rest of the paper is organized as follows:
+Section \ref{sec:formalization} lays down the formal foundation on which we reason about regular expressions;
+section \ref{sec:convert} shows how to automatically derive a regular expression from a DTT XML Scheme;
+section \ref{sec:mu_recursion} extends regular expressions with recursion, and shows how to encode parse trees more efficienctly;
+section \ref{sec:convert_huffman} shows how to specialize a regular expression to the specific XML-data being compressed;
+section \ref{sec:experimental_results} evaluates our prototype and presents experimental results;
+section \ref{sec:conclusion} concludes the paper and presents further work.
 
 \subsection{Acknowledgement}
 
@@ -327,6 +331,7 @@ The authors extend their graditude to Joakim Ahnfelt-Rønne, Jon Elverkilde, and
 \newpage
 
 \section{Formalization}
+\label{sec:formalization}
 
 \begin{figure}
 \[
@@ -392,6 +397,7 @@ the branches $(a + (b + c \times d))$, and $(a + b)^{\ast}$.
 \end{example}
 
 \section{Converting XML Schema to Regular expression}
+\label{sec:convert}
 
 Regular expressions can be generated from XML schemas. The simples algorithm is
 to generate a regular expression for the root element and then inlining the
@@ -428,10 +434,6 @@ expression for the children we get
   \item 
 
   \end{itemize}
-  
-
-\subsection{Optimisation of regular expression representation}
-...
 
 \subsection{Local and Global schema definitions}
 \label{sec:local-global-schema-definitions}
@@ -483,7 +485,7 @@ definitions can be divided into two principles\footnote{Atleast this is true for
 
 And of cause any mixture of the two ways of defining elements.
 
-\section{Optimising representation by global definitions}
+\subsection{Optimising representation by global definitions}
 
 The size of the resulting regular expression can potentially be a problem, for
 large schema definitions. The problem arises especially when the data is small
@@ -518,7 +520,7 @@ makes it possible to create non regular language by having infinite
 Obviously it is not possible to create regular expressions from such schema
 instances.
 
-\section{Implementation of DTD schema parser}
+\subsection{Implementation of DTD schema parser}
 
 We have implemented a DTD schema parser, even though it limits the possibilities
 of optimisation by restricting specific types on elements contained data (e.g.,
@@ -544,7 +546,7 @@ representing the \texttt{\#PCDATA} type. This extended regular expression data
 type is intended as being the high level representation used when saving the
 regular expression with the encoded data so it is as small as possible.
 
-\section{Further work}
+\subsection{Further work}
 
 Below is a list of possible further work.
 
@@ -572,6 +574,8 @@ Below is a list of possible further work.
 \end{description}
 
 \section{$\mu$-Recursion}
+\label{sec:mu_recursion}
+
 We introduce tail-recursive $\mu$-types as described in \cite{heni10}.\\[1em]
 
 Regular expressions offers a very restricted form of recursion namely the Kleene
@@ -803,6 +807,7 @@ system of inference rules.
 \end{lemma}
 
 \section{Specializing Regexs to Strings using Huffman Trees}\label{sec:huffman}
+\label{sec:specialize_huffman}
 
 The fact that the alternation operator in $Reg_{\Sigma}$ is associative and commutative with respect to language equivalence can be exploited for encoding strings more efficiently. Consider the string \texttt{"aaa"}; compressing it using the expression $E_1 = ((a + b) + c)^{*}$ yields the bit sequence $111111110$. On the other hand, compressing it using the expression $E_2 = (a + (b + c))^{*}$ yields the bit sequence $111110$. As $\mathcal{L}(E_1) = \mathcal{L}(E_2)$ both expressions can be used for compressing the exact same set of strings; for the specific string \texttt{"aaa"} we prefer $E_2$. For an arbitrary string, $s$, and an arbitrary regular expression, $E$, where $s \in \mathcal{L}(E)$, we find that the optimal method for reordering the sums in $E$, with respect to the compression ratio, is to reorder them as Huffman trees based on $s$.
 
@@ -845,8 +850,10 @@ $a$ & $b$ & $c$ & $d$ \\
 \end{example}
 
 \section{Experimental Results}
+\label{sec:experimental_results}
 
 \section{Conclusion}
+\label{sec:conclusion}
 
 \subsection{Future Work}
 
