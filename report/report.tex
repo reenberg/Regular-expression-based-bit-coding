@@ -279,17 +279,21 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
 \section{Introduction}
 
-Compression of XML files \cite{FIX ME} has a wide range of applications. On the internet and in database systems XML is an extensively used format for encoding documents and storing data in a machine-readable form. Typically XML files includes a large amount of meta-data
+The Extensible Markup Language (XML) \cite{FIX ME} is an extensively used format for encoding documents and storing data in a machine-readable form. During the last decade hundreds of XML-based domain specific languages has emerged, e.g. RSS for publishing web blogs, XHTML for encoding web pages, CML for managing molecular information, SVG for describing two-dimensional vector graphics, and OpenDocument for representing electronic documents. Further, XML has become ubiquitous in both commercial industries such as banking and telecommunication \cite{FIX ME}, and in science and research industries \cite{FIX ME}.
+
+The advantage of using a self-describing data format as XML is flexibility and acces to the vast amount of existing tools and technologies tailored at XML. Nonetheless encoding data in XML is highly inefficient in terms of space-usage, as large amounts of meta-data are replicated throughout the encoded file; hence tools for compressing XML encoded data is of main concern.
+
+Existing general data-compressing techniques are typically based on a statistical approach using codebooks \cite{FIX ME}. In this paper we take another approach and investigate a method specific for XML files which exploits the tidy semantics of the XML-format. Given an XML scheme file \cite{FIX ME}, we automatically derive a regular expression which matches all instances of the XML scheme. Using this regular expression enables us to parse an instance of the XML scheme, and we encode the parse tree efficiently using a bitcoding technique which only encode non-deterministic choices in the parse tree. We have implemented a prototype of our method in the declarative language Haskell \cite{FIX ME} and conducted experiments using this prototype for compressing data obtained from the Digital Bibliography \& Library Project.
+
+This paper marks the conclusion of the 2010 candidate course \emph{Topics in Programming Languages} at Department of Computer Science, Copenhagen University.
+
+\subsection{Expectations of the Reader}
+
+We expect readers to posses basic knowledge of regular expressions \cite{FIX ME}. Also we expect familiarity with inference system and programming language semantics \cite{FIX ME}.
 
 \subsection{Previous work}
 
 Henglein and Lasse, Oracle, XMill ...
-
-%\subsection{Contributions}
-
-\subsection{Expectations of the Reader}
-
-Basic knowledge of regular expressions \cite{FIX ME} is assumed. Some experience with inference system and programming language semantics \cite{FIX ME} will be useful.
 
 \subsection{Organization}
 
@@ -299,7 +303,7 @@ This paper marks the conclussion of the DIKU course \emph{Topics in Programming 
 
 \subsection{Acknowledgement}
 
-The authors extend their graditude to FIX ME, FIX ME, and FIX ME for insightful comments. Also we would like to thank Lasse Nielsen for providing us the source code for his dynamic parser.
+The authors extend their graditude to Joakim Ahnfelt-Rønne, Jon Elverkilde, and Michael Flænø Werk for insightful comments. Also we would like to thank Lasse Nielsen for providing useful source code for regular expression parsing.
 
 \newpage
 
