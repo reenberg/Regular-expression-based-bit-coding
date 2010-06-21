@@ -15,7 +15,7 @@ import DTDParser.TypeDef
 import DTDParser.ProcessDTD
 import DTDParser.GenerateRegex
 
-import qualified Regex as Rx
+import qualified RegKleene as Rx
 import qualified RegexExt as RxExt
 
 
@@ -42,7 +42,7 @@ main = do
        --sequence_ z        
        --sequence_ $ map (print . show) z
 
-parse :: String -> IO (Rx.Regex Char)
+parse :: String -> IO (Rx.Reg Char)
 parse dtdFileName =
     do dtdStr <- readFile dtdFileName
        -- The "foobar" value is mandatory, the name of the original file for

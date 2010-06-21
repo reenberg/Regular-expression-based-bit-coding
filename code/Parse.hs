@@ -11,21 +11,11 @@ import qualified Data.Map as Map
 import Control.Monad (MonadPlus, liftM, liftM2, mzero, mplus, msum)
 import RegMu (Reg (..), PVal (..), Var)
 
-<<<<<<< HEAD:code/Parse.hs
-showit x = (unsafePerformIO $ print x) `seq` x
-
-type Env a = Map Var (Regex a, [a])
-=======
 type Env a = Map Var (Reg a, [a])
->>>>>>> fb72635307f21cfcbe85d1c61723d76ce8945155:code/Parse.hs
 
 type Parse a = [(PVal a, [a])]
 
-<<<<<<< HEAD:code/Parse.hs
-parse1 :: (Eq a, Show a) => Regex a -> [a] -> Env a -> Parse a
-=======
 parse1 :: (Eq a) => Reg a -> [a] -> Env a -> Parse a
->>>>>>> fb72635307f21cfcbe85d1c61723d76ce8945155:code/Parse.hs
 parse1 O xs _ = []
 parse1 E xs _ = [(Unit, xs)]
 parse1 (Lit y) [] _ = []
@@ -37,15 +27,6 @@ parse1 (r1 :*: r2) xs env =
 parse1 (r1 :+: r2) xs env =
   [ (Inl p1, ys) | (p1, ys) <- parse1 r1 xs env ] ++
   [ (Inr p2, zs) | (p2, zs) <- parse1 r2 xs env ]
-<<<<<<< HEAD:code/Parse.hs
-parse1 (Star r) xs env =
-  [ (In (p:ps), zs) |
-      (p, ys) <- parse1 r xs env,
-      length ys < length xs,
-      (In ps, zs) <- parse1 (Star r) ys env ]
-  ++ [ (In [], xs) ]
-parse1 (Var t) xs env = --parse1 (case Map.lookup t env of Just r -> r) xs env
-=======
 --parse1 (Star r) xs env = 
 --  [ (In (p:ps), zs) |
 --      (p, ys) <- parse1 r xs env,
@@ -53,7 +34,6 @@ parse1 (Var t) xs env = --parse1 (case Map.lookup t env of Just r -> r) xs env
 --      (In ps, zs) <- parse1 (Star r) ys env ]
 --  ++ [ (In [], xs) ]
 parse1 (Var t) xs env =
->>>>>>> fb72635307f21cfcbe85d1c61723d76ce8945155:code/Parse.hs
   case Map.lookup t env of
     Just (r, ys) -> if length ys > length xs then
                       [ (p, zs) | (p, zs) <- parse1 r xs env ]
@@ -63,13 +43,8 @@ parse1 (Mu t r) xs env = [ (Fold p, xs) | (p, xs) <- parse1 r xs env' ]
   where
     env' = Map.insert t (Mu t r, xs) env
 
-<<<<<<< HEAD:code/Parse.hs
-parse :: (Eq a, Show a) => Regex a -> [a] -> Maybe (STree a)
-parse r cs = case filter (null . snd . showit) (parse1 r cs Map.empty) of
-=======
 parse :: Eq a => Reg a -> [a] -> Maybe (PVal a)
 parse r cs = case filter (null . snd) (parse1 r cs Map.empty) of
->>>>>>> fb72635307f21cfcbe85d1c61723d76ce8945155:code/Parse.hs
   (v, _) : _ -> Just v
   _          -> Nothing
 

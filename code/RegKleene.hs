@@ -15,7 +15,9 @@ module RegKleene
   dot,
   string,
   cclass,
-  pcdata
+  pcdata,
+  cdata,
+  whitespace
 )
 where
 
@@ -121,3 +123,9 @@ cclass = sum . fmap Lit
 
 pcdata :: Reg Char
 pcdata = cclass $ fmap chr $ [32 .. 126] -- most printable chars.
+
+cdata :: Reg Char
+cdata = pcdata
+
+whitespace :: Reg Char
+whitespace = cclass " \n\t\r"

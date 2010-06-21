@@ -1,7 +1,7 @@
 module RegexExt
 where
 
-import qualified Regex as Rx
+import qualified RegKleene as Rx
 
 data RegexExt
   = O                      -- | 0
@@ -72,7 +72,7 @@ instance Show CClass where
     show WhiteSpace = "[ws]"
     show CDATA = "[CDATA]"
 
-toRegex :: RegexExt -> Rx.Regex Char
+toRegex :: RegexExt -> Rx.Reg Char
 toRegex regexExt =
     case regexExt of
       O -> Rx.O

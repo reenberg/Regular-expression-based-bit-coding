@@ -21,32 +21,11 @@ import Data.Maybe (fromJust)
 import Control.Monad.State (State, get, put, evalState)
 import Control.Monad (liftM, liftM2)
 
-<<<<<<< HEAD:code/Optimize.hs
-showit x = (unsafePerformIO $ print x) `seq` x
-
-data Choice = L | R deriving (Ord, Eq, Show)
-type Path = [Choice]
-
-newtype Label = Label Integer deriving (Eq, Ord, Show, Enum, Num)
-
-data Regex' a
-  = O'
-  | E'
-  | Lit' a
-  | Sigma' Label (Map Path (Regex' a))
-  | Regex' a :**: Regex' a
-  | Var' Var
-  | Mu' Var (Regex' a)
-  | Star' (Regex' a)
-    deriving (Show)
-
-=======
 import qualified RegKleene as K
 import qualified RegMu as M
 import qualified RegSum as S
 import RegMu (PVal(..))
 import RegSum (Choice (..), Path, Label)
->>>>>>> fb72635307f21cfcbe85d1c61723d76ce8945155:code/Optimize.hs
 
 inc :: Num a => State a a
 inc = do { n <- get ; put (n+1) ; return n }
@@ -66,22 +45,9 @@ optimize = balance . normalize
 normalize1 :: K.Reg a -> State M.Var (M.Reg a)
 normalize1 r =
   case r of
-<<<<<<< HEAD:code/Optimize.hs
-    r1 :*: (r2 :+: r3) -> liftM2 (:+:) (normalize1 $ r1 :*: r2) (normalize1 $ r1 :*: r3)
-    (r1 :+: r2) :*: r3 -> liftM2 (:+:) (normalize1 $ r1 :*: r3) (normalize1 $ r2 :*: r3)
-    -- r1 :+: Mu t r2 -> normalize1 $ Mu t (r1 :+: r2)
-    -- Mu t r1 :+: r2 -> normalize1 $ Mu t (r1 :+: r2)
-    r1 :+: r2 -> liftM2 (:+:) (normalize1 r1) (normalize1 r2)
-    r1 :*: r2 -> liftM2 (:*:) (normalize1 r1) (normalize1 r2)
-    Mu t r -> liftM (Mu t) (normalize1 r)
-    Star r -> do t <- inc
-                 normalize1 (Mu t ((r :*: Var t) :+: E))
-    r -> return r
-
-normalize :: Regex a -> Regex a
-=======
     K.O -> return M.O
     K.E -> return M.E
+    K.Lit a -> return $ M.Lit a
     r1 K.:*: (r2 K.:+: r3) -> liftM2 (M.:+:) (normalize1 $ r1 K.:*: r2) (normalize1 $ r1 K.:*: r3)
     (r1 K.:+: r2) K.:*: r3 -> liftM2 (M.:+:) (normalize1 $ r1 K.:*: r3) (normalize1 $ r2 K.:*: r3)
     r1 K.:+: r2 -> liftM2 (M.:+:) (normalize1 r1) (normalize1 r2)
@@ -91,7 +57,6 @@ normalize :: Regex a -> Regex a
                    return $ M.Mu t ((r' M.:*: M.Var t) M.:+: M.E)
 
 normalize :: K.Reg a -> M.Reg a
->>>>>>> fb72635307f21cfcbe85d1c61723d76ce8945155:code/Optimize.hs
 normalize r = evalState (normalize1 r) 0
 
 specialize :: (Ord a, Show a) => M.Reg a -> M.PVal a -> M.Reg a

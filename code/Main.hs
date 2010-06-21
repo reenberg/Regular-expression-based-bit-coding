@@ -15,13 +15,8 @@ parse' r s = Maybe.fromJust $ parse r s
 title :: Reg Char
 title = Star (alphanum :+: cclass " ,./():-&#;'?`@!+*=_[]|")
 
-<<<<<<< HEAD:code/Main.hs
-key :: Regex Char
-key = Star (Star alphanum :*: Lit '/') :*: Star (alphanum :+: Lit '-')
-=======
 key :: Reg Char
-key = Star (Star (cclass ['a' .. 'z']) :*: Lit '/') :*: Star (cclass $ "-" ++ ['a' .. 'z'] ++ ['A' .. 'Z'] ++ ['0' .. '9'])
->>>>>>> fb72635307f21cfcbe85d1c61723d76ce8945155:code/Main.hs
+key = Star (Star alphanum :*: Lit '/') :*: Star (alphanum :+: Lit '-')
 
 tag :: Reg Char
 tag = string "<tag key=\"" :*: key :*: string "\">" :*: title :*: string "</tag>\n"
@@ -33,10 +28,10 @@ tags = string "<?xml version=\"1.0\"?>\n<dblptags>\n" :*: Star tag :*: string "<
 tags' = optimize tags
 
 main =
-    do regex <- DTDParser.parse "../data/dblp.dtd"
+    do regex <- DTDParser.parse "DTDParser/xml/dblp.dtd" -- "../data/dblp.dtd"
        let regex' = optimize regex
-       -- print regex
-       cs <- readFile "../data/dblp_small.xml"
+--        print regex
+       cs <- readFile "DTDParser/xml/dblptmp.xml" -- "../data/dblp_small.xml"
        let v = parse' regex' cs
            regex'' = specialize regex' v
            v' = parse' regex'' cs
