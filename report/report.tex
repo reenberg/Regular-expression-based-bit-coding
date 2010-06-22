@@ -298,21 +298,23 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
 \section{Introduction}
 
-The Extensible Markup Language (XML) \cite{FIX ME} is an extensively used format for encoding documents and storing data in a machine-readable form. During the last decade hundreds of XML-based domain specific languages has emerged, e.g. RSS for publishing web blogs, XHTML for encoding web pages, CML for managing molecular information, SVG for describing two-dimensional vector graphics, and OpenDocument for representing electronic documents. Further, XML has become ubiquitous in both commercial industries such as banking and telecommunication \cite{FIX ME}, and in science and research industries \cite{FIX ME}.
+The Extensible Markup Language (XML) \cite{w3c2000} is an extensively used format for encoding documents and storing data in a machine-readable form. During the last decade hundreds of XML-based domain specific languages has emerged, e.g. RSS for publishing web blogs, XHTML for encoding web pages, CML for managing molecular information, SVG for describing two-dimensional vector graphics, and OpenDocument for representing electronic documents. Further, XML has become ubiquitous in both commercial industries such as banking and telecommunication \cite{lisu2000}, and in science and research industries \cite{zhlu, gi2000}.
 
 The advantage of using a self-describing data format as XML is flexibility and acces to the vast amount of existing tools and technologies tailored at XML. Nonetheless encoding data in XML is highly inefficient in terms of space-usage, as large amounts of meta-data are replicated throughout the encoded file; hence tools for compressing XML encoded data is of main concern.
 
-Existing general data-compressing techniques are typically based on a statistical approach using codebooks \cite{FIX ME}. In this paper we take another approach and investigate a method specific for XML files which exploits the tidy semantics of the XML-format. Given an XML scheme file \cite{FIX ME}, we automatically derive a regular expression which matches all instances of the XML scheme. Using this regular expression enables us to parse an instance of the XML scheme, and we encode the parse tree efficiently using a bitcoding technique which only encode non-deterministic choices in the parse tree. We have implemented a prototype of our method in the declarative language Haskell \cite{FIX ME} and conducted experiments using this prototype for compressing data obtained from the Digital Bibliography \& Library Project.
+Existing general data-compressing techniques are typically based on a statistical approach using codebooks. In this paper we take another approach and investigate a method specific for XML files which exploits the tidy semantics of the XML-format. Given an XML scheme file \cite{wa2001}, we automatically derive a regular expression which matches all instances of the XML scheme. Using this regular expression enables us to parse an instance of the XML scheme, and we encode the parse tree efficiently using a bitcoding technique which only encode non-deterministic choices in the parse tree. We have implemented a prototype of our method in the declarative language Haskell \cite{sugost2008} and conducted experiments using this prototype for compressing data obtained from the Digital Bibliography \& Library Project.
 
 This paper marks the conclusion of the 2010 candidate course \emph{Topics in Programming Languages} at Department of Computer Science, Copenhagen University.
 
 \subsection{Expectations of the Reader}
 
-We expect readers to posses basic knowledge of regular expressions \cite{FIX ME}. Also we expect familiarity with inference system and programming language semantics \cite{FIX ME}.
+We expect readers to posses basic knowledge of regular expressions \cite{houl2006}. Also we expect familiarity with inference system and programming language semantics \cite{gu1992, wi1993}. Knowledge of Huffman coding \cite[Section 16.3]{co2001} is necessary to understand Section \ref{sec:convert_huffman}.
 
 \subsection{Previous work}
 
-Henglein and Lasse, Oracle, XMill ...
+Our work is based on Henglein and Nielsen's paper \cite{heni2010}. In their paper they propose a straightforward technique for encoding syntax trees parsed under regular expressions effeciently as bit sequences. This is closely related to the work done by Necula and Rahul \cite{nera2001} where a variant of the same technique is used for compact encoding of proof-carrying code. By using oracle-based checking only non-deterministic choices in proof-trees need to be encoded.
+
+In \cite{lisu2000} Leifke and Suciu describes their XML compressor \emph{XMill}. By using a specialized version of \emph{zlib} \cite{dega1996} they are able to compress XML files up to twice of the compression ratio of gzip \cite{de1996}.
 
 \subsection{Organization}
 
@@ -320,15 +322,13 @@ The rest of the paper is organized as follows:
 Section \ref{sec:formalization} lays down the formal foundation on which we reason about regular expressions;
 section \ref{sec:convert} shows how to automatically derive a regular expression from a DTT XML Scheme;
 section \ref{sec:mu_recursion} extends regular expressions with recursion, and shows how to encode parse trees more efficienctly;
-section \ref{sec:convert_huffman} shows how to specialize a regular expression to the specific XML-data being compressed;
+section \ref{sec:specialize_huffman} shows how to specialize a regular expression to the specific XML-data being compressed;
 section \ref{sec:experimental_results} evaluates our prototype and presents experimental results;
 section \ref{sec:conclusion} concludes the paper and presents further work.
 
 \subsection{Acknowledgement}
 
 The authors extend their graditude to Joakim Ahnfelt-Rønne, Jon Elverkilde, and Michael Flænø Werk for insightful comments. Also we would like to thank Lasse Nielsen for providing useful source code for regular expression parsing.
-
-\newpage
 
 \section{Formalization}
 \label{sec:formalization}
@@ -576,7 +576,7 @@ Below is a list of possible further work.
 \section{$\mu$-Recursion}
 \label{sec:mu_recursion}
 
-We introduce tail-recursive $\mu$-types as described in \cite{heni10}.\\[1em]
+We introduce tail-recursive $\mu$-types as described in \cite{heni2010}.\\[1em]
 
 Regular expressions offers a very restricted form of recursion namely the Kleene
 star. This has an impact when we consider the bit code produced from a
@@ -616,7 +616,7 @@ which now need to handle $\mu$-expressions. It becomes
 \inference{v : \alpha \lbrack \mu X. \alpha / X \rbrack}{\mathtt{fold}\ v : \mu X. \alpha}
 \]
 
-Theorem 9 in \cite{heli10} states that $Reg_{\Sigma}^{\mu}$ describes exactly
+Theorem 9 in \cite{heli2010} states that $Reg_{\Sigma}^{\mu}$ describes exactly
 the same languages as $Reg_{\Sigma}$:
 \begin{enumerate}
 \item $\forall E \in Reg_{\Sigma} : \exists \alpha \in Reg_{\Sigma}^{\mu} :
@@ -851,6 +851,16 @@ $a$ & $b$ & $c$ & $d$ \\
 
 \section{Experimental Results}
 \label{sec:experimental_results}
+
+file: 33414 bytes (data: 17927, meta: 15171)
+
+gzip file: 5760 bytes
+
+gzip data: 5000 bytes
+
+code meta: 737 bytes
+
+gzip data + code meta: 5737 bytes
 
 \section{Conclusion}
 \label{sec:conclusion}
