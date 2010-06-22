@@ -362,8 +362,8 @@ are able to compress XML files up to twice of the compression ratio of gzip
 The rest of the paper is organized as follows:
 Section \ref{sec:formalization} lays down the formal foundation on which we reason about regular expressions;
 section \ref{sec:convert} shows how to automatically derive a regular expression from an XML schema;
-section \ref{sec:mu_recursion} extends regular expressions with recursion, and shows how to encode parse trees more efficiently;
-section \ref{sec:specialize_huffman} shows how to specialise a regular expression to the specific XML-data being compressed;
+section \ref{chap:mu-recursion} extends regular expressions with recursion, and shows how to encode parse trees more efficiently;
+section \ref{chap:specialize_huffman} shows how to specialise a regular expression to the specific XML-data being compressed;
 section \ref{sec:experimental_results} evaluates our prototype and presents experimental results;
 section \ref{sec:conclusion} concludes the paper and presents further work.
 
@@ -606,6 +606,7 @@ regular expression with the encoded data so it is as small as possible.
 \subsection{Further work}
 
 Below is a list of possible further work.
+\fixme{Should be merged with real further work}
 
 \begin{description}
 \item[Refactoring] As it is not all schema instances that utilises global
@@ -630,8 +631,8 @@ Below is a list of possible further work.
 
 \end{description}
 
-\section{$\mu$-Recursion}
-\label{sec:mu_recursion}
+\chapter{$\mu$-Recursion}
+\label{chap:mu-recursion}
 
 We introduce tail-recursive $\mu$-types as described in \cite{heni2010}.\\[1em]
 
@@ -650,7 +651,7 @@ gain higher compression rates.
 
 Therefore we generalise recursion to tail-recursive $\mu$-types.
 
-\subsection{Definition}
+\section{Definition}
 Let the language of expressions $UnReg_{\Sigma}^{\mu}$ over a finite alphabet
 $\Sigma = \{a_1, \ldots, a_n\}$ be
 \[
@@ -673,8 +674,9 @@ which now need to handle $\mu$-expressions. It becomes
 \inference{v : \alpha \lbrack \mu X. \alpha / X \rbrack}{\mathtt{fold}\ v : \mu X. \alpha}
 \]
 
-Theorem 9 in \cite{heli2010} states that $Reg_{\Sigma}^{\mu}$ describes exactly
-the same languages as $Reg_{\Sigma}$:
+Theorem 9 in \cite{heni2010} states that $Reg_{\Sigma}^{\mu}$ describes exactly
+the same languages as $Reg_{\Sigma}$:\fixme{Fixed the cite, check it is the
+  right one}
 \begin{enumerate}
 \item $\forall E \in Reg_{\Sigma} : \exists \alpha \in Reg_{\Sigma}^{\mu} :
   \{||v|| | |- v : E\} = \{||v|| | |- v : \alpha \}$
@@ -686,7 +688,7 @@ And the proof of $1.$ tells us how to convert a regular expression into an
 equivalent one using $\mu$-recursion: Replace every $E^{\ast}$ with $\mu X.1 +
 \alpha \times X$ where $\alpha$ is the conversion of $E$.
 
-\subsection{Bit coding}
+\section{Bit coding}
 
 We extend the rules for producing bit codes to closed tail-recursive
 $\mu$-expressions. They are given in \fref[plain]{fig:code} and \fref{fig:decode}.
@@ -728,7 +730,7 @@ $\mu$-expressions. They are given in \fref[plain]{fig:code} and \fref{fig:decode
 \label{fig:decode}
 \end{figure}
 
-\subsection{Normalising}
+\section{Normalising}
 One gains nothing just by converting a regular expression to an equivalent
 $\mu$-recursive one by the rule given above. Consider an example: bit code the
 string $aab$ under the regular expression $(a + (b + c))^{\ast}$. The bit codes
@@ -746,7 +748,7 @@ The reason why the bit code under the latter regular expression is shorter is
 that the $1$ is buried inside the sum. That way we don't use a full bit per
 character to code that the string is not finished yet.
 
-It is easy to automatically balance a sum (see \fref{sec:huffman}) but that
+It is easy to automatically balance a sum (see \fref{chap:huffman}) but that
 doesn't immediately help as the ``$\times X$'' prevents us from including the
 $1$ in the balancing.
 
@@ -863,10 +865,10 @@ system of inference rules.
   (eg. $| \mathfrak{b'} | = | \mathfrak{b} |$) when using such a parser.
 \end{lemma}
 
-\section{Specializing regular expressions to strings using Huffman trees}
-\label{sec:huffman}
-\label{sec:specialize_huffman}
-\fixme{two labels .. :S}
+\chapter{Specializing regular expressions to strings using Huffman trees}
+\label{chap:huffman}
+\label{chap:specialize_huffman}
+\fixme{two labels in latex code.. :S}
 
 The fact that the alternation operator in $Reg_{\Sigma}$ is associative and
 commutative with respect to language equivalence can be exploited for encoding
@@ -939,7 +941,7 @@ spared 3 bits.
 
 \end{example}
 
-\section{Experimental results}
+\chapter{Experimental results}
 \label{sec:experimental_results}
 
 file: 33414 bytes (data: 17927, meta: 15171)
@@ -952,10 +954,12 @@ code meta: 737 bytes
 
 gzip data + code meta: 5737 bytes
 
-\section{Conclusion}
+\chapter{Conclusion}
 \label{sec:conclusion}
 
 \subsection{Future work}
+
+\fixme{add something here}
 
 \bibliographystyle{../bibliography/theseurl}
 \bibliography{../bibliography/bibliography}
