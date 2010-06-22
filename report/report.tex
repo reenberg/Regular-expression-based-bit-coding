@@ -228,7 +228,7 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 % ~>e or ~>g conflicts with the \cite command for some reason.
 \mathlig{->e}{\stackrel{elim}{\leadsto}}
 \mathlig{->g}{\stackrel{gen}{\leadsto}}
-\mathlig{->n}{\leadsto^n}
+\mathlig{->n}{\leadsto}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %	    	     Forside
@@ -578,7 +578,7 @@ Below is a list of possible further work.
 
 We introduce tail-recursive $\mu$-types as described in \cite{heni2010}.\\[1em]
 
-Regular expressions offers a very restricted form of recursion namely the Kleene
+Regular expressions offer a very restricted form of recursion namely the Kleene
 star. This has an impact when we consider the bit code produced from a
 particular parse tree.
 
@@ -625,14 +625,16 @@ the same languages as $Reg_{\Sigma}$:
   \{||v|| | |- v : \alpha\} = \{||v|| | |- v : E \}$
 \end{enumerate}
 
-And the proof of $1.$ tells us how to convert a regular expression into an
+And the proof of $1$ tells us how to convert a regular expression into an
 equivalent one using $\mu$-recursion: Replace every $E^{\ast}$ with $\mu X.1 +
 \alpha \times X$ where $\alpha$ is the conversion of $E$.
 
 \subsection{Bit coding}
 
 We extend the rules for producing bit codes to closed tail-recursive
-$\mu$-expressions. They are given in \fref[plain]{fig:code} and \fref{fig:decode}.
+$\mu$-expressions. They are given in \fref[plain]{fig:code} and
+\fref{fig:decode}. Notice that there a no rules for $X$ as $Reg_{\Sigma}^{\mu}$
+only contains closed expressions.
 
 \begin{figure}
 \[
@@ -694,65 +696,145 @@ doesn't immediately help as the ``$\times X$'' prevents us from including the
 $1$ in the balancing.
 
 Luckily we can exploit the distributivity of $\times$ with respect to $+$. We
-rewrite $\mu$-recursive expressions to their normal form using the following
-system of inference rules.
+rewrite $\mu$-recursive expressions to their normal form using the system of
+inference rules given in \fref{fig:normal-form}. We write $|- \alpha ->n
+\alpha'$ if $\alpha ->n \alpha'$ is derivable in the system.
 
+\begin{figure}
 \[
-\inference{\gamma \times \alpha + \gamma \times \beta ->n \delta}{\gamma \times
+dist_1 : \inference{\gamma \times \alpha + \gamma \times \beta ->n \delta}{\gamma \times
   (\alpha + \beta) ->n \delta} \qquad
-\inference{\alpha \times \gamma + \beta \times \gamma ->n \delta}{(\alpha +
-  \beta) \times \gamma ->n \delta}
+dist_2 : \inference{\alpha \times \gamma + \beta \times \gamma ->n \delta}{(\alpha +
+  \beta) \times \gamma ->n \delta}(\gamma \neq \gamma_1 + \gamma_2)
 \]
 
 \[
-\inference{\alpha ->n \alpha' & \beta ->n \beta'}{\alpha + \beta ->n \alpha' +
+sum : \inference{\alpha ->n \alpha' & \beta ->n \beta'}{\alpha + \beta ->n \alpha' +
   \beta'} \qquad
-\inference{\alpha ->n \alpha'}{\mu X. \alpha ->n \mu X. \alpha'}
+rec : \inference{\alpha ->n \alpha'}{\mu X. \alpha ->n \mu X. \alpha'}
 \]
 
 \[
-\inference{\alpha ->n \alpha' & \beta ->n \beta'}{\alpha \times \beta ->n \alpha'
+prod : \inference{\alpha ->n \alpha' & \beta ->n \beta'}{\alpha \times \beta ->n \alpha'
   \times \beta'}(\alpha \neq \alpha_1 + \alpha_2 \land \beta \neq \beta_1 + \beta_2)
 \]
 
 \[
-\inference{}{a ->n a} \qquad
-\inference{}{1 ->n 1} \qquad
-\inference{}{0 ->n 0} \qquad
-\inference{}{X ->n X}
+sym : \inference{}{a ->n a} \qquad
+one : \inference{}{1 ->n 1} \qquad
+zero : \inference{}{0 ->n 0} \qquad
+var : \inference{}{X ->n X}
 \]
+\label{fig:normal-form}
+\end{figure}
 
-\begin{lemma}
-  Given an expression $\alpha$ it has a unique normal form $\alpha ->n \alpha'$.
+Informally normal forms have the following properties which we show below.
+\begin{enumerate}
+\item The language $Reg_{\Sigma}^{\mu}$ is closed under normal form conversion.
+\item The normal form conversion gives way to a total function $norm :
+  Reg_{\Sigma}^{\mu} -> Reg_{\Sigma}^{\mu}$.
+\item An expression is equivalent to it's normal form. They describe the same
+  language.
+\item The bit code size does not blow up under normal forms.
+\end{enumerate}
+
+\begin{theorem}
+  For all $\alpha \in Reg_{\Sigma}^{\mu}$ and $\alpha'$ such that $|- \alpha ->n
+  \alpha'$ we have that $\alpha' \in Reg_{\Sigma}^{\mu}$.
+
   \begin{proof}
-    The rules are clearly deterministic. Then the result follows immediately.
-  \end{proof}
-\end{lemma}
+    It is immediately clear that $\alpha' \in UnReg_{\Sigma}^{\mu}$. So we need
+    to show that $\alpha'$ is closed and tail-recursive.
 
-\begin{lemma}
-  An expression is equivalent to its normal form. If $\alpha ->n \alpha'$ then
-  $\alpha = \alpha'$.
+    To see that it is closed notice that the rules never moves anything past a
+    $\mu X$ and that variables are not added or renamed. This property does not
+    rely on tail-recursiveness so we can use it as a lemma in itself.
+
+    To show that $\alpha'$ is tail-recursive we need to show that $\alpha'_1$ is
+    closed in all subexpressions of the form $\alpha'_1 \times \alpha'_2$.
+    For each such subexpressions there must be a subderivation in the derivation(s)
+    of $\alpha ->n \alpha'$ of the form
+    \[
+    \inference{\mathcal{E} & \mathcal{F} \\ \beta ->n \beta' & \gamma ->n
+      \gamma'}{\beta \times \gamma ->n \beta' \times \gamma'}
+    \]
+    From the derivations $\mathcal{E}$ and $\mathcal{F}$ we have $|- \beta ->n
+    \beta'$ and $|- \gamma ->n \gamma'$ respectively. We also know from the
+    tail-recursiveness of $\alpha$ that $\beta$ is closed. So by the lemma
+    stated above we must have that $\beta'$ is also closed which in turn means
+    that $\alpha'$ is tail-recursive.
+  \end{proof}
+\end{theorem}
+
+\begin{theorem}
+  Define $norm(\alpha) = \alpha'$ where $|- \alpha ->n \alpha'$. Then $norm :
+  Reg_{\Sigma}^{\mu} -> Reg_{\Sigma}^{\mu}$ is indeed well-defined and total.
+
+  \begin{proof}
+    We need to show three things about the rules for $->n$:
+    \begin{enumerate}
+    \item Termination. That is there are no infinite derivations.
+    \item Completeness. For every $\alpha$ there exists a derivation $\alpha ->n
+      \alpha'$.
+    \item Determinism. For every $\alpha$ there exists at most one derivation
+      $\alpha ->n \alpha'$.
+    \end{enumerate}
+    \subsubsection{Termination}
+    The only rules whose premises are not strictly smaller than the conclusion
+    are $dist_1$ and $dist_2$. So we need to show that these rules cannot result
+    in an infinite derivation. They are similar so we only show it for
+    $dist_1$. A subderivation $\mathcal{E}$ ending in $dist_1$ must have the
+    form
+    \[
+    \inference{\inference{\mathcal{F} & \mathcal{G} \\ \gamma \times \alpha ->n
+        \delta_1 & \gamma \times \beta ->n \delta_2 }{\gamma \times \alpha +
+        \gamma \times \beta ->n \delta_1 + \delta_2}}{\gamma \times (\alpha +
+      \beta) ->n \delta}
+    \]
+    The conclusions of $\mathcal{F}$ and $\mathcal{G}$ are smaller than the
+    conclusion of $\mathcal{E}$.
+
+    Then the result follows by structural induction.
+
+    \subsubsection{Completeness}
+    Comparing the language of $UnReg_{\Sigma}^{\mu}$ to the rules and noting
+    that $Reg_{\Sigma}^{\mu} \subset UnReg_{\Sigma}^{\mu}$ we see that the rules
+    are complete.
+
+    \subsubsection{Determinism}
+    The rules $dist_1$, $dist_2$ and $prod$ all end in $\times$ but the
+    side-conditions ensure that only one of them is applicable at any time. So
+    the rules are deterministic.
+
+    This concludes our proof.
+  \end{proof}
+\end{theorem}
+
+\begin{theorem}
+  If $norm(\alpha) = \alpha'$ then $\mathcal{L} |[ \alpha |] = \mathcal{L} |[
+  \alpha' |]$.
+
   \begin{proof} (Sketch).
     Since the inference rules for normal form conversion are defined for
     possibly non-closed expressions we need to prove a stronger property. Namely
-    for all closed expressions $\alpha_i$ if $\alpha ->n \alpha'$ then $\alpha
-    \lbrack \alpha_i / X_i \rbrack = \alpha' \lbrack \alpha'_i / X_i \rbrack$
-    where the $X_i$'s are the free variables of $\alpha$ and $\alpha_i ->n
-    \alpha'_i$. It is easy to see that the free variables of $\alpha$ and
-    $\alpha'$ are the same.
+    for all closed expressions $\alpha_i$ and derivations $\alpha ->n \alpha'$
+    then $\alpha \lbrack \alpha_i / X_i \rbrack = \alpha' \lbrack \alpha'_i /
+    X_i \rbrack$ where the $X_i$'s are the free variables of $\alpha$ and
+    $\alpha_i ->n \alpha'_i$ is derivable. It is easy to see that the free
+    variables of $\alpha$ and $\alpha'$ are the same.
 
-    To prove the lemma we would need a system for proving containment among
+    To prove the theorem we would need a system for proving containment among
     tail-recursive closed $\mu$-expressions. Alas we do not have such a system
-    but we speculate that the system of \cite{heli} is still sound and complete
-    with the additional rule
+    but we speculate that the system of \cite{heli2010} is still sound and
+    complete with the additional rule
     \[
     rec : \mu X. \alpha = \alpha \lbrack \mu X. \alpha / X \rbrack
     \]
     Noticing that the free variables of $\mu X. \alpha$ is a subset of the free
-    variables of $\alpha$ the result follows immediately by structural induction
-    on the expression.
+    variables of $\alpha$ the result follows by structural induction on the
+    expression.
   \end{proof}
-\end{lemma}
+\end{theorem}
 
 \begin{lemma}
   Conversion to normal form preserves bit coding size.
