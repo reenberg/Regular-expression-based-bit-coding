@@ -75,7 +75,9 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 %\overfullrule=5pt
 %\setsecnumdepth{part}
 \setcounter{secnumdepth}{1} % Sæt overskriftsnummereringsdybde. Disable = -1.
-\chapterstyle{hangnum} % changes style of chapters, to look nice.
+
+% fix to make this look like an article.. Really ugly but we have a 10page limit!!!!!
+\chapterstyle{article} % changes style of chapters, to look nice.
 
 \makeatletter
 \newenvironment{nonfloatingfigure}{
@@ -93,15 +95,6 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 }
 \makeatother
 
-\renewcommand{\ttdefault}{txtt} % Bedre typewriter font
-%% \usepackage[sc]{mathpazo}     % Palatino font
-%% \renewcommand{\rmdefault}{ugm} % Garamond
-%% \usepackage[garamond]{mathdesign}
-
-% \overfullrule=5pt
-% \setsecnumdepth{part}
-\setcounter{secnumdepth}{1} % Sæt overskriftsnummereringsdybde. Disable = -1.
-\chapterstyle{hangnum} % changes style of chapters, to look nice.
 
 \theoremstyle{definition}
 \newtheorem{judgment}{Judgment}
@@ -287,7 +280,12 @@ Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
 
 
 \begin{abstract}
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+  consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+  cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+  proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 \end{abstract}
 
 \clearpage 
@@ -296,39 +294,84 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
 \mainmatter
 
-\section{Introduction}
+%\let\clearforchapter\par % cheating, but saves some space
+\chapter{Introduction}
 
-The Extensible Markup Language (XML) \cite{w3c2000} is an extensively used format for encoding documents and storing data in a machine-readable form. During the last decade hundreds of XML-based domain specific languages has emerged, e.g. RSS for publishing web blogs, XHTML for encoding web pages, CML for managing molecular information, SVG for describing two-dimensional vector graphics, and OpenDocument for representing electronic documents. Further, XML has become ubiquitous in both commercial industries such as banking and telecommunication \cite{lisu2000}, and in science and research industries \cite{zhlu, gi2000}.
+The Extensible Markup Language (XML) \cite{w3c2000} is an extensively used
+format for encoding documents and storing data in a machine-readable
+form. During the last decade hundreds of XML-based domain specific languages has
+emerged, e.g. RSS for publishing web blogs, XHTML for encoding web pages, CML
+for managing molecular information, SVG for describing two-dimensional vector
+graphics, and OpenDocument for representing electronic documents. Further, XML
+has become ubiquitous in both commercial industries such as banking and
+telecommunication \cite{lisu2000}, and in science and research industries
+\cite{zhlu, gi2000}.
 
-The advantage of using a self-describing data format as XML is flexibility and acces to the vast amount of existing tools and technologies tailored at XML. Nonetheless encoding data in XML is highly inefficient in terms of space-usage, as large amounts of meta-data are replicated throughout the encoded file; hence tools for compressing XML encoded data is of main concern.
+The advantage of using a self-describing data format as XML is flexibility and
+acces to the vast amount of existing tools and technologies tailored at
+XML. Nonetheless encoding data in XML is highly inefficient in terms of
+space-usage, as large amounts of meta-data are replicated throughout the encoded
+file; hence tools for compressing XML encoded data is of main concern.
 
-Existing general data-compressing techniques are typically based on a statistical approach using codebooks. In this paper we take another approach and investigate a method specific for XML files which exploits the tidy semantics of the XML-format. Given an XML scheme file \cite{wa2001}, we automatically derive a regular expression which matches all instances of the XML scheme. Using this regular expression enables us to parse an instance of the XML scheme, and we encode the parse tree efficiently using a bitcoding technique which only encode non-deterministic choices in the parse tree. We have implemented a prototype of our method in the declarative language Haskell \cite{sugost2008} and conducted experiments using this prototype for compressing data obtained from the Digital Bibliography \& Library Project.
 
-This paper marks the conclusion of the 2010 candidate course \emph{Topics in Programming Languages} at Department of Computer Science, Copenhagen University.
+Existing general data-compressing techniques are typically based on a
+statistical approach using codebooks. In this paper we take another approach and
+investigate a method specific for XML files which exploits the tidy semantics of
+the XML-format. Given an XML scheme file \cite{wa2001}, we automatically derive
+a regular expression which matches all instances of the XML scheme. Using this
+regular expression enables us to parse an instance of the XML scheme, and we
+encode the parse tree efficiently using a bitcoding technique which only encode
+non-deterministic choices in the parse tree. We have implemented a prototype of
+our method in the declarative language Haskell \cite{sugost2008} and conducted
+experiments using this prototype for compressing data obtained from the Digital
+Bibliography \& Library Project.
 
-\subsection{Expectations of the Reader}
+This paper marks the conclusion of the 2010 candidate course \emph{Topics in
+  Programming Languages} at Department of Computer Science, Copenhagen
+University.
 
-We expect readers to posses basic knowledge of regular expressions \cite{houl2006}. Also we expect familiarity with inference system and programming language semantics \cite{gu1992, wi1993}. Knowledge of Huffman coding \cite[Section 16.3]{co2001} is necessary to understand Section \ref{sec:convert_huffman}.
+\section{Expectations of the reader}
 
-\subsection{Previous work}
+We expect readers to posses basic knowledge of regular expressions
+\cite{houl2006}. Also we expect familiarity with inference system and
+programming language semantics \cite{gu1992, wi1993}. Knowledge of Huffman
+coding \cite[Section 16.3]{co2001} is necessary to understand Section
+\ref{sec:convert_huffman}.
 
-Our work is based on Henglein and Nielsen's paper \cite{heni2010}. In their paper they propose a straightforward technique for encoding syntax trees parsed under regular expressions effeciently as bit sequences. This is closely related to the work done by Necula and Rahul \cite{nera2001} where a variant of the same technique is used for compact encoding of proof-carrying code. By using oracle-based checking only non-deterministic choices in proof-trees need to be encoded.
+\fixme{knowledge of XML and XML shemas}
 
-In \cite{lisu2000} Leifke and Suciu describes their XML compressor \emph{XMill}. By using a specialized version of \emph{zlib} \cite{dega1996} they are able to compress XML files up to twice of the compression ratio of gzip \cite{de1996}.
+\section{Previous work}
 
-\subsection{Organization}
+
+Our work is based on Henglein and Nielsen's paper \cite{heni2010}. In their
+paper they propose a straightforward technique for encoding syntax trees parsed
+under regular expressions effeciently as bit sequences. This is closely related
+to the work done by Necula and Rahul \cite{nera2001} where a variant of the same
+technique is used for compact encoding of proof-carrying code. By using
+oracle-based checking only non-deterministic choices in proof-trees need to be
+encoded.
+
+In \cite{lisu2000} Leifke and Suciu describes their XML compressor
+\emph{XMill}. By using a specialized version of \emph{zlib} \cite{dega1996} they
+are able to compress XML files up to twice of the compression ratio of gzip
+\cite{de1996}.
+
+
+\section{Organization}
 
 The rest of the paper is organized as follows:
 Section \ref{sec:formalization} lays down the formal foundation on which we reason about regular expressions;
-section \ref{sec:convert} shows how to automatically derive a regular expression from a DTT XML Scheme;
-section \ref{sec:mu_recursion} extends regular expressions with recursion, and shows how to encode parse trees more efficienctly;
-section \ref{sec:specialize_huffman} shows how to specialize a regular expression to the specific XML-data being compressed;
+section \ref{sec:convert} shows how to automatically derive a regular expression from an XML schema;
+section \ref{chap:mu-recursion} extends regular expressions with recursion, and shows how to encode parse trees more efficiently;
+section \ref{chap:specialize_huffman} shows how to specialise a regular expression to the specific XML-data being compressed;
 section \ref{sec:experimental_results} evaluates our prototype and presents experimental results;
 section \ref{sec:conclusion} concludes the paper and presents further work.
 
-\subsection{Acknowledgement}
+\section{Acknowledgement}
 
-The authors extend their graditude to Joakim Ahnfelt-Rønne, Jon Elverkilde, and Michael Flænø Werk for insightful comments. Also we would like to thank Lasse Nielsen for providing useful source code for regular expression parsing.
+The authors extend their graditude to Joakim Ahnfelt-Rønne, Jon Elverkilde, and
+Michael Flænø Werk for insightful comments. Also we would like to thank Lasse
+Nielsen for providing useful source code for regular expression parsing.
 
 \section{Formalization}
 \label{sec:formalization}
@@ -354,7 +397,8 @@ The authors extend their graditude to Joakim Ahnfelt-Rønne, Jon Elverkilde, and
 \label{fig:inhabitation_proofs}
 \end{figure}
 
-We define the language of regular expressions $Reg_\Sigma$ over the finite alphabet $\Sigma = {a_1, \dots, a_n}$ as follows:
+We define the language of regular expressions $Reg_\Sigma$ over the finite
+alphabet $\Sigma = {a_1, \dots, a_n}$ as follows:
 
 \[
     E = 0 \; | \; 1 \; | \; E_1 + E_2 \; | \; E_1 \times E_2 \; | \; E^{*}
@@ -362,7 +406,12 @@ We define the language of regular expressions $Reg_\Sigma$ over the finite alpha
 
 \noindent with $\times$ having higher precedence than $+$.
 
-Based on the formalization of Henglein and Nielsen \cite{heni2010} we focus on string parsing under regular expressions. Figure \ref{fig:inhabitation_proofs} shows their inference system, in which inhabitation proofs for regular expressions can be derived. We write $\vdash v : E$ if $v : E$ is derivable in it. Proof trees $v$, such that $\vdash v : E$ for some $E$, will be refered to as \emph{proof values}.
+Based on the formalization of Henglein and Nielsen \cite{heni2010} we focus on
+string parsing under regular expressions. Figure \ref{fig:inhabitation_proofs}
+shows their inference system, in which inhabitation proofs for regular
+expressions can be derived. We write $\vdash v : E$ if $v : E$ is derivable in
+it. Proof trees $v$, such that $\vdash v : E$ for some $E$, will be refered to
+as \emph{proof values}.
 
 The \emph{flattening} $||v||$ of a proof value $v$ we define as follows:
 
@@ -383,20 +432,27 @@ The \emph{language} $\mathcal{L}(E)$ of the regular expression $E$ we define by
 \mathcal{L}(E) = \{ s \; | \; \vdash v : E, ||v|| = s \}.
 \]
 
-Equivalence of regular expression $E_1$ and $E_2$ is denoted by $E_1 = E_2$ and holds if $\mathcal{L}(E_1) = \mathcal{L}(E_2)$;
-Containment of regular expression $E_1$ in $E_2$ is denoted by $E_1 \le E_2$ and holds if $\mathcal{L}(E_1) \subseteq \mathcal{L}(E_2)$.
-It follows from basic set theory that $E_1 = E_2$ if and only if $E_1 \le E_2$ and $E_2 \le E_1$.
+Equivalence of regular expression $E_1$ and $E_2$ is denoted by $E_1 = E_2$ and
+holds if $\mathcal{L}(E_1) = \mathcal{L}(E_2)$; Containment of regular
+expression $E_1$ in $E_2$ is denoted by $E_1 \le E_2$ and holds if
+$\mathcal{L}(E_1) \subseteq \mathcal{L}(E_2)$.  It follows from basic set theory
+that $E_1 = E_2$ if and only if $E_1 \le E_2$ and $E_2 \le E_1$.
 
-If for any two distinct proof values $v$ and $w$, such that $\vdash v : E$ and $\vdash w : E$, we have that $||v|| = ||w||$, we say that $E$ is ambiguous. In a plain manner we say that $E$ is ambiguous if any string can be parsed under $E$ in more than one way.
+If for any two distinct proof values $v$ and $w$, such that $\vdash v : E$ and
+$\vdash w : E$, we have that $||v|| = ||w||$, we say that $E$ is ambiguous. In a
+plain manner we say that $E$ is ambiguous if any string can be parsed under $E$
+in more than one way.
 
-A proof value consisting of nested alternations is refered to as a \emph{sum}. All subtrees in a sum which is not itself a sum is refered to as a \emph{branch}.
+A proof value consisting of nested alternations is refered to as a
+\emph{sum}. All subtrees in a sum which is not itself a sum is refered to as a
+\emph{branch}.
 
 \begin{example}
 Let $E = (a + (b + c \times d)) + (a + b)^{*}$; we say that $E$ is a sum with
 the branches $(a + (b + c \times d))$, and $(a + b)^{\ast}$.
 \end{example}
 
-\section{Converting XML Schema to Regular expression}
+\section{Converting XML schema to regular expression}
 \label{sec:convert}
 
 Regular expressions can be generated from XML schemas. The simples algorithm is
@@ -435,7 +491,7 @@ expression for the children we get
 
   \end{itemize}
 
-\subsection{Local and Global schema definitions}
+\subsection{Local and global schema definitions}
 \label{sec:local-global-schema-definitions}
 Different Schemas have different ways of defining elements, child elements and
 attribute lists of elements. In general the element and child element
@@ -515,12 +571,13 @@ actual meaning when the resulting regular expression is needed, to save space.
 \subsection{ Non regular schemas}
 
 Most XML Schema definitions allow element references (possibly to itself) which
-makes it possible to create non regular language by having infinite
+makes it possible to create non regular language by having
+infinite\fixme{Something more needs to be explained}
 
 Obviously it is not possible to create regular expressions from such schema
 instances.
 
-\subsection{Implementation of DTD schema parser}
+\section{Implementation of DTD schema parser}
 
 We have implemented a DTD schema parser, even though it limits the possibilities
 of optimisation by restricting specific types on elements contained data (e.g.,
@@ -549,6 +606,7 @@ regular expression with the encoded data so it is as small as possible.
 \subsection{Further work}
 
 Below is a list of possible further work.
+\fixme{Should be merged with real further work}
 
 \begin{description}
 \item[Refactoring] As it is not all schema instances that utilises global
@@ -573,8 +631,8 @@ Below is a list of possible further work.
 
 \end{description}
 
-\section{$\mu$-Recursion}
-\label{sec:mu_recursion}
+\chapter{$\mu$-Recursion}
+\label{chap:mu-recursion}
 
 We introduce tail-recursive $\mu$-types as described in \cite{heni2010}.\\[1em]
 
@@ -593,7 +651,7 @@ gain higher compression rates.
 
 Therefore we generalise recursion to tail-recursive $\mu$-types.
 
-\subsection{Definition}
+\section{Definition}
 Let the language of expressions $UnReg_{\Sigma}^{\mu}$ over a finite alphabet
 $\Sigma = \{a_1, \ldots, a_n\}$ be
 \[
@@ -616,8 +674,9 @@ which now need to handle $\mu$-expressions. It becomes
 \inference{v : \alpha \lbrack \mu X. \alpha / X \rbrack}{\mathtt{fold}\ v : \mu X. \alpha}
 \]
 
-Theorem 9 in \cite{heli2010} states that $Reg_{\Sigma}^{\mu}$ describes exactly
-the same languages as $Reg_{\Sigma}$:
+Theorem 9 in \cite{heni2010} states that $Reg_{\Sigma}^{\mu}$ describes exactly
+the same languages as $Reg_{\Sigma}$:\fixme{Fixed the cite, check it is the
+  right one}
 \begin{enumerate}
 \item $\forall E \in Reg_{\Sigma} : \exists \alpha \in Reg_{\Sigma}^{\mu} :
   \{||v|| | |- v : E\} = \{||v|| | |- v : \alpha \}$
@@ -629,7 +688,7 @@ And the proof of $1$ tells us how to convert a regular expression into an
 equivalent one using $\mu$-recursion: Replace every $E^{\ast}$ with $\mu X.1 +
 \alpha \times X$ where $\alpha$ is the conversion of $E$.
 
-\subsection{Bit coding}
+\section{Bit coding}
 
 We extend the rules for producing bit codes to closed tail-recursive
 $\mu$-expressions. They are given in \fref[plain]{fig:code} and
@@ -673,7 +732,7 @@ only contains closed expressions.
 \label{fig:decode}
 \end{figure}
 
-\subsection{Normalising}
+\section{Normalising}
 One gains nothing just by converting a regular expression to an equivalent
 $\mu$-recursive one by the rule given above. Consider an example: bit code the
 string $aab$ under the regular expression $(a + (b + c))^{\ast}$. The bit codes
@@ -691,7 +750,7 @@ The reason why the bit code under the latter regular expression is shorter is
 that the $1$ is buried inside the sum. That way we don't use a full bit per
 character to code that the string is not finished yet.
 
-It is easy to automatically balance a sum (see \fref{sec:huffman}) but that
+It is easy to automatically balance a sum (see \fref{chap:huffman}) but that
 doesn't immediately help as the ``$\times X$'' prevents us from including the
 $1$ in the balancing.
 
@@ -888,26 +947,53 @@ Informally normal forms have the following properties which we show below.
   (eg. $| \mathfrak{b'} | = | \mathfrak{b} |$) when using such a parser.
 \end{lemma}
 
-\section{Specializing Regexs to Strings using Huffman Trees}\label{sec:huffman}
-\label{sec:specialize_huffman}
+\chapter{Specializing regular expressions to strings using Huffman trees}
+\label{chap:huffman}
+\label{chap:specialize_huffman}
+\fixme{two labels in latex code.. :S}
 
-The fact that the alternation operator in $Reg_{\Sigma}$ is associative and commutative with respect to language equivalence can be exploited for encoding strings more efficiently. Consider the string \texttt{"aaa"}; compressing it using the expression $E_1 = ((a + b) + c)^{*}$ yields the bit sequence $111111110$. On the other hand, compressing it using the expression $E_2 = (a + (b + c))^{*}$ yields the bit sequence $111110$. As $\mathcal{L}(E_1) = \mathcal{L}(E_2)$ both expressions can be used for compressing the exact same set of strings; for the specific string \texttt{"aaa"} we prefer $E_2$. For an arbitrary string, $s$, and an arbitrary regular expression, $E$, where $s \in \mathcal{L}(E)$, we find that the optimal method for reordering the sums in $E$, with respect to the compression ratio, is to reorder them as Huffman trees based on $s$.
+The fact that the alternation operator in $Reg_{\Sigma}$ is associative and
+commutative with respect to language equivalence can be exploited for encoding
+strings more efficiently. Consider the string \texttt{"aaa"}; compressing it
+using the expression $E_1 = ((a + b) + c)^{*}$ yields the bit sequence
+$111111110$. On the other hand, compressing it using the expression $E_2 = (a +
+(b + c))^{*}$ yields the bit sequence $111110$. As $\mathcal{L}(E_1) =
+\mathcal{L}(E_2)$ both expressions can be used for compressing the exact same
+set of strings; for the specific string \texttt{"aaa"} we prefer $E_2$. For an
+arbitrary string, $s$, and an arbitrary regular expression, $E$, where $s \in
+\mathcal{L}(E)$, we find that the optimal method for reordering the sums in $E$,
+with respect to the compression ratio, is to reorder them as Huffman trees based
+on $s$.
 
-To do that, we introduce the syntactic form $Reg'_\Sigma$ over the finite alphabet $\Sigma = {a_1, \dots, a_n}$:
+To do that, we introduce the syntactic form $Reg'_\Sigma$ over the finite
+alphabet $\Sigma = {a_1, \dots, a_n}$:
 
 \[
     E ::= 0 \, | \, 1 \, | \, a \, | \, \Sigma(E_1, E_2, E_3, \dots, E_n) \, | \, E_1 \times E_2 \, | \, E^{*}
 \]
 
-The operator $\Sigma(E_1, E_2, E_3, \dots, E_n)$ denotes a sum of alternations, and the rest of the symbols denotes the same as in $Reg$. As $Reg'$ will only be used as a temporary syntactic form for reordering the sums, the order of association of the alternations inside a $\Sigma$ is insignificant.
-Next we introduce what we choose to call the \emph{flattened form} of an expression $E$; to bring $E$ into the \emph{flattened form}, $E'$, we flatten out all nested sums in $E$ and rewrite them in $Reg'$ using the sum operator $\Sigma$; i.e. $(a + (b \times c + d) + e \times f)^{*} \times (c + d)$ will be rewritten into $\Sigma(a, b \times c, d, e \times f)^{*} \times \Sigma{(c, d)}$.
+The operator $\Sigma(E_1, E_2, E_3, \dots, E_n)$ denotes a sum of alternations,
+and the rest of the symbols denotes the same as in $Reg$. As $Reg'$ will only be
+used as a temporary syntactic form for reordering the sums, the order of
+association of the alternations inside a $\Sigma$ is insignificant.  Next we
+introduce what we choose to call the \emph{flattened form} of an expression $E$;
+to bring $E$ into the \emph{flattened form}, $E'$, we flatten out all nested
+sums in $E$ and rewrite them in $Reg'$ using the sum operator $\Sigma$; i.e. $(a
++ (b \times c + d) + e \times f)^{*} \times (c + d)$ will be rewritten into
+$\Sigma(a, b \times c, d, e \times f)^{*} \times \Sigma{(c, d)}$.
 
-After having flattened out an expression $E$ into $E'$, we pick a parse tree $p_s$ given the input string $s$, such that $p_s : E$ and $||p_s|| = s$; by running trough the parse tree, we can for each sum $\Sigma(E_1, \dots, E_n)$ in $E'$ count how many times $E_k \in 1 \dots n$ is selected in the parse tree.
+After having flattened out an expression $E$ into $E'$, we pick a parse tree
+$p_s$ given the input string $s$, such that $p_s : E$ and $||p_s|| = s$; by
+running trough the parse tree, we can for each sum $\Sigma(E_1, \dots, E_n)$ in
+$E'$ count how many times $E_k \in 1 \dots n$ is selected in the parse tree.
 
-Finally, we can for each sum $\Sigma$ in $E'$ use these countings to reorder the $\Sigma$ back into the syntactic form of $Reg$, by ordering the alternations as Huffman trees.
+Finally, we can for each sum $\Sigma$ in $E'$ use these countings to reorder the
+$\Sigma$ back into the syntactic form of $Reg$, by ordering the alternations as
+Huffman trees.
 
 \begin{example}
-Consider the string $s = \mathtt{"abbc"}$ and the regular expression $E = (a + ((b + c) + d))^{*}$. Parsing $s$ using $E$ yields the following parse tree:
+  Consider the string $s = \mathtt{"abbc"}$ and the regular expression $E = (a +
+  ((b + c) + d))^{*}$. Parsing $s$ using $E$ yields the following parse tree:
 \[
 \begin{array}{rcl}
 p_s & = & \mathtt{fold}(\mathtt{inr}(\mathtt{inl} \; a, \\
@@ -917,7 +1003,10 @@ p_s & = & \mathtt{fold}(\mathtt{inr}(\mathtt{inl} \; a, \\
     &   & \mathtt{fold}(\mathtt{inl}(()))))))))))))))
 \end{array}
 \]
-\noindent Encoding $s$ using $e$ gives the bit sequence $101100110011010$ (15 bits). Now when translating $E$ into $Reg'$ we get the expression $E' = \Sigma{(a, b, c, d)}^{*}$. Counting the number of times each path in the sum $\Sigma{(a, b, c, d)}$ is taken in $p_s$ we get:
+\noindent Encoding $s$ using $e$ gives the bit sequence $101100110011010$ (15
+bits). Now when translating $E$ into $Reg'$ we get the expression $E' =
+\Sigma{(a, b, c, d)}^{*}$. Counting the number of times each path in the sum
+$\Sigma{(a, b, c, d)}$ is taken in $p_s$ we get:
 
 \begin{center}
 \begin{tabular}{c|c|c|c}
@@ -927,11 +1016,14 @@ $a$ & $b$ & $c$ & $d$ \\
 \end{tabular}
 \end{center}
 
-\noindent Finally by reordering the sum into an Huffman tree using the above frequencies we get the $Reg$-expression $F = (b + (a + (c + d)))^{*}$. Encoding $s$ using $F$ gives the bit sequence $110101011100$ (12 bits); thus we have spared 3 bits.
+\noindent Finally by reordering the sum into an Huffman tree using the above
+frequencies we get the $Reg$-expression $F = (b + (a + (c + d)))^{*}$. Encoding
+$s$ using $F$ gives the bit sequence $110101011100$ (12 bits); thus we have
+spared 3 bits.
 
 \end{example}
 
-\section{Experimental Results}
+\chapter{Experimental results}
 \label{sec:experimental_results}
 
 file: 33414 bytes (data: 17927, meta: 15171)
@@ -944,10 +1036,12 @@ code meta: 737 bytes
 
 gzip data + code meta: 5737 bytes
 
-\section{Conclusion}
+\chapter{Conclusion}
 \label{sec:conclusion}
 
-\subsection{Future Work}
+\subsection{Future work}
+
+\fixme{add something here}
 
 \bibliographystyle{../bibliography/theseurl}
 \bibliography{../bibliography/bibliography}
@@ -955,6 +1049,6 @@ gzip data + code meta: 5737 bytes
 \end{document}
 
 %%% Local Variables: 
-%%% mode: C++
+%%% mode: tex
 %%% TeX-master: t
 %%% End: 
