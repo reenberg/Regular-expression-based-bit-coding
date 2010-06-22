@@ -40,32 +40,46 @@ adjustWithDefault d k f m =
     Nothing -> Map.insert k (f d) m
 
 optimize :: K.Reg a -> M.Reg a
-optimize = balance . normalize
+optimize = balance . normalize . convert
 
-normalize1 :: K.Reg a -> State M.Var (M.Reg a)
-normalize1 r =
+convert1 :: K.Reg a -> State M.Var (M.Reg a)
+convert1 r =
   case r of
     K.O -> return M.O
     K.E -> return M.E
     K.Lit a -> return $ M.Lit a
-    r1 K.:*: (r2 K.:+: r3) -> liftM2 (M.:+:) (normalize1 $ r1 K.:*: r2) (normalize1 $ r1 K.:*: r3)
-    (r1 K.:+: r2) K.:*: r3 -> liftM2 (M.:+:) (normalize1 $ r1 K.:*: r3) (normalize1 $ r2 K.:*: r3)
-    r1 K.:+: r2 -> liftM2 (M.:+:) (normalize1 r1) (normalize1 r2)
-    r1 K.:*: r2 -> liftM2 (M.:*:) (normalize1 r1) (normalize1 r2)
-    K.Star r -> do t <- inc
-                   r' <- normalize1 r
-                   return $ M.Mu t ((r' M.:*: M.Var t) M.:+: M.E)
+    r1 K.:+: r2 -> liftM2 (M.:+:) (convert1 r1) (convert1 r2)
+    r1 K.:*: r2 -> liftM2 (M.:*:) (convert1 r1) (convert1 r2)
+    K.Star r ->
+      do t <- inc
+         r' <- convert1 r
+         return $ M.Mu t ((r' M.:*: M.Var t) M.:+: M.E)
 
-normalize :: K.Reg a -> M.Reg a
-normalize r = evalState (normalize1 r) 0
+convert :: K.Reg a -> M.Reg a
+convert r = evalState (convert1 r) 0
+
+normalize :: M.Reg a -> M.Reg a
+normalize r =
+  case r of
+    M.O -> M.O
+    M.E -> M.E
+    M.Lit a -> M.Lit a
+--    r1 M.:*: (r2 M.:+: r3) -> (M.:+:) (normalize $ r1 M.:*: r2) (normalize $ r1 M.:*: r3)
+--    (r1 M.:+: r2) M.:*: r3 -> (M.:+:) (normalize $ r1 M.:*: r3) (normalize $ r2 M.:*: r3)
+    r1 M.:*: (r2 M.:+: r3) -> normalize $ (r1 M.:*: r2) M.:+: (r1 M.:*: r3)
+    (r1 M.:+: r2) M.:*: r3 -> normalize $ (r1 M.:*: r3) M.:+: (r2 M.:*: r3)
+    r1 M.:+: r2 -> normalize r1 M.:+: normalize r2
+    r1 M.:*: r2 -> normalize r1 M.:*: normalize r2
+    M.Var t -> M.Var t
+    M.Mu t r -> M.Mu t (normalize r)
 
 specialize :: (Ord a, Show a) => M.Reg a -> M.PVal a -> M.Reg a
 specialize r = arrange r' . count r'
   where
-    r' = convert r
+    r' = convert2 r
 
-convert :: (Ord a, Show a) => M.Reg a -> S.Reg a
-convert r = evalState (loop r) 0
+convert2 :: (Ord a, Show a) => M.Reg a -> S.Reg a
+convert2 r = evalState (loop r) 0
   where
     loop r =
       case r of
