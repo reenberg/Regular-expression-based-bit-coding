@@ -75,7 +75,9 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 %\overfullrule=5pt
 %\setsecnumdepth{part}
 \setcounter{secnumdepth}{1} % Sæt overskriftsnummereringsdybde. Disable = -1.
-\chapterstyle{hangnum} % changes style of chapters, to look nice.
+
+% fix to make this look like an article.. Really ugly but we have a 10page limit!!!!!
+\chapterstyle{article} % changes style of chapters, to look nice.
 
 \makeatletter
 \newenvironment{nonfloatingfigure}{
@@ -93,15 +95,6 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 }
 \makeatother
 
-\renewcommand{\ttdefault}{txtt} % Bedre typewriter font
-%% \usepackage[sc]{mathpazo}     % Palatino font
-%% \renewcommand{\rmdefault}{ugm} % Garamond
-%% \usepackage[garamond]{mathdesign}
-
-% \overfullrule=5pt
-% \setsecnumdepth{part}
-\setcounter{secnumdepth}{1} % Sæt overskriftsnummereringsdybde. Disable = -1.
-\chapterstyle{hangnum} % changes style of chapters, to look nice.
 
 \theoremstyle{definition}
 \newtheorem{judgment}{Judgment}
@@ -296,27 +289,28 @@ Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
 
 \mainmatter
 
-\section{Introduction}
+%\let\clearforchapter\par % cheating, but saves some space
+\chapter{Introduction}
 
 Compression of XML files \cite{FIX ME} has a wide range of applications. On the internet and in database systems XML is an extensively used format for encoding documents and storing data in a machine-readable form. Typically XML files includes a large amount of meta-data
 
-\subsection{Previous work}
+\section{Previous work}
 
 Henglein and Lasse, Oracle, XMill ...
 
 %\subsection{Contributions}
 
-\subsection{Expectations of the Reader}
+\section{Expectations of the Reader}
 
 Basic knowledge of regular expressions \cite{FIX ME} is assumed. Some experience with inference system and programming language semantics \cite{FIX ME} will be useful.
 
-\subsection{Organization}
+\section{Organization}
 
 The rest of the paper is organized as follows: In Section FIX ME we ... In Section FIX ME we ... blah blah
 
 This paper marks the conclussion of the DIKU course \emph{Topics in Programming Languages}.
 
-\subsection{Acknowledgement}
+\section{Acknowledgement}
 
 The authors extend their graditude to FIX ME, FIX ME, and FIX ME for insightful comments. Also we would like to thank Lasse Nielsen for providing us the source code for his dynamic parser.
 
@@ -852,6 +846,6 @@ $a$ & $b$ & $c$ & $d$ \\
 \end{document}
 
 %%% Local Variables: 
-%%% mode: C++
+%%% mode: tex
 %%% TeX-master: t
 %%% End: 
