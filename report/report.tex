@@ -330,7 +330,7 @@ This paper marks the conclusion of the 2010 candidate course \emph{Topics in
   Programming Languages} at Department of Computer Science, Copenhagen
 University.
 
-\section{Expectations of the Reader}
+\section{Expectations of the reader}
 
 We expect readers to posses basic knowledge of regular expressions
 \cite{houl2006}. Also we expect familiarity with inference system and
@@ -338,8 +338,9 @@ programming language semantics \cite{gu1992, wi1993}. Knowledge of Huffman
 coding \cite[Section 16.3]{co2001} is necessary to understand Section
 \ref{sec:convert_huffman}.
 
+\fixme{knowledge of XML and XML shemas}
 
-\subsection{Previous work}
+\section{Previous work}
 
 
 Our work is based on Henglein and Nielsen's paper \cite{heni2010}. In their
@@ -356,17 +357,17 @@ are able to compress XML files up to twice of the compression ratio of gzip
 \cite{de1996}.
 
 
-\subsection{Organization}
+\section{Organization}
 
 The rest of the paper is organized as follows:
 Section \ref{sec:formalization} lays down the formal foundation on which we reason about regular expressions;
-section \ref{sec:convert} shows how to automatically derive a regular expression from a DTT XML Scheme;
-section \ref{sec:mu_recursion} extends regular expressions with recursion, and shows how to encode parse trees more efficienctly;
-section \ref{sec:specialize_huffman} shows how to specialize a regular expression to the specific XML-data being compressed;
+section \ref{sec:convert} shows how to automatically derive a regular expression from an XML schema;
+section \ref{sec:mu_recursion} extends regular expressions with recursion, and shows how to encode parse trees more efficiently;
+section \ref{sec:specialize_huffman} shows how to specialise a regular expression to the specific XML-data being compressed;
 section \ref{sec:experimental_results} evaluates our prototype and presents experimental results;
 section \ref{sec:conclusion} concludes the paper and presents further work.
 
-\subsection{Acknowledgement}
+\section{Acknowledgement}
 
 The authors extend their graditude to Joakim Ahnfelt-Rønne, Jon Elverkilde, and
 Michael Flænø Werk for insightful comments. Also we would like to thank Lasse
@@ -451,7 +452,7 @@ Let $E = (a + (b + c \times d)) + (a + b)^{*}$; we say that $E$ is a sum with
 the branches $(a + (b + c \times d))$, and $(a + b)^{\ast}$.
 \end{example}
 
-\section{Converting XML Schema to Regular expression}
+\section{Converting XML schema to regular expression}
 \label{sec:convert}
 
 Regular expressions can be generated from XML schemas. The simples algorithm is
@@ -490,7 +491,7 @@ expression for the children we get
 
   \end{itemize}
 
-\subsection{Local and Global schema definitions}
+\subsection{Local and global schema definitions}
 \label{sec:local-global-schema-definitions}
 Different Schemas have different ways of defining elements, child elements and
 attribute lists of elements. In general the element and child element
@@ -570,12 +571,13 @@ actual meaning when the resulting regular expression is needed, to save space.
 \subsection{ Non regular schemas}
 
 Most XML Schema definitions allow element references (possibly to itself) which
-makes it possible to create non regular language by having infinite
+makes it possible to create non regular language by having
+infinite\fixme{Something more needs to be explained}
 
 Obviously it is not possible to create regular expressions from such schema
 instances.
 
-\subsection{Implementation of DTD schema parser}
+\section{Implementation of DTD schema parser}
 
 We have implemented a DTD schema parser, even though it limits the possibilities
 of optimisation by restricting specific types on elements contained data (e.g.,
@@ -861,8 +863,10 @@ system of inference rules.
   (eg. $| \mathfrak{b'} | = | \mathfrak{b} |$) when using such a parser.
 \end{lemma}
 
-\section{Specializing Regexs to Strings using Huffman Trees}\label{sec:huffman}
+\section{Specializing regular expressions to strings using Huffman trees}
+\label{sec:huffman}
 \label{sec:specialize_huffman}
+\fixme{two labels .. :S}
 
 The fact that the alternation operator in $Reg_{\Sigma}$ is associative and
 commutative with respect to language equivalence can be exploited for encoding
@@ -935,7 +939,7 @@ spared 3 bits.
 
 \end{example}
 
-\section{Experimental Results}
+\section{Experimental results}
 \label{sec:experimental_results}
 
 file: 33414 bytes (data: 17927, meta: 15171)
@@ -951,7 +955,7 @@ gzip data + code meta: 5737 bytes
 \section{Conclusion}
 \label{sec:conclusion}
 
-\subsection{Future Work}
+\subsection{Future work}
 
 \bibliographystyle{../bibliography/theseurl}
 \bibliography{../bibliography/bibliography}
