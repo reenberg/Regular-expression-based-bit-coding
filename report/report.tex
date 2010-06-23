@@ -70,7 +70,7 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 }
 
 \renewcommand{\ttdefault}{txtt} % Bedre typewriter font
-%\usepackage[sc]{mathpazo}     % Palatino font
+% \usepackage[sc]{mathpazo}     % Palatino font
 \renewcommand{\rmdefault}{ugm} % Garamond
 %\usepackage[garamond]{mathdesign}
 
@@ -208,7 +208,7 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 \providecommand{\FV}{\mathrm{FV}}
 \providecommand{\Dom}{\mathrm{Dom}}
 
-\mathlig{||}{\parallel}
+\mathlig{||}{\Vert}
 \mathlig{<'}{\prec}
 \mathlig{>'}{\succ}
 \mathlig{<='}{\preccurlyeq}
@@ -276,7 +276,7 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 %		Data til forside
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \title{Regular-expression based bit coding}
-\def\subtitle{TiPL - Topics in Programming Languages.}
+\def\subtitle{TiPL - Topics in Programming Languages}
 \author{Morten Brøns-Pedersen {\footnotesize (mortenbp@gmail.com)}\\
 Jesper Reenberg {\footnotesize (jesper.reenberg@gmail.com)} \\
 Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
@@ -290,7 +290,7 @@ Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
   regular expression from an XML scheme, we can compress all XML instances of
   that scheme.
 
-  Based on our method we have implemented a prototype of an XML-compressor in
+  Based on our method we have implemented a prototype of an XML compressor in
   the functional language Haskell. Further we have tested the prototype on data
   from the Digital Bibliography \& Library Project; we are able to compress the
   data by a factor of more than four.
@@ -317,13 +317,9 @@ Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
 
 \mainmatter
 
-\fixme{Replace ugly amarican z's with proper English}
-\fixme{refered is spelled referred as by url in comment (latex source)}
-
 %\url{http://dictionary.cambridge.org/dictionary/british/refer-sb-to-sth_2#refer-sb-to-sth_2__2}
 
 \chapter{Introduction}
-
 Extensible Markup Language (XML) \cite{w3c2000} is an extensively used format
 for representing and sharing data on the web. During the last decade hundreds
 of XML-based domain specific languages has emerged, e.g. RSS for publishing web
@@ -342,7 +338,7 @@ XML encoded data is of main concern.
 Existing general data-compressing techniques are typically based on a
 statistical approach using codebooks. In this paper we take another approach and
 investigate a method specific for XML files which exploits the tidy semantics of
-the XML-format.  Given an XML scheme file \cite{wa2001}, we automatically derive
+the XML format.  Given an XML scheme file \cite{wa2001}, we automatically derive
 a regular expression which matches all instances of the XML scheme. Using this
 regular expression enables us to parse an instance of the XML scheme, and we
 encode the parse tree efficiently using a bit coding technique which only encode
@@ -403,7 +399,7 @@ Nielsen for providing useful source code for regular expression parsing.
 \begin{array}{ccc}
   \inference{}{() : 1}
 &
-  \inference{}{\texttt{a} : \texttt{a}}
+  \inference{}{a : a}
 &
   \inference{v : E}{\mathtt{inl}\ v : E + F}
 \\
@@ -435,7 +431,7 @@ shows their inference system, in which inhabitation proofs for regular
 expressions can be derived. We write $\vdash v : E$ if $v : E$ is derivable in
 it. If $|- v : E$ we refer to $v$ as a \emph{proof value} or a \emph{parse tree}.
 
-The \emph{flattening} $||v||$ of a proof value $v$ is defined in \ref{fig:flatten}.
+The \emph{flattening} $||v||$ of a proof value $v$ is defined in \fref{fig:flatten}.
 
 \begin{figure}
 \[
@@ -458,10 +454,10 @@ The \emph{language} $\mathcal{L} |[E|]$ of the regular expression $E$ is defined
 \]
 
 Equivalence of regular expression $E_1$ and $E_2$ is denoted by $E_1 = E_2$ and
-holds iff $\mathcal{L}(E_1) = \mathcal{L}(E_2)$; Containment of regular
+holds iff $\mathcal{L}|[E_1|] = \mathcal{L}|[E_2|]$; Containment of regular
 expression $E_1$ in $E_2$ is denoted by $E_1 \le E_2$ and holds if
-$\mathcal{L}(E_1) \subseteq \mathcal{L}(E_2)$.  It follows from basic set theory
-that $E_1 = E_2$ if and only if $E_1 \le E_2$ and $E_2 \le E_1$.
+$\mathcal{L}|[E_1|] \subseteq \mathcal{L}|[E_2|]$.  It follows from basic set
+theory that $E_1 = E_2$ if and only if $E_1 \le E_2$ and $E_2 \le E_1$.
 
 There are several (sound and complete) proof systems for equivalence among
 regular expressions given in the literature (\cite{salomaa1966, kozen1994,
@@ -469,16 +465,15 @@ regular expressions given in the literature (\cite{salomaa1966, kozen1994,
 
 If for any two distinct proof values $v$ and $w$, such that $\vdash v : E$ and
 $\vdash w : E$, we have that $||v|| = ||w||$, we say that $E$ is ambiguous. In a
-plain manner we say that $E$ is ambiguous if any string can be parsed under $E$
-in more than one way.
+plain manner we say that $E$ is ambiguous if there exists a string that can be
+parsed under $E$ in more than one way.
 
-A regular expression consisting of nested alternations is refered to as a \emph{sum}.
+A regular expression consisting of nested alternations is referred to as a \emph{sum}.
 All subtrees in a sum which is not itself a sum is referred to as a \emph{branch}.
 
 \begin{example}
 Let $E = (a + (b + c \times d)) + (a + b)^{*}$; we say that $E$ is a sum with
-the branches $(a + (b + c \times d))$, and $(a + b)^{\ast}$. The former is
-itself a sum with the branches $a$, $b$ and $c \times d$.
+the branches $a$, $b$, $c \times d$ and $(a + b)^{\ast}$.
 \end{example}
 
 \chapter{Converting XML schema to regular expression}
@@ -490,7 +485,7 @@ regular expressions of the child elements.
 
 For example if a schema defines the elements \verb@A@, \verb@B@ and \verb@C@
 where \verb@A@ is the root element having \verb@B@ and \verb@C@ as children in
-order and \verb@C@ can appear zero or more times. Then a regular expression for
+order and \verb@C@ can appear zero or more times, then a regular expression for
 the root element would be \verb@<A></A>@ and when inlining the regular
 expression for the children we get
 \verb@<A><B></B>(<C></C>)*</A>@\footnote{where characters are literals and two
@@ -514,7 +509,7 @@ expression for the children we get
     This could however be solved if the original structure of the XML file was
     not guaranteed to be preserved. This way it could be stripped of any
     excessive whitespace, only leaving one space between element names and
-    attributes and any whitespace in the element content
+    attributes and any whitespace in the element content.
   \end{itemize}
 
 \subsection{Local and global schema definitions}
@@ -608,7 +603,7 @@ checked.
 \chapter{$\mu$-Recursion}
 \label{chap:mu-recursion}
 
-We introduce tail-recursive $\mu$-types as described in \cite{heni2010}.\\[1em]
+We introduce tail-recursive $\mu$-types as described in \cite{heni2010}.
 
 Regular expressions offer a very restricted form of recursion namely the Kleene
 star. This has an impact when we consider the bit code produced from a
@@ -647,6 +642,7 @@ which now need to handle $\mu$-expressions. It becomes
 \[
 \inference{v : \alpha \lbrack \mu X. \alpha / X \rbrack}{\mathtt{fold}\ v : \mu X. \alpha}
 \]
+where the substitution is capture avoiding.
 
 Theorem 9 in \cite{heni2010} states that $Reg_{\Sigma}^{\mu}$ describes exactly
 the same languages as $Reg_{\Sigma}$:\fixme{Fixed the cite, check it is the right one}
@@ -706,7 +702,7 @@ only contains closed expressions.
 \label{fig:decode}
 \end{figure}
 
-\section{Normalising}
+\section{Normalisation}
 One gains nothing just by converting a regular expression to an equivalent
 $\mu$-recursive one by the rule given above. Consider an example: bit code the
 string $aab$ under the regular expression $(a + (b + c))^{\ast}$. The bit codes
