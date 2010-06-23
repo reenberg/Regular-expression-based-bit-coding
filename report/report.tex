@@ -1,3 +1,5 @@
+% http://web.science.mq.edu.au/~rdale/resources/writingnotes/latexstyle.html
+
 \documentclass[a4paper, oneside]{memoir}
 % Fixes "No room for a new \xxx" error by extending the default 256 fixed size
 % LaTeX arrays
@@ -251,7 +253,6 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
       \footnotesize DIKU \@date
     \end{flushright}
     \vskip 10em
-
     \begin{abstract}
       \textit{\descript}
     \end{abstract}
@@ -281,11 +282,18 @@ Jesper Reenberg {\footnotesize (jesper.reenberg@gmail.com)} \\
 Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
 \def\descript
 {
-We investigate a method for compressing data using regular expressions: First the data is parsed under a regular expression matching the data. Second the parse tree is encoded efficiently using an oracle based approach; in this manner only non-deterministic parts of the parse tree must be encoded.
+  We investigate a method for compressing data using regular expressions: First
+  the data is parsed under a regular expression matching the data. Second the
+  parse tree is bit coded efficiently using an oracle based approach.
 
-We show how to deploy the method on XML files. By automatically deriving a regular expression from an XML scheme, we can compress all XML instances of that scheme.
+  We show how to deploy the method on XML files. By automatically deriving a
+  regular expression from an XML scheme, we can compress all XML instances of
+  that scheme.
 
-Based on our method we have implemented a prototype of an XML-compressor in the functional language Haskell. Further we have tested the prototype on data from the Digital Bibliography \& Library Project; we are able to compress the data by a factor of $4.47$.
+  Based on our method we have implemented a prototype of an XML-compressor in
+  the functional language Haskell. Further we have tested the prototype on data
+  from the Digital Bibliography \& Library Project; we are able to compress the
+  data by a factor of more than four.
 }
 
 \def\suplementInfo{
@@ -331,28 +339,17 @@ in XML is highly inefficient in terms of space-usage, as large amounts of
 meta-data are replicated throughout the encoded file; hence tools for compressing
 XML encoded data is of main concern.
 
-Existing general data-compressing techniques are typically based on a statistical
-approach using codebooks. In this paper we take another approach and investigate
-a method specific for XML files which exploits the tidy semantics of the XML-format.
-Given an XML scheme file \cite{wa2001}, we automatically derive a regular
-expression which matches all instances of the XML scheme. Using this regular
-expression enables us to parse an instance of the XML scheme, and we encode
-the parse tree efficiently using a bitcoding technique which only encode
-non-deterministic parts of the parse tree. We have implemented a prototype
-of our method in Haskell \cite{sugost2008} and conducted experiments using
-this prototype for compressing data obtained from the Digital Bibliography \& Library Project .
-
 Existing general data-compressing techniques are typically based on a
 statistical approach using codebooks. In this paper we take another approach and
 investigate a method specific for XML files which exploits the tidy semantics of
-the XML-format. Given an XML scheme file \cite{wa2001}, we automatically derive
+the XML-format.  Given an XML scheme file \cite{wa2001}, we automatically derive
 a regular expression which matches all instances of the XML scheme. Using this
 regular expression enables us to parse an instance of the XML scheme, and we
 encode the parse tree efficiently using a bit coding technique which only encode
-non-deterministic choices in the parse tree. We have implemented a prototype of
-our method in the declarative language Haskell \cite{sugost2008} and conducted
-experiments using this prototype for compressing data obtained from the Digital
-Bibliography \& Library Project.
+non-deterministic parts of the parse tree. We have implemented a prototype of
+our method in Haskell \cite{sugost2008} and conducted experiments using this
+prototype for compressing data obtained from the Digital Bibliography \& Library
+Project .
 
 This paper marks the conclusion of the 2010 candidate course \emph{Topics in
   Programming Languages} at Department of Computer Science, Copenhagen
@@ -360,20 +357,22 @@ University.
 
 \section{Prerequisites}
 
-We expect readers to posses basic knowledge of regular expressions \cite{houl2006}.
-Also we expect familiarity with inference system and programming language semantics \cite{gu1992, wi1993}.
-Knowledge of XML and DTD schemes is necessary to understand Section \ref{sec:convert},
-and knowledge of Huffman coding \cite[Section 16.3]{co2001} is necessary to understand Section \ref{sec:specialize_huffman}.
+We expect readers to posses basic knowledge of regular expressions
+\cite{houl2006}.  Also we expect familiarity with inference system and
+programming language semantics \cite{gu1992, wi1993}.  Knowledge of XML and DTD
+schemes is necessary to understand \fref{sec:convert}, and knowledge of Huffman
+coding \cite[section 16.3]{co2001} is necessary to understand
+\fref{chap:huffman}.
 
 \section{Previous work}
 
 Our work is based on Henglein and Nielsen's paper \cite{heni2010}. In their
 paper they propose a straightforward technique for encoding syntax trees parsed
-under regular expressions efficiently as bit sequences. This is closely related
-to the work done by Necula and Rahul \cite{nera2001} where a variant of the same
-technique is used for compact encoding of proof-carrying code. By using
-oracle-based checking only non-deterministic choices in proof-trees need to be
-encoded.
+under regular expressions efficiently as bit sequences. This is related to the
+work done by Necula and Rahul \cite{nera2001} where a variant of the same
+technique is used for compact encoding of proof-carrying code. They find that
+it is much more space-efficient to encode proofs as oracles. Given an oracle the
+proof can then be reconstructed by a non-deterministic theorem prover.
 
 In \cite{lisu2000} Leifke and Suciu describes their XML compressor
 \emph{XMill}. By using a specialized version of \emph{zlib} \cite{dega1996} they
@@ -383,12 +382,12 @@ are able to compress XML files up to twice of the compression ratio of gzip
 \section{Outline}
 
 The rest of the paper is organized as follows:
-Section \ref{sec:formalization} lays down the formal foundation on which we reason about regular expressions;
-Section \ref{sec:convert} shows how to automatically derive a regular expression from a DTD scheme;
-Section \ref{sec:mu_recursion} extends regular expressions with recursion, and shows how to encode parse trees efficienctly;
-Section \ref{sec:specialize_huffman} shows how to specialize a regular expression to the specific XML-data being compressed;
-Section \ref{sec:experimental_results} evaluates our prototype and presents experimental results;
-Section \ref{sec:conclusion} concludes the paper and presents further work.
+\Fref{chap:formalisation} lays down the formal foundation on which we reason about regular expressions;
+\Fref{chap:convert} shows how to automatically derive a regular expression from a DTD scheme;
+\Fref{chap:mu-recursion} extends regular expressions with recursion, and shows how to encode parse trees efficienctly;
+\Fref{chap:huffman} shows how to specialize a regular expression to the specific XML-data being compressed;
+\Fref{chap:experimental_results} evaluates our prototype and presents experimental results;
+\Fref{chap:conclusion} concludes the paper and presents further work.
 
 \section{Acknowledgement}
 
@@ -397,7 +396,7 @@ Michael Flænø Werk for insightful comments. Also we would like to thank Lasse
 Nielsen for providing useful source code for regular expression parsing.
 
 \chapter{Formalisation}
-\label{sec:formalisation}
+\label{chap:formalisation}
 
 \begin{figure}
 \[
@@ -416,8 +415,8 @@ Nielsen for providing useful source code for regular expression parsing.
   \inference{v : 1 + E \times E^{\ast}}{\mathtt{fold}\ v : E^{\ast}}
 \end{array}
 \]
-\caption{Inhabitation proofs for regular expressions.}
-\label{fig:inhabitation_proofs}
+\caption{Inhabitation rules for regular expressions.}
+\label{fig:inhabitation}
 \end{figure}
 
 We define the language of regular expressions $Reg_\Sigma$ over the finite
@@ -427,17 +426,18 @@ alphabet $\Sigma = {a_1, \dots, a_n}$ as follows:
     E ::= 0 \; | \; 1 \; | \; E_1 + E_2 \; | \; E_1 \times E_2 \; | \; E^{*}
 \]
 
-\noindent with $\times$ having higher precedence than $+$.
+\noindent with ${}^{\ast}$ having the highest precedence, and $\times$ having
+higher precedence than $+$.
 
 Based on the formalisation of Henglein and Nielsen \cite{heni2010} we focus on
-string parsing under regular expressions. \Fref{fig:inhabitation_proofs}
+string parsing under regular expressions. \Fref{fig:inhabitation}
 shows their inference system, in which inhabitation proofs for regular
 expressions can be derived. We write $\vdash v : E$ if $v : E$ is derivable in
-it. Proof trees $v$, such that $\vdash v : E$ for some $E$, will be referred to
-as \emph{proof values}.
+it. If $|- v : E$ we refer to $v$ as a \emph{proof value} or a \emph{parse tree}.
 
-The \emph{flattening} $||v||$ of a proof value $v$ is defined as follows:
+The \emph{flattening} $||v||$ of a proof value $v$ is defined in \ref{fig:flatten}.
 
+\begin{figure}
 \[
 \begin{array}{rclrcl}
 ||()|| & = & \epsilon &
@@ -448,18 +448,24 @@ The \emph{flattening} $||v||$ of a proof value $v$ is defined as follows:
 || \mathtt{fold} \; v|| & = & ||v||
 \end{array}
 \]
+\label{fig:flatten}
+\end{figure}
 
-The \emph{language} $\mathcal{L}(E)$ of the regular expression $E$ is defined by
+The \emph{language} $\mathcal{L} |[E|]$ of the regular expression $E$ is defined by
 
 \[
-\mathcal{L}(E) = \{ s \; | \; \vdash v : E, ||v|| = s \}.
+\mathcal{L}|[E|] = \lbrace ||v|| \; | \; \vdash v : E \rbrace.
 \]
 
 Equivalence of regular expression $E_1$ and $E_2$ is denoted by $E_1 = E_2$ and
-holds if $\mathcal{L}(E_1) = \mathcal{L}(E_2)$; Containment of regular
+holds iff $\mathcal{L}(E_1) = \mathcal{L}(E_2)$; Containment of regular
 expression $E_1$ in $E_2$ is denoted by $E_1 \le E_2$ and holds if
 $\mathcal{L}(E_1) \subseteq \mathcal{L}(E_2)$.  It follows from basic set theory
 that $E_1 = E_2$ if and only if $E_1 \le E_2$ and $E_2 \le E_1$.
+
+There are several (sound and complete) proof systems for equivalence among
+regular expressions given in the literature (\cite{salomaa1966, kozen1994,
+  grabmayer2005, heni2010}).
 
 If for any two distinct proof values $v$ and $w$, such that $\vdash v : E$ and
 $\vdash w : E$, we have that $||v|| = ||w||$, we say that $E$ is ambiguous. In a
@@ -467,19 +473,20 @@ plain manner we say that $E$ is ambiguous if any string can be parsed under $E$
 in more than one way.
 
 A regular expression consisting of nested alternations is refered to as a \emph{sum}.
-All subtrees in a sum which is not itself a sum is refered to as a \emph{branch}.
+All subtrees in a sum which is not itself a sum is referred to as a \emph{branch}.
 
 \begin{example}
 Let $E = (a + (b + c \times d)) + (a + b)^{*}$; we say that $E$ is a sum with
-the branches $(a + (b + c \times d))$, and $(a + b)^{\ast}$.
+the branches $(a + (b + c \times d))$, and $(a + b)^{\ast}$. The former is
+itself a sum with the branches $a$, $b$ and $c \times d$.
 \end{example}
 
 \chapter{Converting XML schema to regular expression}
-\label{sec:convert}
+\label{chap:convert}
 
 Regular expressions can be generated from XML schemas. The simples algorithm is
 to generate a regular expression for the root element and then inlining the
-regular expressions of the child elements
+regular expressions of the child elements.
 
 For example if a schema defines the elements \verb@A@, \verb@B@ and \verb@C@
 where \verb@A@ is the root element having \verb@B@ and \verb@C@ as children in
@@ -488,7 +495,7 @@ the root element would be \verb@<A></A>@ and when inlining the regular
 expression for the children we get
 \verb@<A><B></B>(<C></C>)*</A>@\footnote{where characters are literals and two
   characters next to each other are the concatenation of the two.}.
-  
+
   However there are some minor problems with this simple algorithm:
 
   \begin{itemize}
@@ -497,10 +504,10 @@ expression for the children we get
     element. So the actual XML file must be analysed to get the name of the root
     tag in the particular instance.
 
-  \item Schema definitions does not mention the physical structure of the XML
-    file so the regular expression needs to handle any number of whitespace
-    where allowed in the XML file\footnote{For example are the following valid
-      XML \texttt{<Root{\textvisiblespace}att="Foo"\textvisiblespace%
+  \item Schema definitions does not specify the actual layout of the XML file so
+    the regular expression needs to handle any number of whitespace where
+    allowed in the XML file\footnote{For example are the following valid XML
+      \texttt{<Root{\textvisiblespace}att="Foo"\textvisiblespace%
         \textvisiblespace\textbackslash{n}\textvisiblespace>\textvisiblespace%
         </Root\textvisiblespace\textvisiblespace>}}.
 
@@ -508,31 +515,29 @@ expression for the children we get
     not guaranteed to be preserved. This way it could be stripped of any
     excessive whitespace, only leaving one space between element names and
     attributes and any whitespace in the element content
-
-  \item 
-
   \end{itemize}
 
 \subsection{Local and global schema definitions}
 \label{sec:local-global-schema-definitions}
-Different Schemas have different ways of defining element's, child elements and
-attribute lists of elements. In general the element and child element
-definitions can be divided into two principles\footnote{At least this is true for
-  XSD, Relax NG schemas and properly others, but DTD only have global definitions}
+Different schema types have different ways of defining elements, child elements
+and attribute lists of elements. In general the element and child element
+definitions can be divided into two principles\footnote{At least this is true
+  for XSD, Relax NG schemas and probably others, but DTD only have global
+  definitions.}.
 
 \begin{description}
 \item[Local definitions] is when the definition of an element's child elements is
-  inlined as a child of the element definition. 
+  inlined as a child of the element definition.
 
   \begin{example}[XSD schema using local definitions] \ % end the line
 \begin{verbatim}
-    <xsd:element name="Book"> 
-      <xsd:complexType> 
-        <xsd:sequence> 
-          <xsd:element name="Title" type="xsd:string"/> 
-           <xsd:element name="Author" type="xsd:string"/> 
-        </xsd:sequence> 
-      </xsd:complexType> 
+    <xsd:element name="Book">
+      <xsd:complexType>
+        <xsd:sequence>
+          <xsd:element name="Title" type="xsd:string"/>
+           <xsd:element name="Author" type="xsd:string"/>
+        </xsd:sequence>
+      </xsd:complexType>
     </xsd:element>
 \end{verbatim}
   \end{example}
@@ -549,12 +554,12 @@ definitions can be divided into two principles\footnote{At least this is true fo
     <xsd:element name="Author" type="xsd:string"/>
 
     <xsd:element name="Book">
-      <xsd:complexType> 
-        <xsd:sequence> 
-          <xsd:element ref="Title"/> 
+      <xsd:complexType>
+        <xsd:sequence>
+          <xsd:element ref="Title"/>
           <xsd:element ref="Author"/>
-        </xsd:sequence> 
-      </xsd:complexType> 
+        </xsd:sequence>
+      </xsd:complexType>
     </xsd:element>
 \end{verbatim}
   \end{example}
@@ -573,7 +578,7 @@ combined.
 Using global definitions we can just generate a regular expression once for a
 child element that potentially gets references multiple times and then inline
 them when referenced if the actual regular expression is needed, thus saving
-space. The same apply to attributes.
+space. The same applies to attributes.
 \label{sec:global-definitions-save-space}
 
 Schemas define different types of data that elements and attributes may
@@ -590,7 +595,7 @@ is defined as being \texttt{\#PCDATA}. Depending on what schema used simple
 types should be represented by some distinct symbol that can be expanded to its
 actual meaning when the resulting regular expression is needed, to save space.
 
-\subsection{ Non regular schemas}
+\subsection{Non-regular schemas}
 
 Most XML schema definitions allow element references (possibly to itself) which
 makes it possible to describe a non regular XML file. Most common example is
@@ -629,9 +634,9 @@ $\Sigma = \{a_1, \ldots, a_n\}$ be
 \]
 
 The free variables of $\alpha$ is the set of variables $X$ in $\alpha$ that is
-not guarded by $\mu X$. If $\alpha$ has no free variables it is closed. The term
-$\alpha$ is tail-recursive if $\alpha_1$ is closed in all subexpressions of the
-form $\alpha_1 \times \alpha_2$.
+not guarded by $\mu X$. If $\alpha$ has no free variables it is closed. The
+expression $\alpha$ is tail-recursive if $\alpha_1$ is closed in all
+subexpressions of the form $\alpha_1 \times \alpha_2$.
 
 The language $Reg_{\Sigma}^{\mu}$ is the closed tail-recursive expressions of
 $UnReg_{\Sigma}^{\mu}$.
@@ -753,6 +758,7 @@ one : \inference{}{1 ->n 1} \qquad
 zero : \inference{}{0 ->n 0} \qquad
 var : \inference{}{X ->n X}
 \]
+\caption{Conversion to normal form.}
 \label{fig:normal-form}
 \end{figure}
 
@@ -774,7 +780,7 @@ Informally normal forms have the following properties which we show below.
     It is immediately clear that $\alpha' \in UnReg_{\Sigma}^{\mu}$. So we need
     to show that $\alpha'$ is closed and tail-recursive.
 
-    To see that it is closed notice that the rules never moves anything past a
+    To see that it is closed notice that the rules never move anything past a
     $\mu X$ and that variables are not added or renamed. This property does not
     rely on tail-recursiveness so we can use it as a lemma in itself.
 
@@ -801,32 +807,32 @@ Informally normal forms have the following properties which we show below.
   \begin{proof}
     We need to show three things about the rules for $->n$:
     \begin{enumerate}
-    \item Termination. That is there are no infinite derivations.
+    \item Termination. There are no infinite derivations.
     \item Completeness. For every $\alpha$ there exists a derivation $\alpha ->n
       \alpha'$.
     \item Determinism. For every $\alpha$ there exists at most one derivation
       $\alpha ->n \alpha'$.
     \end{enumerate}
     \subsubsection{Termination}
-    The only rules whose premises are not strictly smaller than the conclusion
-    are $dist_1$ and $dist_2$. So we need to show that these rules cannot result
-    in an infinite derivation. They are similar so we only show it for
-    $dist_1$. A subderivation $\mathcal{E}$ ending in $dist_1$ must have the
-    form
+    Proof by induction on the structure of $\alpha$.
+
+    The only rules whose premises left hand sides are not strictly smaller than
+    the conclusions left hand side are $dist_1$ and $dist_2$. So we need to show
+    that these rules cannot result in an infinite derivation. They are similar
+    so we only show it for $dist_1$. A subderivation $\mathcal{E}$ ending in
+    $dist_1$ must have the form
     \[
     \inference{\inference{\mathcal{F} & \mathcal{G} \\ \gamma \times \alpha ->n
         \delta_1 & \gamma \times \beta ->n \delta_2 }{\gamma \times \alpha +
         \gamma \times \beta ->n \delta_1 + \delta_2}}{\gamma \times (\alpha +
       \beta) ->n \delta}
     \]
-    The conclusions of $\mathcal{F}$ and $\mathcal{G}$ are smaller than the
-    conclusion of $\mathcal{E}$.
-
-    Then the result follows by structural induction.
+    The left hand side of the conclusions of $\mathcal{F}$ and $\mathcal{G}$ are
+    strictly smaller than the left hand side of the conclusion of $\mathcal{E}$.
 
     \subsubsection{Completeness}
     Comparing the language of $UnReg_{\Sigma}^{\mu}$ to the rules and noting
-    that $Reg_{\Sigma}^{\mu} \subset UnReg_{\Sigma}^{\mu}$ we see that the rules
+    that $Reg_{\Sigma}^{\mu} \subseteq UnReg_{\Sigma}^{\mu}$ we see that the rules
     are complete.
 
     \subsubsection{Determinism}
@@ -839,28 +845,26 @@ Informally normal forms have the following properties which we show below.
 \end{theorem}
 
 \begin{theorem}
-  If $norm(\alpha) = \alpha'$ then $\mathcal{L} |[ \alpha |] = \mathcal{L} |[
-  \alpha' |]$.
+  If $norm(\alpha) = \alpha'$ then $\alpha = \alpha'$.
 
   \begin{proof} (Sketch).
     Since the inference rules for normal form conversion are defined for
     possibly non-closed expressions we need to prove a stronger property. Namely
-    for all closed expressions $\alpha_i$ and derivations $\alpha ->n \alpha'$
+    for all $\alpha_i \in Reg_{\Sigma}^{\mu}$ and derivations $\alpha ->n \alpha'$
     then $\alpha \lbrack \alpha_i / X_i \rbrack = \alpha' \lbrack \alpha'_i /
     X_i \rbrack$ where the $X_i$'s are the free variables of $\alpha$ and
     $\alpha_i ->n \alpha'_i$ is derivable. It is easy to see that the free
     variables of $\alpha$ and $\alpha'$ are the same.
 
-    To prove the theorem we would need a system for proving containment among
+    To prove the theorem we would need a system for proving equivalence among
     tail-recursive closed $\mu$-expressions. Alas we do not have such a system
     but we speculate that the system of \cite{heni2010} is still sound and
     complete with the additional rule\fixme{fixed the cite, is it correct?}
     \[
     rec : \mu X. \alpha = \alpha \lbrack \mu X. \alpha / X \rbrack
     \]
-    Noticing that the free variables of $\mu X. \alpha$ is a subset of the free
-    variables of $\alpha$ the result follows by structural induction on the
-    expression.
+    Noticing that the free variables of $\mu X. \beta$ is a subset of the free
+    variables of $\beta$ the result follows by structural induction on $\alpha$.
   \end{proof}
 \end{theorem}
 
@@ -869,14 +873,14 @@ Informally normal forms have the following properties which we show below.
 
   Since regular expressions are, in general, ambiguous the property we are after
   here is not so obvious; Again we need to handle possible non-closed
-  expressions. Given an expression $\alpha$ let $\bar{\alpha} = \alpha \lbrack
-  \alpha_i / X_i \rbrack$, $\bar{\alpha}' = \alpha' \lbrack \alpha'_i / X_i
+  expressions. Given an expression $\alpha$ let $\hat{\alpha} = \alpha \lbrack
+  \alpha_i / X_i \rbrack$, $\hat{\alpha}' = \alpha' \lbrack \alpha'_i / X_i
   \rbrack$ where the $X_i$'s are the free variables of $\alpha$, the
-  $\alpha_i$'s are arbitrary closed expressions, and $\alpha ->n \alpha'$ and
-  $\alpha_i ->n \alpha'_i$ are derivable.
+  $\alpha_i$'s are arbitrary expressions in $Reg_{\Sigma}^{\mu}$, and $\alpha
+  ->n \alpha'$ and $\alpha_i ->n \alpha'_i$ are derivable.
 
-  Now if $v$ is a proof of membership in $\bar{\alpha}$ with the bit coding
-  $\mathfrak{b}$ then there exists a membership proof $v'$ in $\bar{\alpha}'$
+  Now if $v$ is a proof of membership in $\hat{\alpha}$ with the bit coding
+  $\mathfrak{b}$ then there exists a membership proof $v'$ in $\hat{\alpha}'$
   with the bit coding $\mathfrak{b'}$ such that $| \mathfrak{b'} | \leq |
   \mathfrak{b} |$.
 
@@ -900,8 +904,8 @@ Informally normal forms have the following properties which we show below.
     \rbrack$, and if it is $1$ then $\mathfrak{c_2}$ codes a membership proof of
     $\beta\lbrack \alpha_i / X_i \rbrack$. In either case we can reorder the bit
     code to construct one that codes a membership proof of $(\gamma \times
-    (\alpha + \beta))\lbrack \alpha_i / X_i \rbrack$, namely
-    $\mathfrak{c'} = \mathfrak{c_1}\mathfrak{c_0}\mathfrak{c_2}$.\\[1em]
+    (\alpha + \beta))\lbrack \alpha_i / X_i \rbrack = \hat{\alpha}$, namely
+    $\mathfrak{b} = \mathfrak{c_1}\mathfrak{c_0}\mathfrak{c_2}$.\\[1em]
 
     Case $rec$: The
     proof follows by noticing that the free variables of $\mu X. \alpha$ is a
@@ -915,24 +919,21 @@ Informally normal forms have the following properties which we show below.
   (eg. $| \mathfrak{b'} | = | \mathfrak{b} |$) when using such a parser.
 \end{theorem}
 
-\chapter{Specializing regular expressions to strings using Huffman trees}
+\chapter{Specialising regular expressions using Huffman trees}
 \label{chap:huffman}
-\label{chap:specialize_huffman}
-\fixme{two labels in latex code.. :S}
- \fixme{Chapter name is kind of to loong?}
 
 The fact that the alternation operator in $Reg_{\Sigma}$ is associative and
 commutative with respect to language equivalence can be exploited for encoding
 strings more efficiently. Consider the string \texttt{"aaa"}; compressing it
 using the expression $E_1 = ((a + b) + c)^{*}$ yields the bit sequence
 $111111110$. On the other hand, compressing it using the expression $E_2 = (a +
-(b + c))^{*}$ yields the bit sequence $111110$. As $\mathcal{L}(E_1) =
-\mathcal{L}(E_2)$ both expressions can be used for compressing the exact same
+(b + c))^{*}$ yields the bit sequence $111110$. As $\mathcal{L}|[E_1|] =
+\mathcal{L}|[E_2|]$ both expressions can be used for compressing the exact same
 set of strings; for the specific string \texttt{"aaa"} we prefer $E_2$. For an
 arbitrary string, $s$, and an arbitrary regular expression, $E$, where $s \in
-\mathcal{L}(E)$, we find that the optimal method for reordering the sums in $E$,
-with respect to the compression ratio, is to reorder them as Huffman trees based
-on $s$.
+\mathcal{L}|[E|]$, the optimal method for reordering the sums in $E$, with
+respect to the compression ratio, is to reorder them as Huffman trees based on
+$s$.
 
 To do that, we introduce the syntactic form $Reg'_\Sigma$ over the finite
 alphabet $\Sigma = {a_1, \dots, a_n}$:
@@ -943,18 +944,18 @@ alphabet $\Sigma = {a_1, \dots, a_n}$:
 
 The operator $\Sigma(E_1, E_2, E_3, \dots, E_n)$ denotes a sum of alternations,
 and the rest of the symbols denotes the same as in $Reg$. As $Reg'$ will only be
-used as a temporary syntactic form for reordering the sums, the order of
-association of the alternations inside a $\Sigma$ is insignificant.  Next we
-introduce what we choose to call the \emph{flattened form} of an expression $E$;
-to bring $E$ into the \emph{flattened form}, $E'$, we flatten out all nested
-sums in $E$ and rewrite them in $Reg'$ using the sum operator $\Sigma$; i.e. $(a
-+ (b \times c + d) + e \times f)^{*} \times (c + d)$ will be rewritten into
-$\Sigma(a, b \times c, d, e \times f)^{*} \times \Sigma{(c, d)}$.
+used as a temporary syntactic form for reordering the sums, the order of the
+branches inside a $\Sigma$ is insignificant. Next we introduce what we choose to
+call the \emph{flattened form} of an expression $E$; to bring $E$ into the
+\emph{flattened form}, $E'$, we flatten out all nested sums in $E$ and rewrite
+them in $Reg'$ using the sum operator $\Sigma$; i.e. $(a + (b \times c + d) + e
+\times f)^{*} \times (c + d)$ will be rewritten into $\Sigma(a, b \times c, d, e
+\times f)^{*} \times \Sigma{(c, d)}$.
 
 After having flattened out an expression $E$ into $E'$, we pick a parse tree
-$p_s$ given the input string $s$, such that $p_s : E$ and $||p_s|| = s$; by
+$v$ given the input string $s$, such that $|- v : E$ and $||v|| = s$; by
 running trough the parse tree, we can for each sum $\Sigma(E_1, \dots, E_n)$ in
-$E'$ count how many times $E_k \in 1 \dots n$ is selected in the parse tree.
+$E'$ count how many times $E_k, k \in 1 \dots n$ is selected in the parse tree.
 
 Finally, we can for each sum $\Sigma$ in $E'$ use these countings to reorder the
 $\Sigma$ back into the syntactic form of $Reg$, by ordering the alternations as
@@ -965,17 +966,17 @@ Huffman trees.
   ((b + c) + d))^{*}$. Parsing $s$ using $E$ yields the following parse tree:
 \[
 \begin{array}{rcl}
-p_s & = & \mathtt{fold}(\mathtt{inr}(\mathtt{inl} \; a, \\
+  v & = & \mathtt{fold}(\mathtt{inr}(\mathtt{inl} \; a, \\
     &   & \mathtt{fold}(\mathtt{inr}(\mathtt{inr}(\mathtt{inl}(\mathtt{inl} \; b), \\
     &   & \mathtt{fold}(\mathtt{inr}(\mathtt{inr}(\mathtt{inl}(\mathtt{inl} \; b), \\
     &   & \mathtt{fold}(\mathtt{inr}(\mathtt{inr}(\mathtt{inl}(\mathtt{inr} \; c), \\
     &   & \mathtt{fold}(\mathtt{inl}(()))))))))))))))
 \end{array}
 \]
-\noindent Encoding $s$ using $e$ gives the bit sequence $101100110011010$ (15
+\noindent Encoding $s$ using $E$ gives the bit sequence $101100110011010$ (15
 bits). Now when translating $E$ into $Reg'$ we get the expression $E' =
 \Sigma{(a, b, c, d)}^{*}$. Counting the number of times each path in the sum
-$\Sigma{(a, b, c, d)}$ is taken in $p_s$ we get:
+$\Sigma{(a, b, c, d)}$ is taken in $v$ we get:
 
 \begin{center}
 \begin{tabular}{c|c|c|c}
@@ -988,7 +989,7 @@ $a$ & $b$ & $c$ & $d$ \\
 \noindent Finally by reordering the sum into an Huffman tree using the above
 frequencies we get the $Reg$-expression $F = (b + (a + (c + d)))^{*}$. Encoding
 $s$ using $F$ gives the bit sequence $110101011100$ (12 bits); thus we have
-spared 3 bits.
+gained 3 bits.
 
 \end{example}
 
@@ -1002,8 +1003,8 @@ Our decision to do this anyway was that the DBLP\footnote{The DBLP Computer
   Science Bibliography \url{http://www.informatik.uni-trier.de/~ley/db/}}
 database comes with a DTD
 schema\footnote{\url{http://www.informatik.uni-trier.de/~ley/db/about/dblp.dtd}}
-ready to use. This is handy as the DBLP database can be fetched in at least 4
-versions: a up to date, 2009, 2008, 2006 and 2004 version, each getting bigger
+ready to use. This is handy as the DBLP database can be fetched in at least four
+versions: an up to date, 2009, 2006 and 2004 version, each getting bigger
 up until the current up to date version.
 
 We utilise the HaXmL Haskell package to parse the DTD file and then we transform
@@ -1019,7 +1020,7 @@ type is intended as being the high level representation used when saving the
 regular expression with the encoded data so it is as small as possible.
 
 \chapter{Experimental results}
-\label{sec:experimental_results}
+\label{chap:experimental_results}
 
 
 We have used a small sample version of the DBLP XML file which we have created
@@ -1106,7 +1107,34 @@ meta data.
 % meta: 457985 -> regp -> 94745  }
 
 \chapter{Conclusion}
-\label{sec:conclusion}
+\label{chap:conclusion}
+
+We have recounted and extended the technique described in \cite{heni2010} for
+bit coding parse trees under regular expressions. Further we have shown how to
+use this technique for compressing XML files by automatically deriving regular
+expressions from (non-recursive) XML schemes. Finally we have implemented a
+prototype of an XML compressor based on our approach and conducted a test using
+the prototype on data taken from the Digital Bibliography \& Library Project.
+
+Our approach suffers from the following drawbacks:
+
+\begin{itemize}
+\item Existing parsing techniques for regular expressions are less efficient in
+  time or space (or both) than the statistical methods used in for example GZIP
+  which runs in linear time and constant space \cite{de1996}.
+\item Our method is dependent on the presence of a non-recursive XML schema
+  whereas GZIP is able to compress arbitrary XML files.
+\item In our experiment GZIP has a better compression ratio than our prototype.
+\end{itemize}
+
+We believe that domains exist which are suitable candidates for the techniques
+that we describe in this paper; however, based on the above mentioned facts we
+conclude that XML file compression isn't such a domain.
+
+One of the advantages of our method is that we bit code not strings but parse
+trees. This is not particularly useful in the case of XML but other areas might
+benefit from it. Since parse trees contain more information than their
+flattenings it is not surprising that our method performs worse than say GZIP.
 
 \section{Further work}
 
@@ -1121,7 +1149,7 @@ Below is a list of possible further work.
   original\footnote{We need to remember that some sort of reference needs to be inserted
     which also takes some space.}.
 
-\item A better compression ratio can properly be gained by preprocessing the XML
+\item \fixme{we have done this already}A better compression ratio can probably be gained by preprocessing the XML
   file and when any data (not markup) is found, strip at away and put it into a
   buffer, leaving the index where the data was in the file. This way we would
   end up with a XML file that contains lots of markup which we encode using bit
@@ -1141,11 +1169,12 @@ Below is a list of possible further work.
 \clearpage
 
 \bibliographystyle{../bibliography/theseurl}
+% \bibliographystyle{plain}
 \bibliography{../bibliography/bibliography}
 
 \end{document}
 
 %%% Local Variables: 
-%%% mode: tex
+%%% mode: SML
 %%% TeX-master: t
 %%% End:
