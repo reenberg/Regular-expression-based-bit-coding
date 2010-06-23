@@ -280,8 +280,13 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 \author{Morten Brøns-Pedersen {\footnotesize (mortenbp@gmail.com)}\\
 Jesper Reenberg {\footnotesize (jesper.reenberg@gmail.com)} \\
 Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
-\def\descript{
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent lobortis quam at dolor adipiscing dictum. Proin sit amet nunc elit. Donec tempor eros vitae quam posuere nec ullamcorper ligula tincidunt. Suspendisse condimentum venenatis quam, a imperdiet elit consectetur id. Duis vitae dignissim enim. Donec molestie mattis varius. Nunc eget sapien sit amet nibh pulvinar gravida sed vitae nunc. Suspendisse pharetra auctor molestie. Sed vel ipsum vitae quam elementum ultrices ut a lacus. Proin ut mi nibh, nec tempus dolor. Fusce ac ante sit amet nisi porttitor vehicula in at elit. Maecenas semper tellus nec leo viverra blandit. Suspendisse ullamcorper pulvinar nulla ut feugiat. Vivamus nec elementum massa. Donec quis nisl sed justo euismod blandit. Vivamus sit amet erat a turpis porttitor mollis. Sed cursus tortor vitae nulla ullamcorper porta. Quisque sapien dolor, tempor eget rutrum id, cursus vel ipsum.
+\def\descript
+{
+We investigate a method for compressing data using regular expressions: First the data is parsed under a regular expression matching the data. Second the parse tree is encoded efficiently using an oracle based approach; in this manner only non-deterministic parts of the parse tree must be encoded.
+
+We show how to deploy the method on XML files. By automatically deriving a regular expression from an XML scheme, we can compress all XML instances of that scheme.
+
+Based on our method we have implemented a prototype of an XML-compressor in the functional language Haskell. Further we have tested the prototype on data from the Digital Bibliography \& Library Project; we are able to compress the data by a factor of $4.47$.
 }
 
 \def\suplementInfo{
@@ -305,22 +310,21 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent lobortis quam 
 
 \mainmatter
 
-\fixme{Replace ugly amarican z's with proper English} 
+\fixme{Replace ugly amarican z's with proper English}
 \fixme{refered is spelled referred as by url in comment (latex source)}
 
 %\url{http://dictionary.cambridge.org/dictionary/british/refer-sb-to-sth_2#refer-sb-to-sth_2__2}
 
 \chapter{Introduction}
 
-The Extensible Markup Language (XML) \cite{w3c2000} is an extensively used
-format for encoding documents and storing data in a machine-readable
-form. During the last decade hundreds of XML-based domain specific languages has
-emerged, e.g. RSS for publishing web blogs, XHTML for encoding web pages, CML
-for managing molecular information, SVG for describing two-dimensional vector
-graphics, and OpenDocument for representing electronic documents. Further, XML
-has become ubiquitous in both commercial industries such as banking and
-telecommunication \cite{lisu2000}, and in science and research industries
-\cite{zhlu2002, gi2000}.
+Extensible Markup Language (XML) \cite{w3c2000} is an extensively used format
+for representing and sharing data on the web. During the last decade hundreds
+of XML-based domain specific languages has emerged, e.g. RSS for publishing web
+blogs, XHTML for encoding web pages, CML for managing molecular information,
+SVG for describing two-dimensional vector graphics, and OpenDocument for
+representing electronic documents. Further, XML has become ubiquitous in both commercial
+industries such as banking and telecommunication \cite{lisu2000}, and in science
+and research industries \cite{zhlu2002, gi2000}.
 
 The advantage of using XML is flexibility and access to the vast amount of
 existing tools and technologies tailored at XML. Nonetheless encoding data
@@ -1014,6 +1018,30 @@ regular expression with the encoded data so it is as small as possible.
 \chapter{Experimental results}
 \label{chap:experimental_results}
 
+where DBLP$^1$ is a small sample file we have constructed from the original DBLP
+XML file. This sample file is roughly of size 1mb.
+
+
+\newcommand{\fs}[1]{\footnotesize{#1}}
+
+\begin{nonfloatingtable}
+  \centering
+  \begin{tabular}{|l|c|c|c|} \hline \textbf{Description} & \textbf{Original
+      size} & \textbf{Size after gzip} & \textbf{Size after regp} \\ \hline
+
+    DBLP$^1$ XML file  & 1069858 & 177541 & XXXX \\
+    \hspace{1em} \fs{-- Split into data} & \fs{606046} & \fs{144779} & \\
+    \hspace{1em} \fs{-- Split into meta} & \fs{457985} & & \fs{94745} \\
+    \multicolumn{4}{|p{300px}|}{\fs When the file is split into data and meta and the data
+      is compressed using gzip and the meta is compressed using our compression
+      we end up with a total size of $144779+94745 = \mathbf{239524b}$. } \\ \hline
+  \end{tabular}
+
+  \caption{FooBar}
+  \label{tab:asd}
+\end{nonfloatingtable}
+
+
 % xml: 1069858 -> gzip -> 177541
 % 
 % data: 606046 -> gzip -> 144779 }
@@ -1047,6 +1075,9 @@ Below is a list of possible further work.
   data is grouped together, then it would properly be a good idea to group the
   values of all elements and attributes that have the same name. For example all
   data from elements named email would then be grouped together.
+
+
+\item 
 
 \end{description}
 
