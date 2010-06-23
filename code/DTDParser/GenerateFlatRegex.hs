@@ -1,4 +1,4 @@
-module DTDParser.GenerateRegex
+module DTDParser.GenerateFlatRegex
 where
 
 import Text.XML.HaXml.Parse
@@ -13,38 +13,20 @@ import RegexExt (RegexExt((:+:), (:*:)))
 import qualified  RegexExt as RxExt
 
 xmlHeader = RxExt.prod
-            [RxExt.Str "<?xml",
-             RxExt.whitespaces,
-             RxExt.Str "version=\"",
+            [RxExt.Str "<?xml version=\"",
              RxExt.digit,
              RxExt.Lit '.',
              RxExt.digit,
-             RxExt.Lit '"',
-             RxExt.whitespaces,
-             RxExt.Str "encoding=\"",
+             RxExt.Str "\" encoding=\"",
              RxExt.Star $ RxExt.alphanum RxExt.:+: RxExt.Lit '-',
-             RxExt.Lit '"',
-             RxExt.whitespaces,
-             RxExt.Str "?>"]
-
-xmlDocType = RxExt.prod
-             [RxExt.Str "<!DOCTYPE",
-              RxExt.Star $ RxExt.sum
-                   [RxExt.alphanum,
-                    RxExt.whitespace,
-                    RxExt.Lit '"',
-                    RxExt.Lit '.'],
-              RxExt.Lit '>']
+             RxExt.Str "\"?>"]
 
 generateRootRegex :: ElmMaybeeAttMap -> String -> RegexExt
 generateRootRegex elmAttMap rootTagName = RxExt.prod
-                                          [RxExt.whitespaces,
-                                           xmlHeader,
-                                           RxExt.whitespaces,
-                                           (RxExt.Query xmlDocType),
-                                           -- RxExt.whitespaces,
+                                          [xmlHeader,
+                                           RxExt.Lit '\n',
                                            generateRegex elmAttMap rootTagName,
-                                           RxExt.whitespaces
+                                           RxExt.Lit '\n'
                                           ]
 
 -- Takes the element name to process
@@ -57,16 +39,11 @@ generateElementRegex elmAttMap ((ElementDecl name cntSpec), attMaybee) =
     let
         genRegex :: RegexExt -> RegexExt
         genRegex content = RxExt.prod
-                           [RxExt.whitespaces,
-                            RxExt.Str $ "<" ++  name,
+                           [RxExt.Str $ "<" ++  name,
                             generateAttributeRegex attMaybee,
-                            RxExt.whitespaces,
                             RxExt.Lit '>',
                             content,
-                            RxExt.whitespaces,
-                            RxExt.Str $ "</" ++ name,
-                            RxExt.whitespaces,
-                            RxExt.Lit '>']
+                            RxExt.Str $ "</" ++ name ++ ">"]
 
         -- Needs MODIF !!!!!!
         processCP :: CP -> RegexExt
@@ -84,10 +61,10 @@ generateElementRegex elmAttMap ((ElementDecl name cntSpec), attMaybee) =
 
         -- Parsed Character data.
         processMixed :: Mixed -> RegexExt
-        processMixed (PCDATA) = RxExt.Star $ RxExt.CClass RxExt.PCDATA
+        processMixed (PCDATA) = RxExt.ptr
         processMixed (PCDATAplus refs) = -- PCDATAplus is always with a STAR around
             checkForRecursiveDefinitions name refs `seq`
-            RxExt.Star $ RxExt.sum $ (RxExt.CClass RxExt.PCDATA) : loop (generateElementRegex elmAttMap . getElementDecl) refs
+            RxExt.Star $ RxExt.sum $ RxExt.ptr : loop (generateElementRegex elmAttMap . getElementDecl) refs
 
         -- Lookup the name in the elm attribute map and pick the first of the two (the elementDecl)
         getElementDecl name = elmAttMap Map.! name
@@ -98,12 +75,11 @@ generateElementRegex elmAttMap ((ElementDecl name cntSpec), attMaybee) =
 
         processAttDef (AttDef name attType defaultDecl) = processDefaultDecl defaultDecl
                                                           $ RxExt.prod
-                                                                [RxExt.whitespaces,
-                                                                 RxExt.Str $ name ++ "=\"",
+                                                                [RxExt.Str $ " " ++ name ++ "=\"",
                                                                  processAttType attType,
                                                                  RxExt.Lit '"']
 
-        processAttType (StringType) = RxExt.Star $ RxExt.CClass RxExt.CDATA
+        processAttType (StringType) = RxExt.ptr
         processAttType (TokenizedType tokType) = error "Token type not implemented"
         processAttType (EnumeratedType enumType) = error "Enumerated type not implemented"
 

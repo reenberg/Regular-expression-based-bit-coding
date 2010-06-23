@@ -26,6 +26,7 @@ data CClass
     | PCDATA
     | WhiteSpace
     | CDATA
+    | Ptr
       deriving (Eq, Ord)
 
 instance Show RegexExt where
@@ -71,6 +72,7 @@ instance Show CClass where
     show PCDATA = "[#PCDATA]"
     show WhiteSpace = "[ws]"
     show CDATA = "[CDATA]"
+    show Ptr = "[PTR]"
 
 toRegex :: RegexExt -> Rx.Reg Char
 toRegex regexExt =
@@ -94,6 +96,7 @@ toRegex regexExt =
                     PCDATA -> Rx.pcdata
                     WhiteSpace -> Rx.whitespace
                     CDATA -> Rx.cdata
+                    Ptr -> Rx.Star $ Rx.num
 
 sum :: [RegexExt] -> RegexExt
 sum []     = E
@@ -108,3 +111,4 @@ whitespaces = Star $ CClass WhiteSpace
 
 alphanum = CClass AlphaNum
 digit = CClass Num
+ptr = CClass Ptr

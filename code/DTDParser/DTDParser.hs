@@ -13,7 +13,7 @@ import System.Environment
 
 import DTDParser.TypeDef
 import DTDParser.ProcessDTD
-import DTDParser.GenerateRegex
+import DTDParser.GenerateFlatRegex
 
 import qualified RegKleene as Rx
 import qualified RegexExt as RxExt

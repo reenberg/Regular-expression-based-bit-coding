@@ -28,38 +28,40 @@ tags = string "<?xml version=\"1.0\"?>\n<dblptags>\n" :*: Star tag :*: string "<
 tags' = optimize tags
 
 main =
-    do regex <- DTDParser.parse "DTDParser/xml/dblp.dtd" -- "../data/dblp.dtd"
+    do regex <- DTDParser.parse "../data/dblp.dtd"
        let regex' = optimize regex
 --        print regex
-       cs <- readFile "DTDParser/xml/dblptmp.xml" -- "../data/dblp_small.xml"
+       cs <- readFile "../data/dblp_small.meta"
        let v = parse' regex' cs
            regex'' = specialize regex' v
            v' = parse' regex'' cs
        -- print regex'
+       -- let bs = code regex' v
        let bs = code regex'' v'
-       print bs
+       -- print bs
+       -- print $ M.flatten $ decode regex' bs
        print $ length bs
 
 --
 --
 --
 
-r1 = Star (Lit 'a' :+: Lit 'b' :+: Lit 'c')
-r2 = Star (Lit 'd' :*: r1)
-r3 = Star (r1 :*: r2)
+-- r1 = Star (Lit 'a' :+: Lit 'b' :+: Lit 'c')
+-- r2 = Star (Lit 'd' :*: r1)
+-- r3 = Star (r1 :*: r2)
 
-txt = "dbdb"
+-- txt = "dbdb"
 
-v = parse' (normalize r3) txt
+-- v = parse' (normalize r3) txt
 
-r4 = specialize (normalize r3) v
+-- r4 = specialize (normalize r3) v
 
-main_ =
-  do print $ v
-     print $ r4
-     let stree = parse' r4 txt
-     -- print $ stree
-     print $ M.flatten stree
-     print $ code r4 v
-     print $ code r4 stree
-     -- print $ (flatten . decode regex . code regex) stree
+-- main_ =
+--   do print $ v
+--      print $ r4
+--      let stree = parse' r4 txt
+--      -- print $ stree
+--      print $ M.flatten stree
+--      print $ code r4 v
+--      print $ code r4 stree
+--      -- print $ (flatten . decode regex . code regex) stree

@@ -46,16 +46,16 @@ instance Show a => Show (Reg a) where
   show O         = error "Can't show 'O' (Empty set)"
   show E         = ""
   show (Lit c)   = show c
-  show (e :+: f) = 
-      case f of 
+  show (e :+: f) =
+      case f of
         (_ :*: _) -> show e ++ "|(" ++ show f ++ ")"
         _ -> show e ++ "|" ++ show f
-  show (e :*: f) = 
+  show (e :*: f) =
       case f of
         (_ :+: _) ->       show e ++ "(" ++ show f ++ ")"
         _ ->       show e ++ show f
-  show (Star r)  = 
-      case r of 
+  show (Star r)  =
+      case r of
         (_ :*: _) -> "(" ++ show r ++ ")*"
         (_ :+: _) -> "(" ++ show r ++ ")*"
         E -> ""
@@ -122,10 +122,10 @@ cclass :: [a] -> Reg a
 cclass = sum . fmap Lit
 
 pcdata :: Reg Char
-pcdata = cclass $ fmap chr $ [32 .. 126] -- most printable chars.
+pcdata = cclass $ fmap chr $ [9, 10, 13, 61] ++ [32 .. 59] ++ [63 .. 126]
 
 cdata :: Reg Char
-cdata = pcdata
+cdata = (cclass $ fmap chr $ [9, 10, 13, 32, 33, 61] ++ [35 .. 59] ++ [63 .. 126]) :+: string "\\\""
 
 whitespace :: Reg Char
 whitespace = cclass " \n\t\r"
