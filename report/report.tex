@@ -1038,18 +1038,17 @@ The experiment was done in two steps
   the meta.
 \end{enumerate}
 
-As seen in \fref{tab:experimental-results} we do not perform as well as GZIP,
-actually we end up with a compression that is roughly 33\% worse (see
-\ref{tab:experimental-results-comparison}).
+As seen in \fref{tab:experimental-results} we do not perform as well as GZIP in
+either of the two ways we have tested our bit coding. Actually we end up with a
+compression that is roughly 33\% worse when comparing the split method and GZIP.
+See \ref{tab:experimental-results-comparison} for the complete list. \fixme{Get
+  the percentage correct}
 
-When the file is split into data and meta and the data is compressed using GZIP
-and the meta is compressed using our compression we end up with a total size of
-$144779+94745 = 239524$. This is 61983b worse than just compressing using GZIP
-and that is not counting the small amount of lost data described above and not
-counting the representation of the regular expression used to bit encode the
-meta data.
-
-\let\fs\footnotesize
+\paragraph{Note.} The sum of the size of the two splits are not exactly the same as
+the size of the original file as the XML parser strips any unnecessary extra
+whitespace (i.e., multiple spaces between element attributes) and the
+\texttt{<!DOCTYPE..>} element was also removed when the meta data file was
+generated.
 
 \begin{nonfloatingtable}
   \centering
@@ -1070,11 +1069,11 @@ meta data.
   \end{tabular}
 
   \caption{Results from compressing using GZIP and our bit coding. All sizes are
-  in bytes. \textbf{Note} that the sum of the two splits size
-  are not exactly the same as the size of the original file as the XML parser strips
-  any unnecessary extra whitespace (i.e., multiple spaces between element
-  attributes) and the \texttt{<!DOCTYPE..>} element was also removed when the meta
-  data file was generated.}
+    in bytes. \textbf{Note} that the the sum of the size of the two splits are
+    not exactly the same as the size of the original file as the XML parser
+    strips any unnecessary extra whitespace (i.e., multiple spaces between
+    element attributes) and the \texttt{<!DOCTYPE..>} element was also removed
+    when the meta data file was generated.}
   \label{tab:experimental-results}
 \end{nonfloatingtable}
 
