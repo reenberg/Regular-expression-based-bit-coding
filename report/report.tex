@@ -587,13 +587,12 @@ actual meaning when the resulting regular expression is needed, to save space.
 \subsection{ Non regular schemas}
 
 Most XML schema definitions allow element references (possibly to itself) which
-makes it possible to create non regular languages by having
-infinite
-
-\fixme{Something more needs to be explained}
+makes it possible to describe a non regular XML file. Most common example is
+when a tag may contain itself as a child element.
 
 Obviously it is not possible to create regular expressions from such schema
-instances.
+instances and thus the generation will go into infinite loop unless this is
+checked.
 
 \chapter{$\mu$-Recursion}
 \label{chap:mu-recursion}
