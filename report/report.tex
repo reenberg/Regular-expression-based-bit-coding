@@ -279,7 +279,9 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 \author{Morten Brøns-Pedersen {\footnotesize (mortenbp@gmail.com)}\\
 Jesper Reenberg {\footnotesize (jesper.reenberg@gmail.com)} \\
 Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
-\def\descript{Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent lobortis quam at dolor adipiscing dictum. Proin sit amet nunc elit. Donec tempor eros vitae quam posuere nec ullamcorper ligula tincidunt. Suspendisse condimentum venenatis quam, a imperdiet elit consectetur id. Duis vitae dignissim enim. Donec molestie mattis varius. Nunc eget sapien sit amet nibh pulvinar gravida sed vitae nunc. Suspendisse pharetra auctor molestie. Sed vel ipsum vitae quam elementum ultrices ut a lacus. Proin ut mi nibh, nec tempus dolor. Fusce ac ante sit amet nisi porttitor vehicula in at elit. Maecenas semper tellus nec leo viverra blandit. Suspendisse ullamcorper pulvinar nulla ut feugiat. Vivamus nec elementum massa. Donec quis nisl sed justo euismod blandit. Vivamus sit amet erat a turpis porttitor mollis. Sed cursus tortor vitae nulla ullamcorper porta. Quisque sapien dolor, tempor eget rutrum id, cursus vel ipsum.}
+\def\descript{
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent lobortis quam at dolor adipiscing dictum. Proin sit amet nunc elit. Donec tempor eros vitae quam posuere nec ullamcorper ligula tincidunt. Suspendisse condimentum venenatis quam, a imperdiet elit consectetur id. Duis vitae dignissim enim. Donec molestie mattis varius. Nunc eget sapien sit amet nibh pulvinar gravida sed vitae nunc. Suspendisse pharetra auctor molestie. Sed vel ipsum vitae quam elementum ultrices ut a lacus. Proin ut mi nibh, nec tempus dolor. Fusce ac ante sit amet nisi porttitor vehicula in at elit. Maecenas semper tellus nec leo viverra blandit. Suspendisse ullamcorper pulvinar nulla ut feugiat. Vivamus nec elementum massa. Donec quis nisl sed justo euismod blandit. Vivamus sit amet erat a turpis porttitor mollis. Sed cursus tortor vitae nulla ullamcorper porta. Quisque sapien dolor, tempor eget rutrum id, cursus vel ipsum.
+}
 
 \def\suplementInfo{
   \kern 5pt \hrule width 11pc \kern 5pt % putter 5pt spacing oven over og neden under stregen
@@ -1012,21 +1014,19 @@ representing the \texttt{\#PCDATA} type. This extended regular expression data
 type is intended as being the high level representation used when saving the
 regular expression with the encoded data so it is as small as possible.
 
-
 \chapter{Experimental results}
 \label{sec:experimental_results}
 
-file: 33414 bytes (data: 17927, meta: 15171)
+% xml: 1069858 -> gzip -> 177541
+% 
+% data: 606046 -> gzip -> 144779 }
+%                                } -> 239524
+% meta: 457985 -> regp -> 94745  }
 
-gzip file: 5760 bytes
+\chapter{Conclusion}
+\label{sec:conclusion}
 
-gzip data: 5000 bytes
-
-code meta: 737 bytes
-
-gzip data + code meta: 5737 bytes
-
-\chapter{Further work}
+\section{Further work}
 
 Below is a list of possible further work.
 \fixme{Should be merged with real further work}
@@ -1038,7 +1038,6 @@ Below is a list of possible further work.
   declarations instead as long as the result is not bigger than the
   original\footnote{We need to remember that some sort of reference needs to be inserted
     which also takes some space.}.
-
 
 \item A better compression ratio can properly be gained by preprocessing the XML
   file and when any data (not markup) is found, strip at away and put it into a
@@ -1053,13 +1052,6 @@ Below is a list of possible further work.
   data from elements named email would then be grouped together.
 
 \end{description}
-
-\chapter{Conclusion}
-\label{sec:conclusion}
-
-\section{Future work}
-
-\fixme{add something here}
 
 \clearpage
 
