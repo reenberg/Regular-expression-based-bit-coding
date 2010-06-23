@@ -993,7 +993,10 @@ gained 3 bits.
 
 \end{example}
 
-\chapter{Implementation of DTD schema parser}
+\chapter{Implementation}
+
+
+\section{DTD schema parser}
 
 We have implemented a DTD schema parser, even though it limits the possibilities
 of optimisation by restricting specific types on elements contained data (e.g.,
@@ -1019,6 +1022,29 @@ representing the \texttt{\#PCDATA} type. This extended regular expression data
 type is intended as being the high level representation used when saving the
 regular expression with the encoded data so it is as small as possible.
 
+\section{Splitting of XML files}
+
+After seeing how good GZIP was at compressing the original XML file, we came up
+with the idea of splitting the file by pulling out all the data and leaving only
+the meta ( markup).
+
+The initial idea is that this is saved into one file as the XML file is parsed,
+putting the data in sequence of how they appear in the XML file, and then
+leaving an index in the XML file of the position where the data was put in the
+data file.
+
+However as statistical compression algorithms ideally are better at compressing
+when it encounters large chunks of similar data, we group the data from the XML
+file such that all attributes with the same name and all data from elements with
+the same name gets its data grouped together. This is especially useful for
+attributes or elements that contains dates or years.
+
+However in our implementation of this we do not save the indexes where the data
+gets placed in the data file so we have some loss of information that is needed
+if the compressed file should be uncompressed later.
+
+We have used HXT for the XML parsing.
+
 \chapter{Experimental results}
 \label{chap:experimental_results}
 
@@ -1027,28 +1053,18 @@ We have used a small sample version of the DBLP XML file which we have created
 for the purpose. We have compared our result to the standard Unix tool GZIP
 version 1.3.12 and our bit coding.
 
-
-The experiment was done in two steps
-
-\begin{enumerate}
-\item Taking the file and compressing it using GZIP and our bit coding
-
-\item Splitting the file into its data and meta (XML structure) par \fixme{hvor
-    beskrives dette?} and then running GZIP on the data and our bit coding on
-  the meta.
-\end{enumerate}
-
 As seen in \fref{tab:experimental-results} we do not perform as well as GZIP in
 either of the two ways we have tested our bit coding. Actually we end up with a
 compression that is roughly 33\% worse when comparing the split method and GZIP.
 See \ref{tab:experimental-results-comparison} for the complete list. \fixme{Get
   the percentage correct}
 
-\paragraph{Note.} The sum of the size of the two splits are not exactly the same as
-the size of the original file as the XML parser strips any unnecessary extra
-whitespace (i.e., multiple spaces between element attributes) and the
-\texttt{<!DOCTYPE..>} element was also removed when the meta data file was
-generated.
+
+\fixme{Tell about the gzip of the only the markup}
+
+\paragraph{Note.} The sum of the size of the two splits are not exactly the same
+as the size of the original file. This is described in the caption of
+\fref{tab:experimental-results}
 
 \begin{nonfloatingtable}
   \centering
@@ -1056,24 +1072,26 @@ generated.
   \begin{tabular}{|l|l|}\hline
     \textbf{Test \#} & \textbf{File} \\ \hline
     1 & DBLP sample file \#1 \\
-    & \begin{tabular}{|l|c|c|c|} \hline 
+    & \begin{tabular}{|l|c|c|} \hline 
 
-      \textbf{Description} & \textbf{Original size} & \textbf{Size after GZIP} &
-      \textbf{Size after bit code} \\ \hline
+      \textbf{Description} & \textbf{Original size} & \textbf{Compressed size } \\ \hline
 
-      Original file  & 1069858 & 177541 & 373568 \\ \hline
-      Orig split into data & 606046 & 144779 & \\
-      Orig split into meta & 457985 & & 94745 \\ \hline
+      Original file (GZIP)  & 1069858 & 177541 \\ 
+      Original file (bit code)  & 1069858 & 373568 \\ \hline
+      Orig split into data (GZIP) & 606046 & 144779  \\ \hline
+      Orig split into meta (GZIP) & 457985 & 5622 \\
+      Orig split into meta (bit code) & 457985 & 94745 \\ \hline
     \end{tabular} \\
     & \\ \hline
   \end{tabular}
 
   \caption{Results from compressing using GZIP and our bit coding. All sizes are
-    in bytes. \textbf{Note} that the the sum of the size of the two splits are
+    in bytes. \textbf{Note} that the sum of the size of the two splits are
     not exactly the same as the size of the original file as the XML parser
     strips any unnecessary extra whitespace (i.e., multiple spaces between
     element attributes) and the \texttt{<!DOCTYPE..>} element was also removed
-    when the meta data file was generated.}
+    when the meta data file was generated. Also indexes should have been placed
+    into the meta file, making it bigger that seen}
   \label{tab:experimental-results}
 \end{nonfloatingtable}
 
@@ -1083,12 +1101,13 @@ generated.
     \textbf{Test \#} & \textbf{File} \\ \hline
     1 & DBLP sample file \#1 \\
     & \begin{tabular}{|l|c|c|c|} \hline
-    \textbf{Description} & \textbf{Original Size} & \textbf{Compressed size} &
-    \textbf{Compression factor} \\ \hline
+    \textbf{Description} & \textbf{Orig. size} & \textbf{Comp. size} &
+    \textbf{Comp. factor} \\ \hline
 
     Orig file GZIP & 1069858 & 177541 & 6.03 \\
-    Orig file bit code & 1069858 & 373568 & 2.86 \\
-    Splittet file & 1064031 & 239524 & 4.44 \\ \hline
+    Orig file bit code & 1069858 & 373568 & 2.86 \\ \hline
+    Splittet file (GZIP data, bit code meta) & 1064031 & 239524 & 4.44 \\
+    Splittet file (GZIP data, GZIP meta) & 1064031 & 150401 & 7.07 \\ \hline
   \end{tabular} \\ 
    & \\ \hline
   \end{tabular}
@@ -1135,35 +1154,36 @@ trees. This is not particularly useful in the case of XML but other areas might
 benefit from it. Since parse trees contain more information than their
 flattenings it is not surprising that our method performs worse than say GZIP.
 
-% \section{Further work}
+\fixme{Experimental results not accurate because of low number of tests}
+\fixme{it sux compared to GZIP}
 
-% Below is a list of possible further work.
-% \fixme{Should be merged with real further work}
+\section{Further work}
 
-% \begin{description}
-% \item[Refactoring] As it is not all schema instances that utilises global
-%   definitions (see \label{sec:local-global-schema-definitions}), it would make
-%   sense to extract such child elements and attributes into being global
-%   declarations instead as long as the result is not bigger than the
-%   original\footnote{We need to remember that some sort of reference needs to be inserted
-%     which also takes some space.}.
+Below is a list of possible further work.
 
-% \item \fixme{we have done this already}A better compression ratio can probably be gained by preprocessing the XML
-%   file and when any data (not markup) is found, strip at away and put it into a
-%   buffer, leaving the index where the data was in the file. This way we would
-%   end up with a XML file that contains lots of markup which we encode using bit
-%   encoding, and then encode all the collected data with some arbitrary
-%   statistically compression method (e.g., the Lempel–Ziv–Welch (LZW) algorithm)
-
-%   As statistically compression algorithms works better when the same type of
-%   data is grouped together, then it would properly be a good idea to group the
-%   values of all elements and attributes that have the same name. For example all
-%   data from elements named email would then be grouped together.
+\begin{description}
+\item[Refactoring.] As it is not all schema instances that utilises global
+  definitions (see \label{sec:local-global-schema-definitions}), it would make
+  sense to extract such child elements and attributes into being global
+  declarations instead as long as the result is not bigger than the
+  original\footnote{We need to remember that some sort of reference needs to be inserted
+    which also takes some space.}.
 
 
-% \item 
+\item[Proper parser.] The experiments we have made should be rerun using a
+  parser that can handle substantial larger files. Our parser began to struggle
+  with file sizes about 1MB (took >200minutes).
 
-% \end{description}
+\item[Comparing results.] It would be worth comparing results not just with GZIP
+  but at least also with XMill\cite{lisu2000}.
+
+\item [Splitting meta and data.] It seems that statistical compression
+  algorithms like the one used by GZIP performs quite better when compressing
+  the meta and the data separated. It certanly does it better than our bit
+  coding so it would be worth wile looking more into this. Maybe compare this to
+  the way XMill works.
+
+\end{description}
 
 \clearpage
 
