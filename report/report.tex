@@ -235,12 +235,26 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
   \thispagestyle{empty}%
   \vfill
   \begin{center}\leavevmode
-    \normalfont
-    \Huge{\raggedleft \@title\par}%
-    \hrulefill\par
-    \Large{\raggedright \subtitle\par}%
-    \vskip 2cm
-    {\@date\par}%
+    % \normalfont
+    % \Huge{\raggedleft \@title\par}%
+    % \hrulefill\par
+    % \Large{\raggedright \subtitle\par}%
+    \begin{flushleft}
+      \huge \@title
+    \end{flushleft}
+    \par
+    \hrule height 1pt
+    \par
+    \begin{flushright}
+      \large \subtitle \par
+      \vspace{2pt}
+      \footnotesize DIKU \@date
+    \end{flushright}
+    \vskip 10pt
+    % {\@date\par}%
+    \begin{quote}
+      \textit{\descript}
+    \end{quote}
   \end{center}%
   \vfill
 \begin{minipage}{80pt}
@@ -261,10 +275,11 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 %		Data til forside
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \title{Regular-expression based bit coding}
-\def\subtitle{\footnotesize{TiPL - Topics in Programming Languages.}}
+\def\subtitle{TiPL - Topics in Programming Languages.}
 \author{Morten Brøns-Pedersen {\footnotesize (mortenbp@gmail.com)}\\
 Jesper Reenberg {\footnotesize (jesper.reenberg@gmail.com)} \\
 Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
+\def\descript{Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent lobortis quam at dolor adipiscing dictum. Proin sit amet nunc elit. Donec tempor eros vitae quam posuere nec ullamcorper ligula tincidunt. Suspendisse condimentum venenatis quam, a imperdiet elit consectetur id. Duis vitae dignissim enim. Donec molestie mattis varius. Nunc eget sapien sit amet nibh pulvinar gravida sed vitae nunc. Suspendisse pharetra auctor molestie. Sed vel ipsum vitae quam elementum ultrices ut a lacus. Proin ut mi nibh, nec tempus dolor. Fusce ac ante sit amet nisi porttitor vehicula in at elit. Maecenas semper tellus nec leo viverra blandit. Suspendisse ullamcorper pulvinar nulla ut feugiat. Vivamus nec elementum massa. Donec quis nisl sed justo euismod blandit. Vivamus sit amet erat a turpis porttitor mollis. Sed cursus tortor vitae nulla ullamcorper porta. Quisque sapien dolor, tempor eget rutrum id, cursus vel ipsum.}
 
 \def\suplementInfo{
   \kern 5pt \hrule width 11pc \kern 5pt % putter 5pt spacing oven over og neden under stregen
@@ -280,9 +295,6 @@ Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
 
 \maketitle
 \thispagestyle{empty}
-
-\begin{abstract}
-\end{abstract}
 
 \clearpage
 
