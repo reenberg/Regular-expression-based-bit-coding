@@ -511,13 +511,13 @@ expression for the children we get
 
 \subsection{Local and global schema definitions}
 \label{sec:local-global-schema-definitions}
-Different Schemas have different ways of defining elements, child elements and
+Different Schemas have different ways of defining element's, child elements and
 attribute lists of elements. In general the element and child element
 definitions can be divided into two principles\footnote{At least this is true for
   XSD, Relax NG schemas and properly others, but DTD only have global definitions}
 
 \begin{description}
-\item[Local definitions] is when the definition of an elements child elements is
+\item[Local definitions] is when the definition of an element's child elements is
   inlined as a child of the element definition. 
 
   \begin{example}[XSD schema using local definitions] \ % end the line
@@ -533,7 +533,7 @@ definitions can be divided into two principles\footnote{At least this is true fo
 \end{verbatim}
   \end{example}
 
-\item[Global definitions] is when the definition of an elements child elements
+\item[Global definitions] is when the definition of an element's child elements
   is defined at toplevel, and then referenced by the element. This way multiple
   elements can share the same child element definition, but the child element is
   only defined once.
