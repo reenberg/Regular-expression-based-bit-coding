@@ -581,60 +581,6 @@ infinite\fixme{Something more needs to be explained}
 Obviously it is not possible to create regular expressions from such schema
 instances.
 
-\section{Implementation of DTD schema parser}
-
-We have implemented a DTD schema parser, even though it limits the possibilities
-of optimisation by restricting specific types on elements contained data (e.g.,
-only integers or only dates).
-
-Our decision to do this anyway was that the DBLP\footnote{The DBLP Computer
-  Science Bibliography \url{http://www.informatik.uni-trier.de/~ley/db/}}
-database comes with a DTD
-schema\footnote{\url{http://www.informatik.uni-trier.de/~ley/db/about/dblp.dtd}}
-ready to use. This is handy as the DBLP database can be fetched in at least 4
-versions: a up to date, 2009, 2008, 2006 and 2004 version, each getting bigger
-up until the current up to date version.
-
-We utilise the HaXmL Haskell package to parse the DTD file and then we transform
-this into an extended regular expression data type. Currently we only support as
-much as the DTD syntax that was needed to parse the DBLP's DTD schema which at
-least includes most of elements (element content and mixed content) and
-attribute definitions.
-
-The extended regular expression adds query (\texttt{?}: zero or more), plus
-(\texttt{+}: one or more) and some character classes, especially one for
-representing the \texttt{\#PCDATA} type. This extended regular expression data
-type is intended as being the high level representation used when saving the
-regular expression with the encoded data so it is as small as possible.
-
-\subsection{Further work}
-
-Below is a list of possible further work.
-\fixme{Should be merged with real further work}
-
-\begin{description}
-\item[Refactoring] As it is not all schema instances that utilises global
-  definitions (see \label{sec:local-global-schema-definitions}), it would make
-  sense to extract such child elements and attributes into being global
-  declarations instead as long as the result is not bigger than the
-  original\footnote{We need to remember that some sort of reference needs to be inserted
-    which also takes some space.}.
-
-
-\item A better compression ratio can properly be gained by preprocessing the XML
-  file and when any data (not markup) is found, strip at away and put it into a
-  buffer, leaving the index where the data was in the file. This way we would
-  end up with a XML file that contains lots of markup which we encode using bit
-  encoding, and then encode all the collected data with some arbitrary
-  statistically compression method (e.g., the Lempel–Ziv–Welch (LZW) algorithm)
-
-  As statistically compression algorithms works better when the same type of
-  data is grouped together, then it would properly be a good idea to group the
-  values of all elements and attributes that have the same name. For example all
-  data from elements named email would then be grouped together.
-
-\end{description}
-
 \chapter{$\mu$-Recursion}
 \label{chap:mu-recursion}
 
@@ -1027,6 +973,33 @@ spared 3 bits.
 
 \end{example}
 
+\chapter{Implementation of DTD schema parser}
+
+We have implemented a DTD schema parser, even though it limits the possibilities
+of optimisation by restricting specific types on elements contained data (e.g.,
+only integers or only dates).
+
+Our decision to do this anyway was that the DBLP\footnote{The DBLP Computer
+  Science Bibliography \url{http://www.informatik.uni-trier.de/~ley/db/}}
+database comes with a DTD
+schema\footnote{\url{http://www.informatik.uni-trier.de/~ley/db/about/dblp.dtd}}
+ready to use. This is handy as the DBLP database can be fetched in at least 4
+versions: a up to date, 2009, 2008, 2006 and 2004 version, each getting bigger
+up until the current up to date version.
+
+We utilise the HaXmL Haskell package to parse the DTD file and then we transform
+this into an extended regular expression data type. Currently we only support as
+much as the DTD syntax that was needed to parse the DBLP's DTD schema which at
+least includes most of elements (element content and mixed content) and
+attribute definitions.
+
+The extended regular expression adds query (\texttt{?}: zero or more), plus
+(\texttt{+}: one or more) and some character classes, especially one for
+representing the \texttt{\#PCDATA} type. This extended regular expression data
+type is intended as being the high level representation used when saving the
+regular expression with the encoded data so it is as small as possible.
+
+
 \chapter{Experimental results}
 \label{sec:experimental_results}
 
@@ -1039,6 +1012,34 @@ gzip data: 5000 bytes
 code meta: 737 bytes
 
 gzip data + code meta: 5737 bytes
+
+\chapter{Further work}
+
+Below is a list of possible further work.
+\fixme{Should be merged with real further work}
+
+\begin{description}
+\item[Refactoring] As it is not all schema instances that utilises global
+  definitions (see \label{sec:local-global-schema-definitions}), it would make
+  sense to extract such child elements and attributes into being global
+  declarations instead as long as the result is not bigger than the
+  original\footnote{We need to remember that some sort of reference needs to be inserted
+    which also takes some space.}.
+
+
+\item A better compression ratio can properly be gained by preprocessing the XML
+  file and when any data (not markup) is found, strip at away and put it into a
+  buffer, leaving the index where the data was in the file. This way we would
+  end up with a XML file that contains lots of markup which we encode using bit
+  encoding, and then encode all the collected data with some arbitrary
+  statistically compression method (e.g., the Lempel–Ziv–Welch (LZW) algorithm)
+
+  As statistically compression algorithms works better when the same type of
+  data is grouped together, then it would properly be a good idea to group the
+  values of all elements and attributes that have the same name. For example all
+  data from elements named email would then be grouped together.
+
+\end{description}
 
 \chapter{Conclusion}
 \label{sec:conclusion}
