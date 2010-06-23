@@ -367,12 +367,12 @@ are able to compress XML files up to twice of the compression ratio of gzip
 \section{Organization}
 
 The rest of the paper is organised as follows:
-Section \ref{sec:formalisation} lays down the formal foundation on which we reason about regular expressions;
-section \ref{sec:convert} shows how to automatically derive a regular expression from an XML schema;
-section \ref{chap:mu-recursion} extends regular expressions with recursion, and shows how to encode parse trees more efficiently;
-section \ref{chap:specialize_huffman} shows how to specialise a regular expression to the specific XML-data being compressed;
-section \ref{sec:experimental_results} evaluates our prototype and presents experimental results;
-section \ref{sec:conclusion} concludes the paper and presents further work.
+\Fref{sec:formalisation} lays down the formal foundation on which we reason about regular expressions;
+\fref{sec:convert} shows how to automatically derive a regular expression from an XML schema;
+\fref{chap:mu-recursion} extends regular expressions with recursion, and shows how to encode parse trees more efficiently;
+\fref{chap:specialize_huffman} shows how to specialise a regular expression to the specific XML-data being compressed;
+\fref{sec:experimental_results} evaluates our prototype and presents experimental results;
+\fref{sec:conclusion} concludes the paper and presents further work.
 
 \section{Acknowledgement}
 
@@ -414,7 +414,7 @@ alphabet $\Sigma = {a_1, \dots, a_n}$ as follows:
 \noindent with $\times$ having higher precedence than $+$.
 
 Based on the formalisation of Henglein and Nielsen \cite{heni2010} we focus on
-string parsing under regular expressions. Figure \ref{fig:inhabitation_proofs}
+string parsing under regular expressions. \Fref{fig:inhabitation_proofs}
 shows their inference system, in which inhabitation proofs for regular
 expressions can be derived. We write $\vdash v : E$ if $v : E$ is derivable in
 it. Proof trees $v$, such that $\vdash v : E$ for some $E$, will be referred to
