@@ -307,9 +307,22 @@ has become ubiquitous in both commercial industries such as banking and
 telecommunication \cite{lisu2000}, and in science and research industries
 \cite{zhlu2002, gi2000}.
 
-The advantage of using XML is flexibility and access to the vast amount of existing tools and technologies tailored at XML. Nonetheless encoding data in XML is highly inefficient in terms of space-usage, as large amounts of meta-data are replicated throughout the encoded file; hence tools for compressing XML encoded data is of main concern.
+The advantage of using XML is flexibility and access to the vast amount of
+existing tools and technologies tailored at XML. Nonetheless encoding data
+in XML is highly inefficient in terms of space-usage, as large amounts of
+meta-data are replicated throughout the encoded file; hence tools for compressing
+XML encoded data is of main concern.
 
-Existing general data-compressing techniques are typically based on a statistical approach using codebooks. In this paper we take another approach and investigate a method specific for XML files which exploits the tidy semantics of the XML-format. Given an XML scheme file \cite{wa2001}, we automatically derive a regular expression which matches all instances of the XML scheme. Using this regular expression enables us to parse an instance of the XML scheme, and we encode the parse tree efficiently using a bitcoding technique which only encode non-deterministic parts of the parse tree. We have implemented a prototype of our method in Haskell \cite{sugost2008} and conducted experiments using this prototype for compressing data obtained from the Digital Bibliography \& Library Project .
+Existing general data-compressing techniques are typically based on a statistical
+approach using codebooks. In this paper we take another approach and investigate
+a method specific for XML files which exploits the tidy semantics of the XML-format.
+Given an XML scheme file \cite{wa2001}, we automatically derive a regular
+expression which matches all instances of the XML scheme. Using this regular
+expression enables us to parse an instance of the XML scheme, and we encode
+the parse tree efficiently using a bitcoding technique which only encode
+non-deterministic parts of the parse tree. We have implemented a prototype
+of our method in Haskell \cite{sugost2008} and conducted experiments using
+this prototype for compressing data obtained from the Digital Bibliography \& Library Project .
 
 Existing general data-compressing techniques are typically based on a
 statistical approach using codebooks. In this paper we take another approach and
@@ -435,7 +448,8 @@ $\vdash w : E$, we have that $||v|| = ||w||$, we say that $E$ is ambiguous. In a
 plain manner we say that $E$ is ambiguous if any string can be parsed under $E$
 in more than one way.
 
-A regular expression consisting of nested alternations is refered to as a \emph{sum}. All subtrees in a sum which is not itself a sum is refered to as a \emph{branch}.
+A regular expression consisting of nested alternations is refered to as a \emph{sum}.
+All subtrees in a sum which is not itself a sum is refered to as a \emph{branch}.
 
 \begin{example}
 Let $E = (a + (b + c \times d)) + (a + b)^{*}$; we say that $E$ is a sum with
@@ -1042,6 +1056,6 @@ gzip data + code meta: 5737 bytes
 \end{document}
 
 %%% Local Variables: 
-%%% mode: tex
+%%% mode: SML
 %%% TeX-master: t
 %%% End: 
