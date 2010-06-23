@@ -1019,6 +1019,7 @@ type is intended as being the high level representation used when saving the
 regular expression with the encoded data so it is as small as possible.
 
 \section{Splitting of XML files}
+\label{sec:splitting-xml-files}
 
 After seeing how good GZIP was at compressing the original XML file, we came up
 with the idea of splitting the file by pulling out all the data and leaving only
@@ -1087,7 +1088,7 @@ as the size of the original file. This is described in the caption of
     strips any unnecessary extra whitespace (i.e., multiple spaces between
     element attributes) and the \texttt{<!DOCTYPE..>} element was also removed
     when the meta data file was generated. Also indexes should have been placed
-    into the meta file, making it bigger that seen}
+    into the meta file, making it bigger (see \fref{sec:splitting-xml-files})}
   \label{tab:experimental-results}
 \end{nonfloatingtable}
 
