@@ -899,7 +899,7 @@ Informally normal forms have the following properties which we show below.
   \end{proof}
 \end{theorem}
 
-\begin{lemma}
+\begin{theorem}
   Conversion to normal form preserves bit coding size.
 
   Since regular expressions are, in general, ambiguous the property we are after
@@ -907,8 +907,8 @@ Informally normal forms have the following properties which we show below.
   expressions. Given an expression $\alpha$ let $\bar{\alpha} = \alpha \lbrack
   \alpha_i / X_i \rbrack$, $\bar{\alpha}' = \alpha' \lbrack \alpha'_i / X_i
   \rbrack$ where the $X_i$'s are the free variables of $\alpha$, the
-  $\alpha_i$'s are arbitrary closed expressions, $\alpha ->n \alpha'$ and
-  $\alpha_i ->n \alpha'_i$.
+  $\alpha_i$'s are arbitrary closed expressions, and $\alpha ->n \alpha'$ and
+  $\alpha_i ->n \alpha'_i$ are derivable.
 
   Now if $v$ is a proof of membership in $\bar{\alpha}$ with the bit coding
   $\mathfrak{b}$ then there exists a membership proof $v'$ in $\bar{\alpha}'$
@@ -919,27 +919,26 @@ Informally normal forms have the following properties which we show below.
     With the problem properly formulated the proof itself is almost trivial as
     is often the case.
 
-    Again we use structural induction on $\alpha$. The interesting cases are the
-    two first rules and the rule for $\mu$-expressions. The cases $\gamma \times
-    (\alpha + \beta)$ and $(\alpha + \beta) \times \gamma$ are analogous so we
-    give here only the first one.\\[1em]
+    Again we use structural induction on $\alpha$. The interesting cases are
+    $dist_1$, $dist_2$ and $rec$. The cases for $dist_1$ and $dist_2$ are
+    analogous so we give here only the first one.\\[1em]
 
-    Case $\inference{\gamma \times \alpha + \gamma \times \beta ->n
-      \delta}{\gamma \times (\alpha + \beta) ->n \delta}$: By the induction
-    hypothesis we have that if the bit coding of $w : (\gamma \times \alpha +
-    \gamma + \beta)\lbrack \alpha_i / X_i \rbrack$ is $\mathfrak{c}$ then $|
-    \mathfrak{b'} | \leq | \mathfrak{c} |$. Now we make a case distinction on
-    the first bit $\mathfrak{c_0}$ of $\mathfrak{c}$. In either case the first
-    part of the remaining bits $\mathfrak{c_1}$ codes a membership proof of
-    $\gamma\lbrack \alpha_i / X_i \rbrack$. If $\mathfrak{c_0}$ is $0$ then the
-    rest of the bits $\mathfrak{c_2}$ code at membership proof of $\alpha\lbrack
-    \alpha_i / X_i \rbrack$, and if it is $1$ then $\mathfrak{c_2}$ codes a
-    membership proof of $\beta\lbrack \alpha_i / X_i \rbrack$. In either case we
-    can reorder the bit code to construct one that codes a membership proof of
-    $(\gamma \times (\alpha + \beta))\lbrack \alpha_i / X_i \rbrack$, namely
+
+    Case $dist_1$: By the induction hypothesis we have that if the bit coding of
+    $w : (\gamma \times \alpha + \gamma \times \beta)\lbrack \alpha_i / X_i
+    \rbrack$ is $\mathfrak{c}$ then $| \mathfrak{b'} | \leq | \mathfrak{c}
+    |$. Now we make a case distinction on the first bit $\mathfrak{c_0}$ of
+    $\mathfrak{c}$. In either case the first part of the remaining bits
+    $\mathfrak{c_1}$ codes a membership proof of $\gamma\lbrack \alpha_i / X_i
+    \rbrack$. If $\mathfrak{c_0}$ is $0$ then the rest of the bits
+    $\mathfrak{c_2}$ code at membership proof of $\alpha\lbrack \alpha_i / X_i
+    \rbrack$, and if it is $1$ then $\mathfrak{c_2}$ codes a membership proof of
+    $\beta\lbrack \alpha_i / X_i \rbrack$. In either case we can reorder the bit
+    code to construct one that codes a membership proof of $(\gamma \times
+    (\alpha + \beta))\lbrack \alpha_i / X_i \rbrack$, namely
     $\mathfrak{c'} = \mathfrak{c_1}\mathfrak{c_0}\mathfrak{c_2}$.\\[1em]
 
-    Case $\inference{\alpha ->n \alpha'}{\mu X. \alpha ->n \mu X. \alpha'}$: The
+    Case $rec$: The
     proof follows by noticing that the free variables of $\mu X. \alpha$ is a
     subset of the free variables of $\alpha$.
   \end{proof}
@@ -949,7 +948,7 @@ Informally normal forms have the following properties which we show below.
 
   It is not too hard to see that the bit coding size is preserved exactly
   (eg. $| \mathfrak{b'} | = | \mathfrak{b} |$) when using such a parser.
-\end{lemma}
+\end{theorem}
 
 \chapter{Specializing regular expressions to strings using Huffman trees}
 \label{chap:huffman}
