@@ -281,17 +281,10 @@ Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
 \maketitle
 \thispagestyle{empty}
 
-
 \begin{abstract}
-  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-  consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-  cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-  proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 \end{abstract}
 
-\clearpage 
+\clearpage
 
 \tableofcontents*
 
@@ -314,12 +307,22 @@ has become ubiquitous in both commercial industries such as banking and
 telecommunication \cite{lisu2000}, and in science and research industries
 \cite{zhlu2002, gi2000}.
 
-The advantage of using a self-describing data format as XML is flexibility and
-access to the vast amount of existing tools and technologies tailored at
-XML. Nonetheless encoding data in XML is highly inefficient in terms of
-space-usage, as large amounts of meta-data are replicated throughout the encoded
-file; hence tools for compressing XML encoded data is of main concern.
+The advantage of using XML is flexibility and access to the vast amount of
+existing tools and technologies tailored at XML. Nonetheless encoding data
+in XML is highly inefficient in terms of space-usage, as large amounts of
+meta-data are replicated throughout the encoded file; hence tools for compressing
+XML encoded data is of main concern.
 
+Existing general data-compressing techniques are typically based on a statistical
+approach using codebooks. In this paper we take another approach and investigate
+a method specific for XML files which exploits the tidy semantics of the XML-format.
+Given an XML scheme file \cite{wa2001}, we automatically derive a regular
+expression which matches all instances of the XML scheme. Using this regular
+expression enables us to parse an instance of the XML scheme, and we encode
+the parse tree efficiently using a bitcoding technique which only encode
+non-deterministic parts of the parse tree. We have implemented a prototype
+of our method in Haskell \cite{sugost2008} and conducted experiments using
+this prototype for compressing data obtained from the Digital Bibliography \& Library Project .
 
 Existing general data-compressing techniques are typically based on a
 statistical approach using codebooks. In this paper we take another approach and
@@ -337,18 +340,14 @@ This paper marks the conclusion of the 2010 candidate course \emph{Topics in
   Programming Languages} at Department of Computer Science, Copenhagen
 University.
 
-\section{Expectations of the reader}
+\subsection{Prerequisites}
 
-We expect readers to posses basic knowledge of regular expressions
-\cite{houl2006}. Also we expect familiarity with inference system and
-programming language semantics \cite{gu1992, wi1993}. Knowledge of Huffman
-coding \cite[Section 16.3]{co2001} is necessary to understand Section
-\ref{sec:convert_huffman}.
-
-\fixme{knowledge of XML and XML schemas}
+We expect readers to posses basic knowledge of regular expressions \cite{houl2006}.
+Also we expect familiarity with inference system and programming language semantics \cite{gu1992, wi1993}.
+Knowledge of XML and DTD schemes is necessary to understand Section \ref{sec:convert},
+and knowledge of Huffman coding \cite[Section 16.3]{co2001} is necessary to understand Section \ref{sec:specialize_huffman}.
 
 \section{Previous work}
-
 
 Our work is based on Henglein and Nielsen's paper \cite{heni2010}. In their
 paper they propose a straightforward technique for encoding syntax trees parsed
@@ -363,16 +362,15 @@ In \cite{lisu2000} Leifke and Suciu describes their XML compressor
 are able to compress XML files up to twice of the compression ratio of gzip
 \cite{de1996}.
 
+\subsection{Outline}
 
-\section{Organization}
-
-The rest of the paper is organised as follows:
-\Fref{sec:formalisation} lays down the formal foundation on which we reason about regular expressions;
-\fref{sec:convert} shows how to automatically derive a regular expression from an XML schema;
-\fref{chap:mu-recursion} extends regular expressions with recursion, and shows how to encode parse trees more efficiently;
-\fref{chap:specialize_huffman} shows how to specialise a regular expression to the specific XML-data being compressed;
-\fref{sec:experimental_results} evaluates our prototype and presents experimental results;
-\fref{sec:conclusion} concludes the paper and presents further work.
+The rest of the paper is organized as follows:
+Section \ref{sec:formalization} lays down the formal foundation on which we reason about regular expressions;
+Section \ref{sec:convert} shows how to automatically derive a regular expression from a DTD scheme;
+Section \ref{sec:mu_recursion} extends regular expressions with recursion, and shows how to encode parse trees efficienctly;
+Section \ref{sec:specialize_huffman} shows how to specialize a regular expression to the specific XML-data being compressed;
+Section \ref{sec:experimental_results} evaluates our prototype and presents experimental results;
+Section \ref{sec:conclusion} concludes the paper and presents further work.
 
 \section{Acknowledgement}
 
@@ -408,7 +406,7 @@ We define the language of regular expressions $Reg_\Sigma$ over the finite
 alphabet $\Sigma = {a_1, \dots, a_n}$ as follows:
 
 \[
-    E = 0 \; | \; 1 \; | \; E_1 + E_2 \; | \; E_1 \times E_2 \; | \; E^{*}
+    E ::= 0 \; | \; 1 \; | \; E_1 + E_2 \; | \; E_1 \times E_2 \; | \; E^{*}
 \]
 
 \noindent with $\times$ having higher precedence than $+$.
@@ -420,7 +418,7 @@ expressions can be derived. We write $\vdash v : E$ if $v : E$ is derivable in
 it. Proof trees $v$, such that $\vdash v : E$ for some $E$, will be referred to
 as \emph{proof values}.
 
-The \emph{flattening} $||v||$ of a proof value $v$ we define as follows:
+The \emph{flattening} $||v||$ of a proof value $v$ is defined as follows:
 
 \[
 \begin{array}{rclrcl}
@@ -433,7 +431,7 @@ The \emph{flattening} $||v||$ of a proof value $v$ we define as follows:
 \end{array}
 \]
 
-The \emph{language} $\mathcal{L}(E)$ of the regular expression $E$ we define by
+The \emph{language} $\mathcal{L}(E)$ of the regular expression $E$ is defined by
 
 \[
 \mathcal{L}(E) = \{ s \; | \; \vdash v : E, ||v|| = s \}.
@@ -450,9 +448,8 @@ $\vdash w : E$, we have that $||v|| = ||w||$, we say that $E$ is ambiguous. In a
 plain manner we say that $E$ is ambiguous if any string can be parsed under $E$
 in more than one way.
 
-A proof value consisting of nested alternations is referred to as a
-\emph{sum}. All subtrees in a sum which is not itself a sum is referred to as a
-\emph{branch}.
+A regular expression consisting of nested alternations is refered to as a \emph{sum}.
+All subtrees in a sum which is not itself a sum is refered to as a \emph{branch}.
 
 \begin{example}
 Let $E = (a + (b + c \times d)) + (a + b)^{*}$; we say that $E$ is a sum with
@@ -682,8 +679,8 @@ which now need to handle $\mu$-expressions. It becomes
 \]
 
 Theorem 9 in \cite{heni2010} states that $Reg_{\Sigma}^{\mu}$ describes exactly
-the same languages as $Reg_{\Sigma}$:\fixme{Fixed the cite, check it is the
-  right one}
+the same languages as $Reg_{\Sigma}$:\fixme{Fixed the cite, check it is the right one}
+
 \begin{enumerate}
 \item $\forall E \in Reg_{\Sigma} : \exists \alpha \in Reg_{\Sigma}^{\mu} :
   \{||v|| | |- v : E\} = \{||v|| | |- v : \alpha \}$
@@ -1050,7 +1047,6 @@ gzip data + code meta: 5737 bytes
 
 \fixme{add something here}
 
-
 \clearpage
 
 \bibliographystyle{../bibliography/theseurl}
@@ -1059,6 +1055,6 @@ gzip data + code meta: 5737 bytes
 \end{document}
 
 %%% Local Variables: 
-%%% mode: tex
+%%% mode: SML
 %%% TeX-master: t
 %%% End: 
