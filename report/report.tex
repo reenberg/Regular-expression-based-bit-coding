@@ -79,6 +79,9 @@ escapeinside={(@}{@)}          % if you want to add a comment within your code
 % fix to make this look like an article.. Really ugly but we have a 10page limit!!!!!
 \chapterstyle{article} % changes style of chapters, to look nice.
 
+\let\clearforchapter\par % Dont clear the page before each chapter. This saves
+                         % pages.. 10 page limit !!!!
+
 \makeatletter
 \newenvironment{nonfloatingfigure}{
   \vskip\intextsep
@@ -294,7 +297,11 @@ Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
 
 \mainmatter
 
-%\let\clearforchapter\par % cheating, but saves some space
+\fixme{Replace ugly amarican z's with proper English} 
+\fixme{refered is spelled referred as by url in comment (latex source)}
+
+%\url{http://dictionary.cambridge.org/dictionary/british/refer-sb-to-sth_2#refer-sb-to-sth_2__2}
+
 \chapter{Introduction}
 
 The Extensible Markup Language (XML) \cite{w3c2000} is an extensively used
@@ -305,10 +312,10 @@ for managing molecular information, SVG for describing two-dimensional vector
 graphics, and OpenDocument for representing electronic documents. Further, XML
 has become ubiquitous in both commercial industries such as banking and
 telecommunication \cite{lisu2000}, and in science and research industries
-\cite{zhlu, gi2000}.
+\cite{zhlu2002, gi2000}.
 
 The advantage of using a self-describing data format as XML is flexibility and
-acces to the vast amount of existing tools and technologies tailored at
+access to the vast amount of existing tools and technologies tailored at
 XML. Nonetheless encoding data in XML is highly inefficient in terms of
 space-usage, as large amounts of meta-data are replicated throughout the encoded
 file; hence tools for compressing XML encoded data is of main concern.
@@ -320,7 +327,7 @@ investigate a method specific for XML files which exploits the tidy semantics of
 the XML-format. Given an XML scheme file \cite{wa2001}, we automatically derive
 a regular expression which matches all instances of the XML scheme. Using this
 regular expression enables us to parse an instance of the XML scheme, and we
-encode the parse tree efficiently using a bitcoding technique which only encode
+encode the parse tree efficiently using a bit coding technique which only encode
 non-deterministic choices in the parse tree. We have implemented a prototype of
 our method in the declarative language Haskell \cite{sugost2008} and conducted
 experiments using this prototype for compressing data obtained from the Digital
@@ -338,14 +345,14 @@ programming language semantics \cite{gu1992, wi1993}. Knowledge of Huffman
 coding \cite[Section 16.3]{co2001} is necessary to understand Section
 \ref{sec:convert_huffman}.
 
-\fixme{knowledge of XML and XML shemas}
+\fixme{knowledge of XML and XML schemas}
 
 \section{Previous work}
 
 
 Our work is based on Henglein and Nielsen's paper \cite{heni2010}. In their
 paper they propose a straightforward technique for encoding syntax trees parsed
-under regular expressions effeciently as bit sequences. This is closely related
+under regular expressions efficiently as bit sequences. This is closely related
 to the work done by Necula and Rahul \cite{nera2001} where a variant of the same
 technique is used for compact encoding of proof-carrying code. By using
 oracle-based checking only non-deterministic choices in proof-trees need to be
@@ -359,22 +366,22 @@ are able to compress XML files up to twice of the compression ratio of gzip
 
 \section{Organization}
 
-The rest of the paper is organized as follows:
-Section \ref{sec:formalization} lays down the formal foundation on which we reason about regular expressions;
-section \ref{sec:convert} shows how to automatically derive a regular expression from an XML schema;
-section \ref{chap:mu-recursion} extends regular expressions with recursion, and shows how to encode parse trees more efficiently;
-section \ref{chap:specialize_huffman} shows how to specialise a regular expression to the specific XML-data being compressed;
-section \ref{sec:experimental_results} evaluates our prototype and presents experimental results;
-section \ref{sec:conclusion} concludes the paper and presents further work.
+The rest of the paper is organised as follows:
+\Fref{sec:formalisation} lays down the formal foundation on which we reason about regular expressions;
+\fref{sec:convert} shows how to automatically derive a regular expression from an XML schema;
+\fref{chap:mu-recursion} extends regular expressions with recursion, and shows how to encode parse trees more efficiently;
+\fref{chap:specialize_huffman} shows how to specialise a regular expression to the specific XML-data being compressed;
+\fref{sec:experimental_results} evaluates our prototype and presents experimental results;
+\fref{sec:conclusion} concludes the paper and presents further work.
 
 \section{Acknowledgement}
 
-The authors extend their graditude to Joakim Ahnfelt-Rønne, Jon Elverkilde, and
+The authors extend their gratitude to Joakim Ahnfelt-Rønne, Jon Elverkilde, and
 Michael Flænø Werk for insightful comments. Also we would like to thank Lasse
 Nielsen for providing useful source code for regular expression parsing.
 
-\section{Formalization}
-\label{sec:formalization}
+\section{Formalisation}
+\label{sec:formalisation}
 
 \begin{figure}
 \[
@@ -406,11 +413,11 @@ alphabet $\Sigma = {a_1, \dots, a_n}$ as follows:
 
 \noindent with $\times$ having higher precedence than $+$.
 
-Based on the formalization of Henglein and Nielsen \cite{heni2010} we focus on
-string parsing under regular expressions. Figure \ref{fig:inhabitation_proofs}
+Based on the formalisation of Henglein and Nielsen \cite{heni2010} we focus on
+string parsing under regular expressions. \Fref{fig:inhabitation_proofs}
 shows their inference system, in which inhabitation proofs for regular
 expressions can be derived. We write $\vdash v : E$ if $v : E$ is derivable in
-it. Proof trees $v$, such that $\vdash v : E$ for some $E$, will be refered to
+it. Proof trees $v$, such that $\vdash v : E$ for some $E$, will be referred to
 as \emph{proof values}.
 
 The \emph{flattening} $||v||$ of a proof value $v$ we define as follows:
@@ -443,8 +450,8 @@ $\vdash w : E$, we have that $||v|| = ||w||$, we say that $E$ is ambiguous. In a
 plain manner we say that $E$ is ambiguous if any string can be parsed under $E$
 in more than one way.
 
-A proof value consisting of nested alternations is refered to as a
-\emph{sum}. All subtrees in a sum which is not itself a sum is refered to as a
+A proof value consisting of nested alternations is referred to as a
+\emph{sum}. All subtrees in a sum which is not itself a sum is referred to as a
 \emph{branch}.
 
 \begin{example}
@@ -495,7 +502,7 @@ expression for the children we get
 \label{sec:local-global-schema-definitions}
 Different Schemas have different ways of defining elements, child elements and
 attribute lists of elements. In general the element and child element
-definitions can be divided into two principles\footnote{Atleast this is true for
+definitions can be divided into two principles\footnote{At least this is true for
   XSD, Relax NG schemas and properly others, but DTD only have global definitions}
 
 \begin{description}
@@ -884,8 +891,8 @@ Informally normal forms have the following properties which we show below.
 
     To prove the theorem we would need a system for proving containment among
     tail-recursive closed $\mu$-expressions. Alas we do not have such a system
-    but we speculate that the system of \cite{heli2010} is still sound and
-    complete with the additional rule
+    but we speculate that the system of \cite{heni2010} is still sound and
+    complete with the additional rule\fixme{fixed the cite, is it correct?}
     \[
     rec : \mu X. \alpha = \alpha \lbrack \mu X. \alpha / X \rbrack
     \]
@@ -950,6 +957,7 @@ Informally normal forms have the following properties which we show below.
 \label{chap:huffman}
 \label{chap:specialize_huffman}
 \fixme{two labels in latex code.. :S}
+ \fixme{Chapter name is kind of to loong?}
 
 The fact that the alternation operator in $Reg_{\Sigma}$ is associative and
 commutative with respect to language equivalence can be exploited for encoding
@@ -1041,6 +1049,9 @@ gzip data + code meta: 5737 bytes
 \subsection{Future work}
 
 \fixme{add something here}
+
+
+\clearpage
 
 \bibliographystyle{../bibliography/theseurl}
 \bibliography{../bibliography/bibliography}
