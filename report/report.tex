@@ -1017,6 +1017,30 @@ regular expression with the encoded data so it is as small as possible.
 \chapter{Experimental results}
 \label{sec:experimental_results}
 
+where DBLP$^1$ is a small sample file we have constructed from the original DBLP
+XML file. This sample file is roughly of size 1mb.
+
+
+\newcommand{\fs}[1]{\footnotesize{#1}}
+
+\begin{nonfloatingtable}
+  \centering
+  \begin{tabular}{|l|c|c|c|} \hline \textbf{Description} & \textbf{Original
+      size} & \textbf{Size after gzip} & \textbf{Size after regp} \\ \hline
+
+    DBLP$^1$ XML file  & 1069858 & 177541 & XXXX \\
+    \hspace{1em} \fs{-- Split into data} & \fs{606046} & \fs{144779} & \\
+    \hspace{1em} \fs{-- Split into meta} & \fs{457985} & & \fs{94745} \\
+    \multicolumn{4}{|p{300px}|}{\fs When the file is split into data and meta and the data
+      is compressed using gzip and the meta is compressed using our compression
+      we end up with a total size of $144779+94745 = \mathbf{239524b}$. } \\ \hline
+  \end{tabular}
+
+  \caption{FooBar}
+  \label{tab:asd}
+\end{nonfloatingtable}
+
+
 % xml: 1069858 -> gzip -> 177541
 % 
 % data: 606046 -> gzip -> 144779 }
@@ -1050,6 +1074,9 @@ Below is a list of possible further work.
   data is grouped together, then it would properly be a good idea to group the
   values of all elements and attributes that have the same name. For example all
   data from elements named email would then be grouped together.
+
+
+\item 
 
 \end{description}
 
