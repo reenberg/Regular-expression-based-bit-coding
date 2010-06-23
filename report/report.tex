@@ -1,3 +1,5 @@
+% http://web.science.mq.edu.au/~rdale/resources/writingnotes/latexstyle.html
+
 \documentclass[a4paper, oneside]{memoir}
 % Fixes "No room for a new \xxx" error by extending the default 256 fixed size
 % LaTeX arrays
@@ -326,28 +328,17 @@ in XML is highly inefficient in terms of space-usage, as large amounts of
 meta-data are replicated throughout the encoded file; hence tools for compressing
 XML encoded data is of main concern.
 
-Existing general data-compressing techniques are typically based on a statistical
-approach using codebooks. In this paper we take another approach and investigate
-a method specific for XML files which exploits the tidy semantics of the XML-format.
-Given an XML scheme file \cite{wa2001}, we automatically derive a regular
-expression which matches all instances of the XML scheme. Using this regular
-expression enables us to parse an instance of the XML scheme, and we encode
-the parse tree efficiently using a bitcoding technique which only encode
-non-deterministic parts of the parse tree. We have implemented a prototype
-of our method in Haskell \cite{sugost2008} and conducted experiments using
-this prototype for compressing data obtained from the Digital Bibliography \& Library Project .
-
 Existing general data-compressing techniques are typically based on a
 statistical approach using codebooks. In this paper we take another approach and
 investigate a method specific for XML files which exploits the tidy semantics of
-the XML-format. Given an XML scheme file \cite{wa2001}, we automatically derive
+the XML-format.  Given an XML scheme file \cite{wa2001}, we automatically derive
 a regular expression which matches all instances of the XML scheme. Using this
 regular expression enables us to parse an instance of the XML scheme, and we
 encode the parse tree efficiently using a bit coding technique which only encode
-non-deterministic choices in the parse tree. We have implemented a prototype of
-our method in the declarative language Haskell \cite{sugost2008} and conducted
-experiments using this prototype for compressing data obtained from the Digital
-Bibliography \& Library Project.
+non-deterministic parts of the parse tree. We have implemented a prototype of
+our method in Haskell \cite{sugost2008} and conducted experiments using this
+prototype for compressing data obtained from the Digital Bibliography \& Library
+Project .
 
 This paper marks the conclusion of the 2010 candidate course \emph{Topics in
   Programming Languages} at Department of Computer Science, Copenhagen
@@ -355,20 +346,22 @@ University.
 
 \section{Prerequisites}
 
-We expect readers to posses basic knowledge of regular expressions \cite{houl2006}.
-Also we expect familiarity with inference system and programming language semantics \cite{gu1992, wi1993}.
-Knowledge of XML and DTD schemes is necessary to understand Section \ref{sec:convert},
-and knowledge of Huffman coding \cite[Section 16.3]{co2001} is necessary to understand Section \ref{sec:specialize_huffman}.
+We expect readers to posses basic knowledge of regular expressions
+\cite{houl2006}.  Also we expect familiarity with inference system and
+programming language semantics \cite{gu1992, wi1993}.  Knowledge of XML and DTD
+schemes is necessary to understand \fref{sec:convert}, and knowledge of Huffman
+coding \cite[section 16.3]{co2001} is necessary to understand
+\fref{chap:huffman}.
 
 \section{Previous work}
 
 Our work is based on Henglein and Nielsen's paper \cite{heni2010}. In their
 paper they propose a straightforward technique for encoding syntax trees parsed
-under regular expressions efficiently as bit sequences. This is closely related
-to the work done by Necula and Rahul \cite{nera2001} where a variant of the same
-technique is used for compact encoding of proof-carrying code. By using
-oracle-based checking only non-deterministic choices in proof-trees need to be
-encoded.
+under regular expressions efficiently as bit sequences. This is related to the
+work done by Necula and Rahul \cite{nera2001} where a variant of the same
+technique is used for compact encoding of proof-carrying code. They find that
+it is much more space-efficient to encode proofs as oracles. Given an oracle the
+proof can then be reconstructed by a non-deterministic theorem prover.
 
 In \cite{lisu2000} Leifke and Suciu describes their XML compressor
 \emph{XMill}. By using a specialized version of \emph{zlib} \cite{dega1996} they
@@ -378,12 +371,12 @@ are able to compress XML files up to twice of the compression ratio of gzip
 \section{Outline}
 
 The rest of the paper is organized as follows:
-Section \ref{sec:formalization} lays down the formal foundation on which we reason about regular expressions;
-Section \ref{sec:convert} shows how to automatically derive a regular expression from a DTD scheme;
-Section \ref{sec:mu_recursion} extends regular expressions with recursion, and shows how to encode parse trees efficienctly;
-Section \ref{sec:specialize_huffman} shows how to specialize a regular expression to the specific XML-data being compressed;
-Section \ref{sec:experimental_results} evaluates our prototype and presents experimental results;
-Section \ref{sec:conclusion} concludes the paper and presents further work.
+\Fref{chap:formalisation} lays down the formal foundation on which we reason about regular expressions;
+\Fref{chap:convert} shows how to automatically derive a regular expression from a DTD scheme;
+\Fref{chap:mu-recursion} extends regular expressions with recursion, and shows how to encode parse trees efficienctly;
+\Fref{chap:huffman} shows how to specialize a regular expression to the specific XML-data being compressed;
+\Fref{chap:experimental_results} evaluates our prototype and presents experimental results;
+\Fref{chap:conclusion} concludes the paper and presents further work.
 
 \section{Acknowledgement}
 
@@ -392,7 +385,7 @@ Michael Flænø Werk for insightful comments. Also we would like to thank Lasse
 Nielsen for providing useful source code for regular expression parsing.
 
 \chapter{Formalisation}
-\label{sec:formalisation}
+\label{chap:formalisation}
 
 \begin{figure}
 \[
@@ -411,8 +404,8 @@ Nielsen for providing useful source code for regular expression parsing.
   \inference{v : 1 + E \times E^{\ast}}{\mathtt{fold}\ v : E^{\ast}}
 \end{array}
 \]
-\caption{Inhabitation proofs for regular expressions.}
-\label{fig:inhabitation_proofs}
+\caption{Inhabitation rules for regular expressions.}
+\label{fig:inhabitation}
 \end{figure}
 
 We define the language of regular expressions $Reg_\Sigma$ over the finite
@@ -422,17 +415,18 @@ alphabet $\Sigma = {a_1, \dots, a_n}$ as follows:
     E ::= 0 \; | \; 1 \; | \; E_1 + E_2 \; | \; E_1 \times E_2 \; | \; E^{*}
 \]
 
-\noindent with $\times$ having higher precedence than $+$.
+\noindent with ${}^{\ast}$ having the highest precedence, and $\times$ having
+higher precedence than $+$.
 
 Based on the formalisation of Henglein and Nielsen \cite{heni2010} we focus on
-string parsing under regular expressions. \Fref{fig:inhabitation_proofs}
+string parsing under regular expressions. \Fref{fig:inhabitation}
 shows their inference system, in which inhabitation proofs for regular
 expressions can be derived. We write $\vdash v : E$ if $v : E$ is derivable in
-it. Proof trees $v$, such that $\vdash v : E$ for some $E$, will be referred to
-as \emph{proof values}.
+it. If $|- v : E$ we refer to $v$ as a \emph{proof value}.
 
-The \emph{flattening} $||v||$ of a proof value $v$ is defined as follows:
+The \emph{flattening} $||v||$ of a proof value $v$ is defined in \ref{fig:flatten}.
 
+\begin{figure}
 \[
 \begin{array}{rclrcl}
 ||()|| & = & \epsilon &
@@ -443,18 +437,24 @@ The \emph{flattening} $||v||$ of a proof value $v$ is defined as follows:
 || \mathtt{fold} \; v|| & = & ||v||
 \end{array}
 \]
+\label{fig:flatten}
+\end{figure}
 
-The \emph{language} $\mathcal{L}(E)$ of the regular expression $E$ is defined by
+The \emph{language} $\mathcal{L} |[E|]$ of the regular expression $E$ is defined by
 
 \[
-\mathcal{L}(E) = \{ s \; | \; \vdash v : E, ||v|| = s \}.
+\mathcal{L}|[E|] = \lbrace ||v|| \; | \; \vdash v : E \rbrace.
 \]
 
 Equivalence of regular expression $E_1$ and $E_2$ is denoted by $E_1 = E_2$ and
-holds if $\mathcal{L}(E_1) = \mathcal{L}(E_2)$; Containment of regular
+holds iff $\mathcal{L}(E_1) = \mathcal{L}(E_2)$; Containment of regular
 expression $E_1$ in $E_2$ is denoted by $E_1 \le E_2$ and holds if
 $\mathcal{L}(E_1) \subseteq \mathcal{L}(E_2)$.  It follows from basic set theory
 that $E_1 = E_2$ if and only if $E_1 \le E_2$ and $E_2 \le E_1$.
+
+There are several (sound and complete) proof systems for equivalence among
+regular expressions given in the literature (\cite{salomaa1966, kozen1994,
+  grabmayer2005, heni2010}).
 
 If for any two distinct proof values $v$ and $w$, such that $\vdash v : E$ and
 $\vdash w : E$, we have that $||v|| = ||w||$, we say that $E$ is ambiguous. In a
@@ -462,19 +462,20 @@ plain manner we say that $E$ is ambiguous if any string can be parsed under $E$
 in more than one way.
 
 A regular expression consisting of nested alternations is refered to as a \emph{sum}.
-All subtrees in a sum which is not itself a sum is refered to as a \emph{branch}.
+All subtrees in a sum which is not itself a sum is referred to as a \emph{branch}.
 
 \begin{example}
 Let $E = (a + (b + c \times d)) + (a + b)^{*}$; we say that $E$ is a sum with
-the branches $(a + (b + c \times d))$, and $(a + b)^{\ast}$.
+the branches $(a + (b + c \times d))$, and $(a + b)^{\ast}$. The former is
+itself a sum with the branches $a$, $b$ and $c \times d$.
 \end{example}
 
 \chapter{Converting XML schema to regular expression}
-\label{sec:convert}
+\label{chap:convert}
 
 Regular expressions can be generated from XML schemas. The simples algorithm is
 to generate a regular expression for the root element and then inlining the
-regular expressions of the child elements
+regular expressions of the child elements.
 
 For example if a schema defines the elements \verb@A@, \verb@B@ and \verb@C@
 where \verb@A@ is the root element having \verb@B@ and \verb@C@ as children in
@@ -910,11 +911,8 @@ Informally normal forms have the following properties which we show below.
   (eg. $| \mathfrak{b'} | = | \mathfrak{b} |$) when using such a parser.
 \end{theorem}
 
-\chapter{Specializing regular expressions to strings using Huffman trees}
+\chapter{Specialising regular expressions using Huffman trees}
 \label{chap:huffman}
-\label{chap:specialize_huffman}
-\fixme{two labels in latex code.. :S}
- \fixme{Chapter name is kind of to loong?}
 
 The fact that the alternation operator in $Reg_{\Sigma}$ is associative and
 commutative with respect to language equivalence can be exploited for encoding
@@ -1014,7 +1012,7 @@ type is intended as being the high level representation used when saving the
 regular expression with the encoded data so it is as small as possible.
 
 \chapter{Experimental results}
-\label{sec:experimental_results}
+\label{chap:experimental_results}
 
 % xml: 1069858 -> gzip -> 177541
 % 
@@ -1023,7 +1021,7 @@ regular expression with the encoded data so it is as small as possible.
 % meta: 457985 -> regp -> 94745  }
 
 \chapter{Conclusion}
-\label{sec:conclusion}
+\label{chap:conclusion}
 
 \section{Further work}
 
@@ -1055,6 +1053,7 @@ Below is a list of possible further work.
 \clearpage
 
 \bibliographystyle{../bibliography/theseurl}
+% \bibliographystyle{plain}
 \bibliography{../bibliography/bibliography}
 
 \end{document}
