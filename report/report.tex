@@ -1055,17 +1055,32 @@ XML file. This sample file is roughly of size 1mb.
 \chapter{Conclusion}
 \label{chap:conclusion}
 
-We have recounted and extended the technique described in \cite{heni2010} for encoding parse trees of regular expressions. Further we have shown how to use this technique for compressing XML-files, by automatically deriving regular expressions from (non-recursive) XML schemes. Finally, we have implemented a prototype of an XML-compressor based on our approach, and conducted a test using the prototype on data taken from the Digital Bibliography Library Project.
+We have recounted and extended the technique described in \cite{heni2010} for
+bit coding parse trees under regular expressions. Further we have shown how to
+use this technique for compressing XML files by automatically deriving regular
+expressions from (non-recursive) XML schemes. Finally we have implemented a
+prototype of an XML compressor based on our approach and conducted a test using
+the prototype on data taken from the Digital Bibliography \& Library Project.
 
 Our approach suffers from the following drawbacks:
 
 \begin{itemize}
-    \item Existing parsing techniques for regular expressions are less efficient in time or space or both than the statistical methods used in GZIP which runs in linear time and constant space \cite{de1996}.
-    \item Our method is dependent on the presence of a non-recursive XML scheme, whereas GZIP is able to compress arbitrary XML-files.
-    \item In our experiment GZIP has a better compression ratio than our prototype.
+\item Existing parsing techniques for regular expressions are less efficient in
+  time or space (or both) than the statistical methods used in for example GZIP
+  which runs in linear time and constant space \cite{de1996}.
+\item Our method is dependent on the presence of a non-recursive XML schema
+  whereas GZIP is able to compress arbitrary XML files.
+\item In our experiment GZIP has a better compression ratio than our prototype.
 \end{itemize}
 
-We believe that domains exist which are suitable candidates for the techniques that we describe in this paper; however, based on the above mentioned facts, we conclude that XML-file compression isn't such a domain.
+We believe that domains exist which are suitable candidates for the techniques
+that we describe in this paper; however, based on the above mentioned facts we
+conclude that XML file compression isn't such a domain.
+
+One of the advantages of our method is that we bit code not strings but parse
+trees. This is not particularly useful in the case of XML but other areas might
+benefit from it. Since parse trees contain more information than their
+flattenings it is not surprising that our method performs worse than say GZIP.
 
 \section{Further work}
 
