@@ -287,8 +287,8 @@ Nis Wegmann {\footnotesize (niswegmann@gmail.com)}}
   parse tree is bit coded efficiently using an oracle based approach.
 
   We show how to deploy the method on XML files. By automatically deriving a
-  regular expression from an XML scheme, we can compress all XML instances of
-  that scheme.
+  regular expression from an XML schema, we can compress all XML instances of
+  that schema.
 
   Based on our method we have implemented a prototype of an XML compressor in
   the functional language Haskell. Further we have tested the prototype on data
@@ -338,9 +338,9 @@ XML encoded data is of main concern.
 Existing general data-compressing techniques are typically based on a
 statistical approach using codebooks. In this paper we take another approach and
 investigate a method specific for XML files which exploits the tidy semantics of
-the XML format.  Given an XML scheme file \cite{wa2001}, we automatically derive
-a regular expression which matches all instances of the XML scheme. Using this
-regular expression enables us to parse an instance of the XML scheme, and we
+the XML format.  Given an XML schema file \cite{wa2001}, we automatically derive
+a regular expression which matches all instances of the XML schema. Using this
+regular expression enables us to parse an instance of the XML schema, and we
 encode the parse tree efficiently using a bit coding technique which only encode
 non-deterministic parts of the parse tree. We have implemented a prototype of
 our method in Haskell \cite{sugost2008} and conducted experiments using this
@@ -356,9 +356,9 @@ University.
 We expect readers to posses basic knowledge of regular expressions
 \cite{houl2006}.  Also we expect familiarity with inference system and
 programming language semantics \cite{gu1992, wi1993}.  Knowledge of XML and DTD
-schemes is necessary to understand \fref{chap:convert}, and knowledge of Huffman
+schemas is necessary to understand \fref[plain]{chap:convert}, and knowledge of Huffman
 coding \cite[section 16.3]{co2001} is necessary to understand
-\fref{chap:huffman}.
+\fref[plain]{chap:huffman}.
 
 \section{Previous work}
 
@@ -378,12 +378,12 @@ are able to compress XML files up to twice of the compression ratio of GZIP
 \section{Outline}
 
 The rest of the paper is organized as follows:
-\Fref{chap:formalisation} lays down the formal foundation on which we reason about regular expressions;
-\Fref{chap:convert} shows how to automatically derive a regular expression from a DTD scheme;
-\Fref{chap:mu-recursion} extends regular expressions with recursion, and shows how to encode parse trees efficienctly;
-\Fref{chap:huffman} shows how to specialize a regular expression to the specific XML-data being compressed;
-\Fref{chap:experimental_results} evaluates our prototype and presents experimental results;
-\Fref{chap:conclusion} concludes the paper and presents further work.
+\Fref[plain]{chap:formalisation} lays down the formal foundation on which we reason about regular expressions;
+\Fref[plain]{chap:convert} shows how to automatically derive a regular expression from a DTD scheme;
+\Fref[plain]{chap:mu-recursion} extends regular expressions with recursion, and shows how to encode parse trees efficienctly;
+\Fref[plain]{chap:huffman} shows how to specialize a regular expression to the specific XML-data being compressed;
+\Fref[plain]{chap:experimental_results} evaluates our prototype and presents experimental results;
+\Fref[plain]{chap:conclusion} concludes the paper and presents further work.
 
 \section{Acknowledgement}
 
