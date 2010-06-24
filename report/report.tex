@@ -371,17 +371,17 @@ it is much more space-efficient to encode proofs as oracles. Given an oracle the
 proof can then be reconstructed by a non-deterministic theorem prover.
 
 In \cite{lisu2000} Leifke and Suciu describes their XML compressor
-\emph{XMill}. By using a specialized version of \emph{zlib} \cite{dega1996} they
+\emph{XMill}. By using a specialised version of \emph{zlib} \cite{dega1996} they
 are able to compress XML files up to twice of the compression ratio of GZIP
 \cite{de1996}.
 
 \section{Outline}
 
-The rest of the paper is organized as follows:
+The rest of the paper is organised as follows:
 \Fref[plain]{chap:formalisation} lays down the formal foundation on which we reason about regular expressions;
-\Fref[plain]{chap:convert} shows how to automatically derive a regular expression from a DTD scheme;
-\Fref[plain]{chap:mu-recursion} extends regular expressions with recursion, and shows how to encode parse trees efficienctly;
-\Fref[plain]{chap:huffman} shows how to specialize a regular expression to the specific XML-data being compressed;
+\Fref[plain]{chap:convert} shows how to automatically derive a regular expression from a DTD schema;
+\Fref[plain]{chap:mu-recursion} extends regular expressions with recursion, and shows how to encode parse trees efficiently;
+\Fref[plain]{chap:huffman} shows how to specialise a regular expression to the specific XML-data being compressed;
 \Fref[plain]{chap:experimental_results} evaluates our prototype and presents experimental results;
 \Fref[plain]{chap:conclusion} concludes the paper and presents further work.
 
@@ -897,7 +897,7 @@ Informally normal forms have the following properties which we show below.
     $\mathfrak{c}$. In either case the first part of the remaining bits
     $\mathfrak{c_1}$ codes a membership proof of $\gamma\lbrack \alpha_i / X_i
     \rbrack$. If $\mathfrak{c_0}$ is $0$ then the rest of the bits
-    $\mathfrak{c_2}$ code at membership proof of $\alpha\lbrack \alpha_i / X_i
+    $\mathfrak{c_2}$ code a membership proof of $\alpha\lbrack \alpha_i / X_i
     \rbrack$, and if it is $1$ then $\mathfrak{c_2}$ codes a membership proof of
     $\beta\lbrack \alpha_i / X_i \rbrack$. In either case we can reorder the bit
     code to construct one that codes a membership proof of $(\gamma \times
@@ -913,7 +913,7 @@ Informally normal forms have the following properties which we show below.
   unambiguous by always choosing left over right or vice versa.
 
   It is not too hard to see that the bit coding size is preserved exactly
-  (eg. $| \mathfrak{b'} | = | \mathfrak{b} |$) when using such a parser.
+  (e.g., $| \mathfrak{b'} | = | \mathfrak{b} |$) when using such a parser.
 \end{theorem}
 
 \chapter{Specialising regular expressions using Huffman trees}
@@ -1128,7 +1128,7 @@ as the size of the original file. This is described in the caption of
 We have recounted and extended the technique described in \cite{heni2010} for
 bit coding parse trees under regular expressions. Further we have shown how to
 use this technique for compressing XML files by automatically deriving regular
-expressions from (non-recursive) XML schemes. Finally we have implemented a
+expressions from (non-recursive) XML schemas. Finally we have implemented a
 prototype of an XML compressor based on our approach and conducted a test using
 the prototype on data taken from the Digital Bibliography \& Library Project.
 
@@ -1174,13 +1174,12 @@ Below is a list of possible further work.
 
 \item [Splitting meta and data.] It seems that statistical compression
   algorithms like the one used by GZIP performs quite better when compressing
-  the meta and the data separated. It certanly does it better than our bit
+  the meta and the data separated. It certainly does it better than our bit
   coding so it would be worthwhile looking more into this. Maybe compare this to
   the way XMill works.
 
 \end{description}
 
-\clearpage
 
 \bibliographystyle{../bibliography/theseurl}
 % \bibliographystyle{plain}
