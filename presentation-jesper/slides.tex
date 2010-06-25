@@ -80,17 +80,16 @@
   \begin{itemize}
   \item What is actually implemented.
 
+  \item Automatic XML schema generation
+
   \item Stuff that didn't make it to the report.
-
-
-  \item 
 
   \item Some miss explanation in the report.
   \end{itemize}
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[c]
   \frametitle{What have we done -- 1/2}
 
   In summary we have implemented
@@ -114,14 +113,6 @@
 
   \item An optional specialisation of the $Reg^\mu$ w.r.t the desired data.
 
-  \item XML parser that splits an XML file into its data and markup.
-    \begin{itemize}
-
-    \item Using HXT for the XML parsing.
-    \item Specialised version of the DTD schema parser for the split markup
-      file.
-    \end{itemize}
-
   \end{itemize}
 \end{frame}
 
@@ -129,10 +120,17 @@
   \frametitle{What have we done -- 2/2}
   \begin{itemize}
 
+  \item XML parser that splits an XML file into its data and markup.
+    \begin{itemize}
+      
+    \item Using HXT for the XML parsing.
+    \item Specialised version of the DTD schema parser for the split markup
+      file.
+    \end{itemize}
   \item As seen from the experimental results we encoded a 1MB sample of the
     DBLP XML file.
-
-
+    
+    
   \item It was done from an automatically generated $Reg$ from the DBLP DTD schema.
 
   \item We actually also decoded it, and ended up with the
@@ -161,8 +159,7 @@
 \begin{frame}[c]
   \frametitle{Automatic XML schema generation -- 1/2}
   
-  We did investigate automatic schema generation from a XML file. The test
-  machine had 2GB memory
+  We did investigate automatic schema generation from an XML file.
 
   \begin{itemize}
   \item XMLSpy ( \url{http://altova.com} commercial)
@@ -176,6 +173,8 @@
       used to much memory and JVM crashed even with JVM flags to enlarge the stack.
     \end{itemize}
   \end{itemize}
+
+  The test machine had 2GB memory.
 
 \end{frame}
 
@@ -195,9 +194,9 @@
   Conclusion 
 
   \begin{itemize}
-  \item Not feasible for large files
+  \item Not feasible for large files.
 
-  \item Bad schema generation => bad regular expression generation => bad compression
+  \item Bad schema generation => bad regular expression generation => bad compression.
   \end{itemize}
 
 \end{frame}
@@ -208,18 +207,15 @@
   Additions to the further work mentioned in the report.
 
   \begin{itemize}
-  \item Implementing coercion synthesis
-    \begin{itemize}
-    \item Extended coercions with $\mu$-recursive regex
-    \end{itemize}
+  \item Implementing coercion synthesis.
 
+  \item Extend coercions with $Reg^\mu$.
 
   \end{itemize}
 
 \end{frame}
 
 \end{document}
-
 
 
 \begin{frame}
