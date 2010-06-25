@@ -72,7 +72,7 @@
 \frame[plain]{\titlepage}
 
 
-\begin{frame}
+\begin{frame}[c]
   \frametitle{Overview}
 
   What is covered
@@ -81,8 +81,6 @@
   \item What is actually implemented.
 
   \item Automatic XML schema generation
-
-  \item Stuff that didn't make it to the report.
 
   \item Some miss explanation in the report.
   \end{itemize}
@@ -124,9 +122,13 @@
     \begin{itemize}
       
     \item Using HXT for the XML parsing.
+
+    \end{itemize}
+
     \item Specialised version of the DTD schema parser for the split markup
       file.
-    \end{itemize}
+
+
   \item As seen from the experimental results we encoded a 1MB sample of the
     DBLP XML file.
     
@@ -143,18 +145,6 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}[c]
-  \frametitle{Normal use of our implementation}
-  \begin{itemize}
-
-  \item Make a $Reg$ or automate one from a schema.
-
-  \item Convert the $Reg$, Normalise and balance the $Reg^\mu$.
-
-  \item Parse the desired data.
-
-  \end{itemize}
-\end{frame}
 
 \begin{frame}[c]
   \frametitle{Automatic XML schema generation -- 1/2}
@@ -215,10 +205,8 @@
 
 \end{frame}
 
-\end{document}
 
-
-\begin{frame}
+\begin{frame}[c]
   \frametitle{Clarification}
   
   The report may give an impression of some topics that is not true.
@@ -236,6 +224,7 @@
   \end{itemize}
 \end{frame}
 
+\end{document}
 
 
 %%% Local Variables: 
