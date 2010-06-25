@@ -1,0 +1,248 @@
+% xcolor=table is because it seems that beamer uses the xcolor package in a
+% strange way and thus don't accept us giving arguments to the package.
+\documentclass[slidestop,compress,mathserif, xcolor=table]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+
+% \usepackage{mdwtab}
+% \usepackage{mathenv}
+% \usepackage{amsfonts}
+% \usepackage{amsmath}
+% \usepackage{amssymb}
+% \usepackage{amsthm}
+
+\usepackage{semantic}
+\renewcommand{\ttdefault}{txtt} % Bedre typewriter font
+
+% Use the NAT theme in uk (also possible in DK)
+\usetheme[nat,uk, footstyle=low]{Frederiksberg}
+
+% Make overlay sweet nice by having different transparancy depending on how
+% "far" ahead the overlay is. AWSOME!!
+\setbeamercovered{highly dynamic}
+% possible to shift back, so they are just invisible untill they should overlay
+% \setbeamercovered{invisible}
+
+% Extend figures into either left or right margin
+% Ex: \begin{narrow}{-1in}{0in} .. \end{narrow} will place 1in into left margin
+\newenvironment{narrow}[2]{%
+  \begin{list}{}{%
+  \setlength{\topsep}{0pt}%
+  \setlength{\leftmargin}{#1}%
+  \setlength{\rightmargin}{#2}%
+  \setlength{\listparindent}{\parindent}%
+  \setlength{\itemindent}{\parindent}%
+  \setlength{\parsep}{\parskip}}%
+\item[]}{\end{list}}
+
+
+
+\usepackage{tikz}
+\usetikzlibrary{calc,shapes,arrows}
+% below is for use of backgrounds (foregrounds are not used so they are not
+% added to this specification).
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+
+
+\usepackage{subfigure}
+
+
+% Write a short text to have that shown in the footer of slides other than the
+% title slide.
+\title[]{Regular-expression based bit coding}
+% A possible subslide.
+\subtitle{\tiny{TiPL - Topics in Programming Languages}}
+
+
+\author{Jesper Reenberg}
+
+% Only write DIKU in the footer of slides (except the title slide).
+\institute[DIKU]{Department of Computer Science}
+
+% Remove the date stamp from the footer of slides (except title slide) by giving
+% it no short "text"
+\date[]{\today} 
+
+\begin{document}
+
+\frame[plain]{\titlepage}
+
+
+\begin{frame}
+  \frametitle{Overview}
+
+  What is covered
+
+  \begin{itemize}
+  \item What is actually implemented.
+
+  \item Stuff that didn't make it to the report.
+
+
+  \item 
+
+  \item Some miss explanation in the report.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{What have we done -- 1/2}
+
+  In summary we have implemented
+
+  \begin{itemize}
+  \item Backtracking parser for $Reg^\mu$ (inspired by Fritz's)
+
+  \item DTD schema parser that generates $Reg$.
+    \begin{itemize}
+    \item Using HaXML for the DTD parsing.
+    \end{itemize}
+
+  \item Conversion of $Reg$ to $Reg^\mu$
+    \begin{itemize}
+    \item Replacing $\alpha^\ast$ with $\mu X . 1 + \alpha \times X$
+    \end{itemize}
+
+  \item Normalisation of $Reg^\mu$ (putting $X$ inside sums)
+
+  \item Balancing of sum's in $Reg^\mu$.
+
+  \item An optional specialisation of the $Reg^\mu$ w.r.t the desired data.
+
+  \item XML parser that splits an XML file into its data and markup.
+    \begin{itemize}
+
+    \item Using HXT for the XML parsing.
+    \item Specialised version of the DTD schema parser for the split markup
+      file.
+    \end{itemize}
+
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[c]
+  \frametitle{What have we done -- 2/2}
+  \begin{itemize}
+
+  \item As seen from the experimental results we encoded a 1MB sample of the
+    DBLP XML file.
+
+
+  \item It was done from an automatically generated $Reg$ from the DBLP DTD schema.
+
+  \item We actually also decoded it, and ended up with the
+    \emph{same string as encoded}.
+    
+    \begin{itemize}
+    \item So we assume it is ``correct''.
+    \end{itemize}
+
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[c]
+  \frametitle{Normal use of our implementation}
+  \begin{itemize}
+
+  \item Make a $Reg$ or automate one from a schema.
+
+  \item Convert the $Reg$, Normalise and balance the $Reg^\mu$.
+
+  \item Parse the desired data.
+
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[c]
+  \frametitle{Automatic XML schema generation -- 1/2}
+  
+  We did investigate automatic schema generation from a XML file. The test
+  machine had 2GB memory
+
+  \begin{itemize}
+  \item XMLSpy ( \url{http://altova.com} commercial)
+    \begin{itemize}
+    \item Started paging and we aborted after quite some time.
+    \end{itemize}
+
+  \item relaxer (\url{http://relaxer.jp/})
+    \begin{itemize}
+    \item Failed to generate for a 200MB sample of the DBLP XML file. It
+      used to much memory and JVM crashed even with JVM flags to enlarge the stack.
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[c]
+  \frametitle{Automatic XML schema generation -- 2/2}
+  
+  For smaller files they both generated considerably worse regular expressions
+  than even the simplest (non-optimised) made by ourself.
+
+  Drawbacks
+
+  \begin{itemize}
+  \item Can only generate a schema that matches the exact XML file. Not what the
+    XML file may contain later. 
+  \end{itemize}
+
+  Conclusion 
+
+  \begin{itemize}
+  \item Not feasible for large files
+
+  \item Bad schema generation => bad regular expression generation => bad compression
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[c]
+  \frametitle{Further work}
+  
+  Additions to the further work mentioned in the report.
+
+  \begin{itemize}
+  \item Implementing coercion synthesis
+    \begin{itemize}
+    \item Extended coercions with $\mu$-recursive regex
+    \end{itemize}
+
+
+  \end{itemize}
+
+\end{frame}
+
+\end{document}
+
+
+
+\begin{frame}
+  \frametitle{Clarification}
+  
+  The report may give an impression of some topics that is not true.
+
+  \begin{itemize}
+  \item We accept $Reg$ and transform them into $Reg^\mu$.
+
+  \item Parser implemented on $Reg^\mu$ only.
+
+  \item We only do specialisation (Huffman) on $Reg^\mu$ 
+    \begin{itemize}
+    \item not $Reg$ as is suggested in the report.
+    \end{itemize}
+
+  \end{itemize}
+\end{frame}
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
